@@ -1,34 +1,133 @@
 import { 
-  Calendar, Users, Clock, Target, CheckCircle, ArrowRight, 
-  Home, Heart, Zap 
+  Users, Target, CheckCircle, ArrowRight, 
+  Home, Heart, Award, Shield, TrendingUp 
 } from 'lucide-react';
 
 const Landing = () => {
-  const scrollToCTA = () => {
-    document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  const problems = [
+    {
+      icon: Heart,
+      title: "Peso mental constante",
+      description: "Ficar lembrando quem faz o quê toda hora cansa e gera estresse desnecessário."
+    },
+    {
+      icon: Users,
+      title: "Dificuldade para dividir tarefas",
+      description: "Sempre sobra mais para uma pessoa e ninguém percebe a desigualdade."
+    },
+    {
+      icon: Target,
+      title: "Falta de visibilidade",
+      description: "Ninguém sabe o que está pendente ou quem está sobrecarregado."
+    }
+  ];
+
+  const steps = [
+    {
+      number: "01",
+      title: "Crie sua escala",
+      description: "Monte sua rotina visual em minutos. Defina tarefas, dias e responsáveis."
+    },
+    {
+      number: "02",
+      title: "Compartilhe com a família",
+      description: "Envie o link ou QR code. Todos visualizam a mesma escala em tempo real."
+    },
+    {
+      number: "03",
+      title: "Acompanhe e ajuste",
+      description: "Veja o progresso, troque tarefas e mantenha tudo organizado facilmente."
+    }
+  ];
+
+  const benefits = [
+    {
+      icon: Award,
+      title: "Menos estresse",
+      description: "Acabe com discussões sobre quem faz o quê."
+    },
+    {
+      icon: Shield,
+      title: "Equilíbrio real",
+      description: "Distribuição justa e transparente de responsabilidades."
+    },
+    {
+      icon: TrendingUp,
+      title: "Rotina que funciona",
+      description: "Método testado que realmente traz organização para casa."
+    },
+    {
+      icon: Heart,
+      title: "Mais tempo juntos",
+      description: "Menos tempo brigando por tarefas = mais tempo de qualidade."
+    }
+  ];
+
+  const features = [
+    "Escalas visuais e fáceis de entender",
+    "Atualizações em tempo real",
+    "Histórico de tarefas concluídas",
+    "Lembretes automáticos",
+    "Modo família (múltiplos usuários)",
+    "Funciona no celular e computador"
+  ];
+
+  const testimonials = [
+    {
+      name: "Mariana Silva",
+      role: "Mãe de 2 filhos",
+      text: "Finalmente paramos de brigar sobre quem lava a louça. Todo mundo sabe exatamente o que fazer."
+    },
+    {
+      name: "Carlos Mendes",
+      role: "Pai solo",
+      text: "Minha filha de 12 anos agora ajuda nas tarefas porque consegue ver tudo de forma clara. Mudou nossa casa."
+    },
+    {
+      name: "Juliana e Rafael",
+      role: "Casal sem filhos",
+      text: "A gente achava que não precisava, mas depois de testar, nunca mais voltamos atrás. É viciante a organização."
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen bg-zinc-950 text-zinc-200">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-950/80 backdrop-blur-lg border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-              <Home className="w-4 h-4" />
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center">
+              <Home className="w-5 h-5 text-zinc-950" />
             </div>
-            <span className="font-semibold text-lg">Rotina em Casa</span>
+            <span className="font-semibold text-xl tracking-tight">Rotina em Casa</span>
           </div>
           <div className="flex items-center gap-4">
             <button 
-              onClick={scrollToCTA}
-              className="px-4 py-2 text-sm font-medium hover:text-emerald-400 transition-colors"
+              onClick={() => scrollToSection('como-funciona')}
+              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors px-4 py-2"
+            >
+              Como funciona
+            </button>
+            <button 
+              onClick={() => scrollToSection('beneficios')}
+              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors px-4 py-2"
+            >
+              Benefícios
+            </button>
+            <button 
+              onClick={() => window.location.href = 'https://rotina-em-casa-phm2.vercel.app/login'}
+              className="text-sm px-5 py-2 rounded-full border border-zinc-700 hover:bg-zinc-900 transition-all"
             >
               Entrar
             </button>
             <button 
-              onClick={scrollToCTA}
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-sm font-medium transition-colors"
+              onClick={() => window.location.href = 'https://rotina-em-casa-phm2.vercel.app/cadastro'}
+              className="text-sm px-5 py-2 rounded-full bg-emerald-500 text-zinc-950 font-medium hover:bg-emerald-400 transition-all"
             >
               Começar grátis
             </button>
@@ -37,85 +136,93 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="hero-gradient pt-24 pb-20 px-6">
+      <section className="pt-24 pb-20 px-6">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6">
-            <Zap className="w-4 h-4 text-emerald-400" />
-            <span className="text-sm text-white/70">Plataforma #1 de rotinas domésticas</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 mb-8">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+            <span className="text-sm text-zinc-400">Usado por mais de 2.400 famílias</span>
           </div>
-          
-          <h1 className="text-7xl font-semibold tracking-tighter leading-none mb-6">
+
+          <h1 className="text-6xl md:text-7xl font-semibold tracking-tighter leading-none mb-6">
             Organize sua casa.<br />Sem estresse.
           </h1>
           
-          <p className="text-2xl text-white/60 max-w-2xl mx-auto mb-10">
-            Crie escalas visuais de tarefas domésticas de forma simples e moderna. 
-            Divida responsabilidades com clareza.
+          <p className="text-xl text-zinc-400 max-w-2xl mx-auto mb-10">
+            Crie escalas visuais de tarefas domésticas. Divida responsabilidades com clareza 
+            e reduza o peso mental da rotina.
           </p>
 
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={scrollToCTA}
-              className="group px-8 py-4 bg-emerald-600 hover:bg-emerald-700 rounded-xl text-lg font-medium flex items-center gap-3 transition-all active:scale-[0.985]"
+              onClick={() => window.location.href = 'https://rotina-em-casa-phm2.vercel.app/cadastro'}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-emerald-500 text-zinc-950 text-lg font-medium hover:bg-emerald-400 active:scale-[0.985] transition-all"
             >
               Começar gratuitamente
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition" />
+              <ArrowRight className="w-5 h-5" />
             </button>
             <button 
-              onClick={() => window.scrollTo({ top: 800, behavior: 'smooth' })}
-              className="px-8 py-4 border border-white/20 hover:bg-white/5 rounded-xl text-lg font-medium transition-colors"
+              onClick={() => scrollToSection('como-funciona')}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border border-zinc-700 text-lg hover:bg-zinc-900 transition-all"
             >
               Ver como funciona
             </button>
           </div>
-          <p className="text-white/40 text-sm mt-4">Sem cartão de crédito • 14 dias grátis</p>
+
+          <p className="text-sm text-zinc-500 mt-6">
+            Sem cartão de crédito • Cancele quando quiser
+          </p>
         </div>
       </section>
 
       {/* Problema Section */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <div className="text-center mb-14">
-          <div className="text-emerald-400 text-sm font-medium tracking-[3px] mb-3">O PROBLEMA</div>
-          <h2 className="text-5xl font-semibold tracking-tight">A rotina em casa não precisa ser caótica</h2>
-        </div>
+      <section className="py-20 px-6 border-t border-zinc-800 bg-zinc-900/50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">O PROBLEMA</div>
+            <h2 className="text-5xl font-semibold tracking-tighter">A rotina não precisa ser caótica</h2>
+          </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { icon: Target, title: "Peso mental", desc: "Lembrar de todas as tarefas da casa é exaustivo e gera ansiedade." },
-            { icon: Users, title: "Divisão injusta", desc: "Uma pessoa acaba carregando quase tudo. Isso gera frustração e conflitos." },
-            { icon: Clock, title: "Rotina bagunçada", desc: "Sem estrutura visual, as tarefas se acumulam e viram bagunça." },
-            { icon: Calendar, title: "Falta de visibilidade", desc: "Ninguém sabe quem faz o quê e quando. Comunicação falha." },
-          ].map((item, index) => (
-            <div key={index} className="card-hover bg-zinc-900 border border-white/10 rounded-2xl p-8">
-              <div className="w-12 h-12 bg-emerald-950 text-emerald-400 rounded-xl flex items-center justify-center mb-6">
-                <item.icon className="w-6 h-6" />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {problems.map((problem, index) => (
+              <div 
+                key={index}
+                className="group p-8 rounded-3xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-all"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center mb-6 group-hover:bg-emerald-500/10 transition-colors">
+                  <problem.icon className="w-6 h-6 text-emerald-500" />
+                </div>
+                <h3 className="text-2xl font-semibold tracking-tight mb-4">{problem.title}</h3>
+                <p className="text-zinc-400 leading-relaxed">{problem.description}</p>
               </div>
-              <h3 className="text-2xl font-semibold mb-3 tracking-tight">{item.title}</h3>
-              <p className="text-white/60 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Como Funciona */}
-      <section className="bg-zinc-900 py-20 px-6">
+      <section id="como-funciona" className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <div className="text-emerald-400 text-sm font-medium tracking-[3px] mb-3">COMO FUNCIONA</div>
-            <h2 className="text-5xl font-semibold tracking-tight">Três passos simples</h2>
+          <div className="text-center mb-16">
+            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">SIMPLE E EFICIENTE</div>
+            <h2 className="text-5xl font-semibold tracking-tighter">Três passos para transformar sua casa</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { number: "01", title: "Crie sua casa", desc: "Cadastre os membros da família e defina os cômodos." },
-              { number: "02", title: "Monte a escala", desc: "Arraste e solte tarefas nos dias da semana de forma visual." },
-              { number: "03", title: "Acompanhe tudo", desc: "Todos veem o que precisam fazer. Notificações automáticas." },
-            ].map((step, i) => (
-              <div key={i} className="relative">
-                <div className="text-[120px] font-bold text-white/5 absolute -top-8 -left-2 select-none">{step.number}</div>
-                <div className="relative">
-                  <h3 className="text-3xl font-semibold tracking-tight mb-4">{step.title}</h3>
-                  <p className="text-xl text-white/60 leading-tight">{step.desc}</p>
+          <div className="space-y-4">
+            {steps.map((step, index) => (
+              <div 
+                key={index}
+                className="flex flex-col md:flex-row gap-8 md:gap-12 items-start p-10 rounded-3xl border border-zinc-800 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all group"
+              >
+                <div className="text-[72px] font-semibold text-emerald-500/90 tabular-nums tracking-tighter leading-none">
+                  {step.number}
+                </div>
+                <div className="flex-1 pt-2">
+                  <h3 className="text-4xl font-semibold tracking-tight mb-4 group-hover:text-emerald-400 transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="text-xl text-zinc-400 max-w-xl">
+                    {step.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -123,96 +230,122 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Benefícios */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <div className="text-center mb-14">
-          <div className="text-emerald-400 text-sm font-medium tracking-[3px] mb-3">BENEFÍCIOS</div>
-          <h2 className="text-5xl font-semibold tracking-tight">Resultados reais</h2>
-        </div>
+      {/* Benefícios - Seção Escura */}
+      <section id="beneficios" className="py-20 px-6 bg-zinc-950 border-y border-zinc-800">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">POR QUE FUNCIONA</div>
+            <h2 className="text-5xl font-semibold tracking-tighter">Resultados reais para sua família</h2>
+          </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { icon: Heart, title: "Menos estresse", desc: "Todo mundo sabe exatamente o que fazer. Acabou a sobrecarga mental." },
-            { icon: Users, title: "Mais equilíbrio", desc: "Divisão justa e transparente das tarefas entre todos os membros." },
-            { icon: CheckCircle, title: "Mais organização", desc: "Visualização clara da rotina semanal. Tudo no lugar." },
-          ].map((b, i) => (
-            <div key={i} className="bg-zinc-900 border border-white/10 rounded-3xl p-10">
-              <b.icon className="w-9 h-9 text-emerald-400 mb-8" />
-              <h3 className="text-3xl font-semibold tracking-tight mb-4">{b.title}</h3>
-              <p className="text-xl text-white/60">{b.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Funcionalidades */}
-      <section className="bg-zinc-900 py-20 px-6">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="text-emerald-400 text-sm font-medium tracking-[3px] mb-3">FUNCIONALIDADES</div>
-          <h2 className="text-5xl font-semibold tracking-tight mb-4">Tudo que você precisa</h2>
-          <p className="text-xl text-white/60 max-w-md mx-auto mb-12">Uma plataforma completa para gerenciar a rotina da sua casa.</p>
-
-          <div className="grid md:grid-cols-2 gap-4 text-left max-w-3xl mx-auto">
-            {[
-              "Escalas visuais por semana",
-              "Atribuição automática de tarefas",
-              "Notificações por WhatsApp",
-              "Histórico de tarefas realizadas",
-              "Múltiplos membros da família",
-              "Relatórios semanais",
-            ].map((f, i) => (
-              <div key={i} className="flex items-center gap-3 bg-zinc-950 border border-white/10 rounded-2xl px-6 py-5 text-lg">
-                <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                {f}
+          <div className="grid md:grid-cols-2 gap-5">
+            {benefits.map((benefit, index) => (
+              <div 
+                key={index}
+                className="p-9 rounded-3xl bg-zinc-900 border border-zinc-800 flex gap-6"
+              >
+                <div className="flex-shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                    <benefit.icon className="w-7 h-7 text-emerald-500" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-3xl font-semibold tracking-tight mb-3">{benefit.title}</h3>
+                  <p className="text-lg text-zinc-400">{benefit.description}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Depoimentos */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <div className="text-center mb-14">
-          <div className="text-emerald-400 text-sm font-medium tracking-[3px] mb-3">DEPOIMENTOS</div>
-          <h2 className="text-5xl font-semibold tracking-tight">Quem já usa ama</h2>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { name: "Mariana Silva", role: "Mãe de 3 filhos • São Paulo", text: "Finalmente conseguimos dividir as tarefas de casa de forma justa. Meu marido agora faz a parte dele sem eu precisar lembrar." },
-            { name: "Carlos Mendes", role: "Casal sem filhos • Rio de Janeiro", text: "A visualização semanal mudou tudo. Antes era bagunça, agora todo mundo sabe o que fazer. Recomendo muito." },
-            { name: "Juliana Costa", role: "Família com 4 pessoas • Belo Horizonte", text: "O app é simples e bonito. Meu filho de 14 anos até participa das tarefas agora porque consegue ver o que ele precisa fazer." },
-          ].map((t, i) => (
-            <div key={i} className="bg-zinc-900 border border-white/10 rounded-3xl p-8">
-              <p className="text-xl leading-tight mb-8">"{t.text}"</p>
-              <div>
-                <div className="font-semibold">{t.name}</div>
-                <div className="text-sm text-white/50">{t.role}</div>
+      {/* Funcionalidades */}
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-12 gap-x-12 gap-y-16 items-center">
+            <div className="md:col-span-5">
+              <div className="sticky top-24">
+                <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">FEITO PARA FAMÍLIAS REAIS</div>
+                <h2 className="text-6xl font-semibold tracking-tighter leading-none mb-6">
+                  Tudo o que você precisa.<br />Nada que você não usa.
+                </h2>
+                <p className="text-xl text-zinc-400">
+                  Ferramentas simples que realmente resolvem o dia a dia de uma casa.
+                </p>
               </div>
             </div>
-          ))}
+
+            <div className="md:col-span-7">
+              <div className="grid gap-3">
+                {features.map((feature, index) => (
+                  <div 
+                    key={index}
+                    className="flex items-center gap-4 p-6 rounded-2xl border border-zinc-800 bg-zinc-900/40"
+                  >
+                    <CheckCircle className="w-6 h-6 text-emerald-500 flex-shrink-0" />
+                    <span className="text-xl tracking-tight">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Depoimentos */}
+      <section className="py-20 px-6 bg-zinc-900/50 border-y border-zinc-800">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">DEPOIMENTOS</div>
+            <h2 className="text-5xl font-semibold tracking-tighter">Histórias reais de famílias organizadas</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {testimonials.map((testimonial, index) => (
+              <div 
+                key={index}
+                className="p-9 rounded-3xl bg-zinc-900 border border-zinc-800 flex flex-col"
+              >
+                <div className="flex-1">
+                  <p className="text-xl leading-relaxed text-zinc-300">"{testimonial.text}"</p>
+                </div>
+                <div className="pt-8 border-t border-zinc-800 mt-8">
+                  <div className="font-semibold text-lg tracking-tight">{testimonial.name}</div>
+                  <div className="text-sm text-zinc-500">{testimonial.role}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA Final */}
-      <section id="cta" className="bg-emerald-950 py-24 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-6xl font-semibold tracking-tighter mb-6">Pronto para organizar sua casa?</h2>
-          <p className="text-2xl text-emerald-200/80 mb-10">Comece gratuitamente hoje mesmo.</p>
-          
+      <section className="py-24 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-6xl font-semibold tracking-tighter mb-6">
+            Sua casa mais organizada<br />começa hoje.
+          </h2>
+          <p className="text-2xl text-zinc-400 mb-10">
+            Experimente grátis por 14 dias. Sem compromisso.
+          </p>
+
           <button 
-            onClick={() => alert('Em breve: redirecionamento para cadastro')}
-            className="px-10 py-5 bg-white text-emerald-950 hover:bg-white/90 rounded-2xl text-xl font-semibold transition-all active:scale-[0.985]"
+            onClick={() => window.location.href = 'https://rotina-em-casa-phm2.vercel.app/cadastro'}
+            className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-2xl bg-emerald-500 text-xl font-medium text-zinc-950 hover:bg-emerald-400 active:scale-[0.985] transition-all"
           >
-            Criar minha conta grátis
+            Criar minha primeira escala
+            <ArrowRight className="w-6 h-6" />
           </button>
-          <p className="text-emerald-300/60 text-sm mt-6">14 dias grátis • Cancele quando quiser</p>
+
+          <p className="text-sm text-zinc-500 mt-6">
+            100% gratuito para começar • Cancele a qualquer momento
+          </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-zinc-950 border-t border-white/10 py-10 px-6 text-center text-sm text-white/40">
-        © {new Date().getFullYear()} Rotina em Casa — Feito com carinho para famílias organizadas.
+      <footer className="border-t border-zinc-800 py-10 px-6 text-center text-sm text-zinc-500">
+        © {new Date().getFullYear()} Rotina em Casa. Feito com carinho para famílias que querem mais paz.
       </footer>
     </div>
   );
