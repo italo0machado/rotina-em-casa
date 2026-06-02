@@ -6,10 +6,12 @@
   --font-serif: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   
-  --color-emerald: #10b981;
-  --color-deep: #18181b;
-  --color-zinc: #27272a;
-  --color-border: #3f3f46;
+  --color-cream: #f9f5f0;
+  --color-deep: #2c2118;
+  --color-warm: #5c4033;
+  --color-gold: #b89a6f;
+  --color-muted: #6f5e4f;
+  --color-border: #e8dcc6;
 }
 
 body {
@@ -18,7 +20,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, .font-serif {
+h1, h2, h3, h4, .font-serif {
   font-family: var(--font-serif);
   font-feature-settings: "kern" 1, "tnum" 1;
 }
@@ -29,24 +31,16 @@ input, textarea, button {
 }
 
 ::selection {
-  background: #10b981;
-  color: #18181b;
+  background: #b89a6f;
+  color: #2c2118;
 }
 
 /* Elegant focus states */
 input:focus, textarea:focus {
-  box-shadow: 0 0 0 1px #10b981;
+  box-shadow: 0 0 0 1px #b89a6f;
 }
 
-/* Premium card hover */
-.card-hover {
-  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
-              box-shadow 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-              border-color 0.2s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  border-color: #52525b;
+/* Card hover luxury */
+.group:hover .grayscale-\[0\.15\] {
+  filter: grayscale(0);
 }
