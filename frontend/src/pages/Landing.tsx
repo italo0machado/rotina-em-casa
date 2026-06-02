@@ -31,17 +31,17 @@ const Landing = () => {
     {
       number: "01",
       title: "Crie sua escala",
-      description: "Monte sua rotina visual em minutos. Defina tarefas, dias e responsáveis."
+      description: "Monte sua rotina visual em minutos. Defina tarefas, dias e responsáveis de forma simples e clara."
     },
     {
       number: "02",
       title: "Compartilhe com a família",
-      description: "Envie o link ou QR code. Todos visualizam a mesma escala em tempo real."
+      description: "Envie o link ou QR code. Todos visualizam a mesma escala em tempo real, sem confusão."
     },
     {
       number: "03",
       title: "Acompanhe e ajuste",
-      description: "Veja o progresso, troque tarefas e mantenha tudo organizado facilmente."
+      description: "Veja o progresso, troque tarefas e mantenha tudo organizado com facilidade."
     }
   ];
 
@@ -49,22 +49,22 @@ const Landing = () => {
     {
       icon: Award,
       title: "Menos estresse",
-      description: "Acabe com discussões sobre quem faz o quê."
+      description: "Acabe com discussões sobre quem faz o quê. Todo mundo sabe exatamente sua responsabilidade."
     },
     {
       icon: Shield,
       title: "Equilíbrio real",
-      description: "Distribuição justa e transparente de responsabilidades."
+      description: "Distribuição justa e transparente de responsabilidades entre todos os membros da família."
     },
     {
       icon: TrendingUp,
       title: "Rotina que funciona",
-      description: "Método testado que realmente traz organização para casa."
+      description: "Método testado que realmente traz organização duradoura para o dia a dia da casa."
     },
     {
       icon: Heart,
       title: "Mais tempo juntos",
-      description: "Menos tempo brigando por tarefas = mais tempo de qualidade."
+      description: "Menos tempo brigando por tarefas = mais tempo de qualidade com quem você ama."
     }
   ];
 
@@ -72,7 +72,7 @@ const Landing = () => {
     "Escalas visuais e fáceis de entender",
     "Atualizações em tempo real",
     "Histórico de tarefas concluídas",
-    "Lembretes automáticos",
+    "Lembretes automáticos por WhatsApp",
     "Modo família (múltiplos usuários)",
     "Funciona no celular e computador"
   ];
@@ -81,17 +81,17 @@ const Landing = () => {
     {
       name: "Mariana Silva",
       role: "Mãe de 2 filhos",
-      text: "Finalmente paramos de brigar sobre quem lava a louça. Todo mundo sabe exatamente o que fazer."
+      text: "Finalmente paramos de brigar sobre quem lava a louça. Todo mundo sabe exatamente o que fazer. Mudou nossa dinâmica em casa."
     },
     {
       name: "Carlos Mendes",
       role: "Pai solo",
-      text: "Minha filha de 12 anos agora ajuda nas tarefas porque consegue ver tudo de forma clara. Mudou nossa casa."
+      text: "Minha filha de 12 anos agora ajuda nas tarefas porque consegue ver tudo de forma clara. Nunca mais tive que ficar cobrando."
     },
     {
       name: "Juliana e Rafael",
       role: "Casal sem filhos",
-      text: "A gente achava que não precisava, mas depois de testar, nunca mais voltamos atrás. É viciante a organização."
+      text: "A gente achava que não precisava, mas depois de testar, nunca mais voltamos atrás. É impressionante como traz paz."
     }
   ];
 
@@ -101,33 +101,33 @@ const Landing = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-2xl bg-emerald-500 flex items-center justify-center">
               <Home className="w-5 h-5 text-zinc-950" />
             </div>
-            <span className="font-semibold text-xl tracking-tight">Rotina em Casa</span>
+            <span className="font-semibold text-2xl tracking-tight">Rotina em Casa</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button 
               onClick={() => scrollToSection('como-funciona')}
-              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors px-4 py-2"
+              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors px-5 py-2 rounded-xl hover:bg-zinc-900"
             >
               Como funciona
             </button>
             <button 
               onClick={() => scrollToSection('beneficios')}
-              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors px-4 py-2"
+              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors px-5 py-2 rounded-xl hover:bg-zinc-900"
             >
               Benefícios
             </button>
             <button 
-              onClick={() => window.location.href = 'https://rotina-em-casa-phm2.vercel.app/login'}
-              className="text-sm px-5 py-2 rounded-full border border-zinc-700 hover:bg-zinc-900 transition-all"
+              onClick={() => window.location.href = '/login'}
+              className="text-sm px-5 py-2 rounded-xl border border-zinc-700 hover:bg-zinc-900 transition-all"
             >
               Entrar
             </button>
             <button 
-              onClick={() => window.location.href = 'https://rotina-em-casa-phm2.vercel.app/cadastro'}
-              className="text-sm px-5 py-2 rounded-full bg-emerald-500 text-zinc-950 font-medium hover:bg-emerald-400 transition-all"
+              onClick={() => window.location.href = '/cadastro'}
+              className="text-sm px-6 py-2 rounded-xl bg-emerald-500 text-zinc-950 font-medium hover:bg-emerald-400 transition-all"
             >
               Começar grátis
             </button>
@@ -143,26 +143,26 @@ const Landing = () => {
             <span className="text-sm text-zinc-400">Usado por mais de 2.400 famílias</span>
           </div>
 
-          <h1 className="text-6xl md:text-7xl font-semibold tracking-tighter leading-none mb-6">
+          <h1 className="text-7xl md:text-8xl font-semibold tracking-tighter leading-none mb-6">
             Organize sua casa.<br />Sem estresse.
           </h1>
           
-          <p className="text-xl text-zinc-400 max-w-2xl mx-auto mb-10">
+          <p className="text-2xl text-zinc-400 max-w-2xl mx-auto mb-10">
             Crie escalas visuais de tarefas domésticas. Divida responsabilidades com clareza 
             e reduza o peso mental da rotina.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => window.location.href = 'https://rotina-em-casa-phm2.vercel.app/cadastro'}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-emerald-500 text-zinc-950 text-lg font-medium hover:bg-emerald-400 active:scale-[0.985] transition-all"
+              onClick={() => window.location.href = '/cadastro'}
+              className="inline-flex items-center justify-center gap-3 px-9 py-4 rounded-2xl bg-emerald-500 text-xl font-medium text-zinc-950 hover:bg-emerald-400 active:scale-[0.985] transition-all"
             >
               Começar gratuitamente
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-6 h-6" />
             </button>
             <button 
               onClick={() => scrollToSection('como-funciona')}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border border-zinc-700 text-lg hover:bg-zinc-900 transition-all"
+              className="inline-flex items-center justify-center gap-3 px-9 py-4 rounded-2xl border border-zinc-700 text-xl hover:bg-zinc-900 transition-all"
             >
               Ver como funciona
             </button>
@@ -177,22 +177,22 @@ const Landing = () => {
       {/* Problema Section */}
       <section className="py-20 px-6 border-t border-zinc-800 bg-zinc-900/50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">O PROBLEMA</div>
-            <h2 className="text-5xl font-semibold tracking-tighter">A rotina não precisa ser caótica</h2>
+          <div className="text-center mb-16">
+            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-4">O PROBLEMA</div>
+            <h2 className="text-6xl font-semibold tracking-tighter">A rotina não precisa ser caótica</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-3 gap-5">
             {problems.map((problem, index) => (
               <div 
                 key={index}
-                className="group p-8 rounded-3xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-all"
+                className="card-hover p-9 rounded-3xl bg-zinc-900 border border-zinc-800"
               >
-                <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center mb-6 group-hover:bg-emerald-500/10 transition-colors">
-                  <problem.icon className="w-6 h-6 text-emerald-500" />
+                <div className="w-14 h-14 rounded-2xl bg-zinc-800 flex items-center justify-center mb-8">
+                  <problem.icon className="w-7 h-7 text-emerald-500" />
                 </div>
-                <h3 className="text-2xl font-semibold tracking-tight mb-4">{problem.title}</h3>
-                <p className="text-zinc-400 leading-relaxed">{problem.description}</p>
+                <h3 className="text-4xl font-semibold tracking-tighter mb-4 leading-none">{problem.title}</h3>
+                <p className="text-xl text-zinc-400 leading-snug">{problem.description}</p>
               </div>
             ))}
           </div>
@@ -203,24 +203,24 @@ const Landing = () => {
       <section id="como-funciona" className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">SIMPLE E EFICIENTE</div>
-            <h2 className="text-5xl font-semibold tracking-tighter">Três passos para transformar sua casa</h2>
+            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-4">SIMPLE E EFICIENTE</div>
+            <h2 className="text-6xl font-semibold tracking-tighter">Três passos para transformar sua casa</h2>
           </div>
 
           <div className="space-y-4">
             {steps.map((step, index) => (
               <div 
                 key={index}
-                className="flex flex-col md:flex-row gap-8 md:gap-12 items-start p-10 rounded-3xl border border-zinc-800 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all group"
+                className="flex flex-col md:flex-row gap-10 md:gap-16 items-start p-12 rounded-3xl border border-zinc-800 bg-zinc-900/40 hover:bg-zinc-900/70 transition-all group"
               >
-                <div className="text-[72px] font-semibold text-emerald-500/90 tabular-nums tracking-tighter leading-none">
+                <div className="text-[92px] font-semibold text-emerald-500/90 tabular-nums tracking-[-8px] leading-none">
                   {step.number}
                 </div>
-                <div className="flex-1 pt-2">
-                  <h3 className="text-4xl font-semibold tracking-tight mb-4 group-hover:text-emerald-400 transition-colors">
+                <div className="flex-1 pt-4">
+                  <h3 className="text-5xl font-semibold tracking-tighter mb-5 group-hover:text-emerald-400 transition-colors">
                     {step.title}
                   </h3>
-                  <p className="text-xl text-zinc-400 max-w-xl">
+                  <p className="text-2xl text-zinc-400 max-w-2xl leading-snug">
                     {step.description}
                   </p>
                 </div>
@@ -234,24 +234,24 @@ const Landing = () => {
       <section id="beneficios" className="py-20 px-6 bg-zinc-950 border-y border-zinc-800">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">POR QUE FUNCIONA</div>
-            <h2 className="text-5xl font-semibold tracking-tighter">Resultados reais para sua família</h2>
+            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-4">POR QUE FUNCIONA</div>
+            <h2 className="text-6xl font-semibold tracking-tighter">Resultados reais para sua família</h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
             {benefits.map((benefit, index) => (
               <div 
                 key={index}
-                className="p-9 rounded-3xl bg-zinc-900 border border-zinc-800 flex gap-6"
+                className="card-hover p-10 rounded-3xl bg-zinc-900 border border-zinc-800 flex gap-7"
               >
                 <div className="flex-shrink-0">
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-                    <benefit.icon className="w-7 h-7 text-emerald-500" />
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                    <benefit.icon className="w-8 h-8 text-emerald-500" />
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-3xl font-semibold tracking-tight mb-3">{benefit.title}</h3>
-                  <p className="text-lg text-zinc-400">{benefit.description}</p>
+                <div className="pt-1">
+                  <h3 className="text-4xl font-semibold tracking-tighter mb-4">{benefit.title}</h3>
+                  <p className="text-xl text-zinc-400 leading-snug">{benefit.description}</p>
                 </div>
               </div>
             ))}
@@ -262,15 +262,15 @@ const Landing = () => {
       {/* Funcionalidades */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-12 gap-x-12 gap-y-16 items-center">
+          <div className="grid md:grid-cols-12 gap-x-16 gap-y-16 items-center">
             <div className="md:col-span-5">
               <div className="sticky top-24">
-                <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">FEITO PARA FAMÍLIAS REAIS</div>
-                <h2 className="text-6xl font-semibold tracking-tighter leading-none mb-6">
+                <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-4">FEITO PARA FAMÍLIAS REAIS</div>
+                <h2 className="text-7xl font-semibold tracking-tighter leading-none mb-6">
                   Tudo o que você precisa.<br />Nada que você não usa.
                 </h2>
-                <p className="text-xl text-zinc-400">
-                  Ferramentas simples que realmente resolvem o dia a dia de uma casa.
+                <p className="text-2xl text-zinc-400">
+                  Ferramentas simples que realmente resolvem o dia a dia da casa.
                 </p>
               </div>
             </div>
@@ -280,10 +280,10 @@ const Landing = () => {
                 {features.map((feature, index) => (
                   <div 
                     key={index}
-                    className="flex items-center gap-4 p-6 rounded-2xl border border-zinc-800 bg-zinc-900/40"
+                    className="flex items-center gap-5 p-7 rounded-2xl border border-zinc-800 bg-zinc-900/40 text-xl"
                   >
-                    <CheckCircle className="w-6 h-6 text-emerald-500 flex-shrink-0" />
-                    <span className="text-xl tracking-tight">{feature}</span>
+                    <CheckCircle className="w-7 h-7 text-emerald-500 flex-shrink-0" />
+                    <span className="tracking-tight">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -295,23 +295,23 @@ const Landing = () => {
       {/* Depoimentos */}
       <section className="py-20 px-6 bg-zinc-900/50 border-y border-zinc-800">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-3">DEPOIMENTOS</div>
-            <h2 className="text-5xl font-semibold tracking-tighter">Histórias reais de famílias organizadas</h2>
+          <div className="text-center mb-16">
+            <div className="text-emerald-500 text-sm font-medium tracking-[3px] mb-4">DEPOIMENTOS</div>
+            <h2 className="text-6xl font-semibold tracking-tighter">Histórias reais de famílias organizadas</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
             {testimonials.map((testimonial, index) => (
               <div 
                 key={index}
-                className="p-9 rounded-3xl bg-zinc-900 border border-zinc-800 flex flex-col"
+                className="card-hover p-10 rounded-3xl bg-zinc-900 border border-zinc-800 flex flex-col"
               >
                 <div className="flex-1">
-                  <p className="text-xl leading-relaxed text-zinc-300">"{testimonial.text}"</p>
+                  <p className="text-2xl leading-snug text-zinc-300">"{testimonial.text}"</p>
                 </div>
-                <div className="pt-8 border-t border-zinc-800 mt-8">
-                  <div className="font-semibold text-lg tracking-tight">{testimonial.name}</div>
-                  <div className="text-sm text-zinc-500">{testimonial.role}</div>
+                <div className="pt-9 border-t border-zinc-800 mt-9">
+                  <div className="font-semibold text-xl tracking-tight">{testimonial.name}</div>
+                  <div className="text-sm text-zinc-500 mt-1">{testimonial.role}</div>
                 </div>
               </div>
             ))}
@@ -322,22 +322,22 @@ const Landing = () => {
       {/* CTA Final */}
       <section className="py-24 px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-6xl font-semibold tracking-tighter mb-6">
+          <h2 className="text-7xl font-semibold tracking-tighter mb-6 leading-none">
             Sua casa mais organizada<br />começa hoje.
           </h2>
-          <p className="text-2xl text-zinc-400 mb-10">
+          <p className="text-3xl text-zinc-400 mb-10">
             Experimente grátis por 14 dias. Sem compromisso.
           </p>
 
           <button 
-            onClick={() => window.location.href = 'https://rotina-em-casa-phm2.vercel.app/cadastro'}
-            className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-2xl bg-emerald-500 text-xl font-medium text-zinc-950 hover:bg-emerald-400 active:scale-[0.985] transition-all"
+            onClick={() => window.location.href = '/cadastro'}
+            className="inline-flex items-center justify-center gap-4 px-12 py-5 rounded-2xl bg-emerald-500 text-2xl font-medium text-zinc-950 hover:bg-emerald-400 active:scale-[0.985] transition-all"
           >
             Criar minha primeira escala
-            <ArrowRight className="w-6 h-6" />
+            <ArrowRight className="w-7 h-7" />
           </button>
 
-          <p className="text-sm text-zinc-500 mt-6">
+          <p className="text-sm text-zinc-500 mt-8">
             100% gratuito para começar • Cancele a qualquer momento
           </p>
         </div>
