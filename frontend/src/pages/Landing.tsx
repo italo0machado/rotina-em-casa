@@ -101,7 +101,7 @@ const Landing = () => {
       <nav className="border-b border-[#e8dcc6] bg-[#f9f5f0]/95 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#2c2118] rounded-full flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#2c2118] rounded-2xl flex items-center justify-center">
               <Home className="w-5 h-5 text-[#f9f5f0]" />
             </div>
             <div>
@@ -124,13 +124,13 @@ const Landing = () => {
             </button>
             <button 
               onClick={() => window.location.href = '/login'}
-              className="px-6 py-2.5 border border-[#e8dcc6] rounded-full text-xs tracking-[2px] hover:bg-white transition"
+              className="px-6 py-3 border border-[#e8dcc6] rounded-2xl text-xs tracking-[2px] hover:bg-white transition"
             >
               ENTRAR
             </button>
             <button 
               onClick={() => window.location.href = '/cadastro'}
-              className="px-8 py-2.5 bg-[#2c2118] text-white rounded-full text-xs tracking-[2.5px] hover:bg-[#3f2a1d] transition"
+              className="px-10 py-3.5 bg-[#2c2118] text-white rounded-2xl text-xs tracking-[2.5px] hover:bg-[#3f2a1d] transition"
             >
               COMEÇAR GRÁTIS
             </button>
@@ -143,7 +143,7 @@ const Landing = () => {
         <div className="absolute inset-0 bg-[radial-gradient(#3f2a1d_0.5px,transparent_1px)] bg-[length:4px_4px] opacity-40"></div>
         
         <div className="relative z-10 max-w-5xl mx-auto px-8 text-center">
-          <div className="inline-block mb-6 px-5 py-1 border border-[#b89a6f]/40 rounded-full">
+          <div className="inline-block mb-6 px-5 py-1 border border-[#b89a6f]/40 rounded-2xl">
             <span className="text-[#b89a6f] text-xs tracking-[4px] uppercase font-medium">Para famílias que querem paz</span>
           </div>
           
@@ -158,14 +158,14 @@ const Landing = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => window.location.href = '/cadastro'}
-              className="group inline-flex items-center justify-center gap-4 border border-[#b89a6f] text-[#b89a6f] px-10 py-4 rounded-full text-sm tracking-[3px] hover:bg-[#b89a6f] hover:text-[#2c2118] transition-all duration-300"
+              className="group inline-flex items-center justify-center gap-4 border border-[#b89a6f] text-[#b89a6f] px-10 py-4 rounded-2xl text-sm tracking-[3px] hover:bg-[#b89a6f] hover:text-[#2c2118] transition-all duration-300"
             >
               CRIAR MINHA PRIMEIRA ESCALA
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
             </button>
             <button 
               onClick={() => scrollToSection('como-funciona')}
-              className="inline-flex items-center justify-center gap-4 border border-white/30 text-white/80 px-10 py-4 rounded-full text-sm tracking-[3px] hover:bg-white/5 transition-all"
+              className="inline-flex items-center justify-center gap-4 border border-white/30 text-white/80 px-10 py-4 rounded-2xl text-sm tracking-[3px] hover:bg-white/5 transition-all"
             >
               VER COMO FUNCIONA
             </button>
@@ -341,7 +341,7 @@ const Landing = () => {
 
           <button 
             onClick={() => window.location.href = '/cadastro'}
-            className="group inline-flex items-center justify-center gap-4 border border-[#b89a6f] text-[#b89a6f] px-14 py-5 rounded-full text-sm tracking-[3px] hover:bg-[#b89a6f] hover:text-[#2c2118] transition-all duration-300"
+            className="group inline-flex items-center justify-center gap-4 border border-[#b89a6f] text-[#b89a6f] px-14 py-5 rounded-2xl text-sm tracking-[3px] hover:bg-[#b89a6f] hover:text-[#2c2118] transition-all duration-300"
           >
             CRIAR MINHA PRIMEIRA ESCALA
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
