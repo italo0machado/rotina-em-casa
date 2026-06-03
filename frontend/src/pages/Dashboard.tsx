@@ -191,7 +191,7 @@ export default function Dashboard() {
       <nav className="border-b border-[#e8dcc6] bg-[#f8f4eb]/95 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#2c2118] rounded-full flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#2c2118] rounded-2xl flex items-center justify-center">
               <span className="text-[#f8f4eb] text-xl tracking-[-2px] font-serif">R</span>
             </div>
             <div>
@@ -200,7 +200,7 @@ export default function Dashboard() {
           </div>
           <button 
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 px-8 py-3 bg-[#d17c4a] text-white text-sm tracking-[2px] rounded-full hover:bg-[#b8693a] transition shadow-md"
+            className="flex items-center gap-2 px-8 py-3 bg-[#d17c4a] text-white text-sm tracking-[2px] rounded-2xl hover:bg-[#b8693a] transition shadow-md"
           >
             <Plus className="w-4 h-4" /> CRIAR NOVA ESCALA
           </button>
@@ -287,7 +287,7 @@ export default function Dashboard() {
                 return (
                   <div 
                     key={escala.id}
-                    className="group border border-[#e8dcc6] bg-white rounded-3xl p-7 hover:shadow-xl transition-all duration-300 relative"
+                    className="group border border-[#e8dcc6] bg-white rounded-3xl p-7 hover:shadow-md transition-all duration-300 relative"
                   >
                     <div className="flex justify-between items-start mb-6">
                       <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: `${tema.cor}15` }}>
@@ -429,7 +429,7 @@ export default function Dashboard() {
                       key={dia}
                       type="button"
                       onClick={() => toggleDia(dia)}
-                      className={`px-4 py-2 rounded-full text-sm border transition-all ${diasSelecionados.includes(dia) ? 'bg-[#2c2118] text-white border-[#2c2118]' : 'border-[#d4c3a3] hover:border-[#d17c4a]'}`}
+                      className={`px-4 py-2 rounded-2xl text-sm border transition-all ${diasSelecionados.includes(dia) ? 'bg-[#2c2118] text-white border-[#2c2118]' : 'border-[#d4c3a3] hover:border-[#d17c4a]'}`}
                     >
                       {dia}
                     </button>
