@@ -1,6 +1,12 @@
 import { useParams, Link, useLocation } from 'react-router-dom';
-import { ArrowLeft, Download, Plus, Clock } from 'lucide-react';
+import { ArrowLeft, Download, Plus, Clock, GripVertical } from 'lucide-react';
 import { useState } from 'react';
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  type DropResult,
+} from '@hello-pangea/dnd';
 
 interface Atividade {
   id: number;
@@ -15,10 +21,26 @@ interface Escala {
   dias: string[];
 }
 
+function formatTime(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+}
+
+function recalculateHorarios(atividades: Atividade[], startHour = 6): Atividade[] {
+  let currentMinutes = startHour * 60;
+
+  return atividades.map((atividade) => {
+    const horario = formatTime(currentMinutes);
+    currentMinutes += atividade.duracao;
+    return { ...atividade, horario };
+  });
+}
+
 export default function EscalaEditor() {
   const { id } = useParams();
   const location = useLocation();
-  
+
   const escalaInicial = location.state?.escala as Escala | undefined;
 
   const [escala] = useState<Escala>(escalaInicial || {
@@ -27,11 +49,26 @@ export default function EscalaEditor() {
     dias: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex']
   });
 
-  const [atividades, setAtividades] = useState<Atividade[]>([
-    { id: 1, nome: "Acordar e higiene pessoal", duracao: 30, horario: "06:00" },
-    { id: 2, nome: "Preparar café da manhã", duracao: 25, horario: "06:30" },
-    { id: 3, nome: "Café da manhã em família", duracao: 30, horario: "06:55" },
-  ]);
+  const [atividades, setAtividades] = useState<Atividade[]>(() => {
+    const iniciais = [
+      { id: 1, nome: "Acordar e higiene pessoal", duracao: 30 },
+      { id: 2, nome: "Preparar café da manhã", duracao: 25 },
+      { id: 3, nome: "Café da manhã em família", duracao: 30 },
+      { id: 4, nome: "Arrumar a casa", duracao: 20 },
+    ];
+    return recalculateHorarios(iniciais);
+  });
+
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(atividades);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    const reorderedWithHorarios = recalculateHorarios(items);
+    setAtividades(reorderedWithHorarios);
+  };
 
   const adicionarAtividade = () => {
     const nova: Atividade = {
@@ -39,11 +76,13 @@ export default function EscalaEditor() {
       nome: "Nova atividade",
       duracao: 20,
     };
-    setAtividades([...atividades, nova]);
+    const atualizadas = recalculateHorarios([...atividades, nova]);
+    setAtividades(atualizadas);
   };
 
   const removerAtividade = (id: number) => {
-    setAtividades(atividades.filter(a => a.id !== id));
+    const filtradas = atividades.filter(a => a.id !== id);
+    setAtividades(recalculateHorarios(filtradas));
   };
 
   const editarAtividade = (id: number) => {
@@ -58,18 +97,11 @@ export default function EscalaEditor() {
 
     const novaDuracao = parseInt(novaDuracaoStr) || 20;
 
-    setAtividades(atividades.map(a =>
+    const atualizadas = atividades.map(a =>
       a.id === id ? { ...a, nome: novoNome.trim() || a.nome, duracao: novaDuracao } : a
-    ));
-  };
+    );
 
-  const moverAtividade = (index: number, direction: 'up' | 'down') => {
-    const novoIndex = direction === 'up' ? index - 1 : index + 1;
-    if (novoIndex < 0 || novoIndex >= atividades.length) return;
-
-    const novasAtividades = [...atividades];
-    [novasAtividades[index], novasAtividades[novoIndex]] = [novasAtividades[novoIndex], novasAtividades[index]];
-    setAtividades(novasAtividades);
+    setAtividades(recalculateHorarios(atualizadas));
   };
 
   const totalMinutos = atividades.reduce((sum, a) => sum + a.duracao, 0);
@@ -95,7 +127,7 @@ export default function EscalaEditor() {
             <button className="flex items-center gap-2 px-6 py-2.5 border border-[#e8dcc6] rounded-full text-sm tracking-[2px] hover:bg-white transition">
               <Download className="w-4 h-4" /> EXPORTAR PDF
             </button>
-            <button 
+            <button
               onClick={adicionarAtividade}
               className="flex items-center gap-2 px-6 py-2.5 bg-[#2c2118] text-white rounded-full text-sm tracking-[2px] hover:bg-[#3f2a1d] transition"
             >
@@ -109,7 +141,7 @@ export default function EscalaEditor() {
         <div className="mb-8 flex items-end justify-between">
           <div>
             <h1 className="font-serif text-5xl tracking-[-2px]">Timeline da Escala</h1>
-            <p className="text-[#6f5e4f] mt-2">Arraste para reorganizar • Clique para editar</p>
+            <p className="text-[#6f5e4f] mt-2">Arraste as atividades para reorganizar • Os horários são recalculados automaticamente</p>
           </div>
           <div className="text-right">
             <div className="text-3xl font-serif tracking-tighter text-[#2c2118]">
@@ -119,13 +151,13 @@ export default function EscalaEditor() {
           </div>
         </div>
 
-        {/* Timeline */}
+        {/* Timeline com Drag & Drop */}
         <div className="border border-[#e8dcc6] bg-white rounded-3xl p-10">
           {atividades.length === 0 ? (
             <div className="text-center py-16">
               <Clock className="w-10 h-10 mx-auto text-[#b89a6f] mb-4" />
               <p className="text-[#6f5e4f]">Nenhuma atividade adicionada ainda.</p>
-              <button 
+              <button
                 onClick={adicionarAtividade}
                 className="mt-6 px-8 py-3 bg-[#2c2118] text-white rounded-full text-sm tracking-[2px]"
               >
@@ -133,56 +165,71 @@ export default function EscalaEditor() {
               </button>
             </div>
           ) : (
-            <div className="space-y-3">
-                {atividades.map((atividade, index) => (
-                <div 
-                  key={atividade.id}
-                  className="flex items-center gap-6 border border-[#e8dcc6] rounded-2xl p-6 hover:border-[#b89a6f] transition group"
-                >
-                  <div className="w-20 text-right">
-                    <div className="font-mono text-xl tracking-tighter text-[#2c2118]">
-                      {atividade.horario || '--:--'}
-                    </div>
-                  </div>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="timeline">
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="space-y-3"
+                  >
+                    {atividades.map((atividade, index) => (
+                      <Draggable key={atividade.id} draggableId={atividade.id.toString()} index={index}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className={`flex items-center gap-6 border border-[#e8dcc6] rounded-2xl p-6 transition-all group ${
+                              snapshot.isDragging ? 'shadow-2xl ring-2 ring-[#b89a6f]/30 bg-white' : 'hover:border-[#b89a6f]'
+                            }`}
+                          >
+                            {/* Drag Handle */}
+                            <div
+                              {...provided.dragHandleProps}
+                              className="text-[#b89a6f] cursor-grab active:cursor-grabbing"
+                            >
+                              <GripVertical className="w-5 h-5" />
+                            </div>
 
-                  <div className="flex-1">
-                    <div className="font-medium text-lg tracking-[-0.3px]">{atividade.nome}</div>
-                    <div className="text-sm text-[#8b5e3c] mt-0.5">
-                      {atividade.duracao} minutos
-                    </div>
-                  </div>
+                            {/* Horário */}
+                            <div className="w-20 text-right">
+                              <div className="font-mono text-xl tracking-tighter text-[#2c2118]">
+                                {atividade.horario}
+                              </div>
+                            </div>
 
-                  <div className="flex items-center gap-3 text-sm text-[#6f5e4f]">
-                    <button 
-                      onClick={() => moverAtividade(index, 'up')}
-                      className="px-3 py-1.5 border border-[#e8dcc6] rounded-full hover:bg-[#f9f5f0] transition"
-                      title="Mover para cima"
-                    >
-                      ↑
-                    </button>
-                    <button 
-                      onClick={() => moverAtividade(index, 'down')}
-                      className="px-3 py-1.5 border border-[#e8dcc6] rounded-full hover:bg-[#f9f5f0] transition"
-                      title="Mover para baixo"
-                    >
-                      ↓
-                    </button>
-                    <button 
-                      onClick={() => editarAtividade(atividade.id)}
-                      className="px-4 py-1.5 border border-[#e8dcc6] rounded-full hover:bg-[#f9f5f0] transition"
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      onClick={() => removerAtividade(atividade.id)}
-                      className="px-4 py-1.5 text-red-600/70 hover:text-red-600 transition"
-                    >
-                      Remover
-                    </button>
+                            {/* Conteúdo */}
+                            <div className="flex-1">
+                              <div className="font-medium text-lg tracking-[-0.3px]">{atividade.nome}</div>
+                              <div className="text-sm text-[#8b5e3c] mt-0.5">
+                                {atividade.duracao} minutos
+                              </div>
+                            </div>
+
+                            {/* Ações */}
+                            <div className="flex items-center gap-3 text-sm text-[#6f5e4f]">
+                              <button
+                                onClick={() => editarAtividade(atividade.id)}
+                                className="px-4 py-1.5 border border-[#e8dcc6] rounded-full hover:bg-[#f9f5f0] transition"
+                              >
+                                Editar
+                              </button>
+                              <button
+                                onClick={() => removerAtividade(atividade.id)}
+                                className="px-4 py-1.5 text-red-600/70 hover:text-red-600 transition"
+                              >
+                                Remover
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
-                </div>
-              ))}
-            </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           )}
         </div>
 
