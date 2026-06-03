@@ -236,7 +236,7 @@ export default function EscalaEditor() {
           ) : (
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="timeline">
-                {(provided) => (
+                {(provided: import("@hello-pangea/dnd").DroppableProvided) => (
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
@@ -246,7 +246,7 @@ export default function EscalaEditor() {
                       const config = atividade.tipo ? TIPO_CONFIG[atividade.tipo] : TIPO_CONFIG.casa;
                       return (
                         <Draggable key={atividade.id} draggableId={atividade.id.toString()} index={index}>
-                          {(provided, snapshot) => (
+                          {(provided: import("@hello-pangea/dnd").DraggableProvided, snapshot: import("@hello-pangea/dnd").DraggableStateSnapshot) => (
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}
