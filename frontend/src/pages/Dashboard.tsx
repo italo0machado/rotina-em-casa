@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Calendar } from 'lucide-react';
 
 interface Escala {
@@ -10,26 +10,71 @@ interface Escala {
   ultimaAtualizacao: string;
 }
 
+const DIAS_SEMANA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+
 export default function Dashboard() {
-  const [escalas, setEscalas] = useState<Escala[]>([
-    {
-      id: 1,
-      nome: "Rotina da Semana",
-      dias: ["Seg", "Ter", "Qua", "Qui", "Sex"],
-      totalAtividades: 12,
-      ultimaAtualizacao: "há 2 dias"
-    },
-    {
-      id: 2,
-      nome: "Escala da Clara",
-      dias: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
-      totalAtividades: 8,
-      ultimaAtualizacao: "há 1 semana"
+  const navigate = useNavigate();
+
+  const [escalas, setEscalas] = useState<Escala[]>(() => {
+    const saved = localStorage.getItem('escalas');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return [
+          {
+            id: 1,
+            nome: "Rotina da Semana",
+            dias: ["Seg", "Ter", "Qua", "Qui", "Sex"],
+            totalAtividades: 12,
+            ultimaAtualizacao: "há 2 dias"
+          },
+          {
+            id: 2,
+            nome: "Escala da Clara",
+            dias: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+            totalAtividades: 8,
+            ultimaAtualizacao: "há 1 semana"
+          }
+        ];
+      }
     }
-  ]);
+    return [
+      {
+        id: 1,
+        nome: "Rotina da Semana",
+        dias: ["Seg", "Ter", "Qua", "Qui", "Sex"],
+        totalAtividades: 12,
+        ultimaAtualizacao: "há 2 dias"
+      },
+      {
+        id: 2,
+        nome: "Escala da Clara",
+        dias: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+        totalAtividades: 8,
+        ultimaAtualizacao: "há 1 semana"
+      }
+    ];
+  });
 
   const [showModal, setShowModal] = useState(false);
   const [novoNome, setNovoNome] = useState('');
+  const [diasSelecionados, setDiasSelecionados] = useState<string[]>(['Seg', 'Ter', 'Qua', 'Qui', 'Sex']);
+
+  // Persistir no localStorage
+  useEffect(() => {
+    localStorage.setItem('escalas', JSON.stringify(escalas));
+  }, [escalas]);
+
+  const toggleDia = (dia: string) => {
+    if (diasSelecionados.includes(dia)) {
+      if (diasSelecionados.length > 1) {
+        setDiasSelecionados(diasSelecionados.filter(d => d !== dia));
+      }
+    } else {
+      setDiasSelecionados([...diasSelecionados, dia]);
+    }
+  };
 
   const criarEscala = () => {
     if (!novoNome.trim()) return;
@@ -37,17 +82,25 @@ export default function Dashboard() {
     const novaEscala: Escala = {
       id: Date.now(),
       nome: novoNome.trim(),
-      dias: ["Seg", "Ter", "Qua", "Qui", "Sex"],
+      dias: [...diasSelecionados],
       totalAtividades: 0,
       ultimaAtualizacao: "agora"
     };
 
     setEscalas([novaEscala, ...escalas]);
     setNovoNome('');
+    setDiasSelecionados(['Seg', 'Ter', 'Qua', 'Qui', 'Sex']);
     setShowModal(false);
-    
-    // TODO: Navegar para a página de edição da escala
-    // navigate(`/escala/${novaEscala.id}`);
+
+    navigate(`/escala/${novaEscala.id}`);
+  };
+
+  const excluirEscala = (id: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (confirm('Tem certeza que deseja excluir esta escala?')) {
+      setEscalas(escalas.filter(e => e.id !== id));
+    }
   };
 
   return (
@@ -81,9 +134,14 @@ export default function Dashboard() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-8 py-12">
-        <div className="mb-10">
-          <h1 className="font-serif text-6xl tracking-[-2.5px] mb-3">Suas escalas</h1>
-          <p className="text-[#6f5e4f] text-lg">Gerencie e organize as rotinas da sua casa</p>
+        <div className="mb-10 flex items-end justify-between">
+          <div>
+            <h1 className="font-serif text-6xl tracking-[-2.5px] mb-3">Suas escalas</h1>
+            <p className="text-[#6f5e4f] text-lg">Gerencie e organize as rotinas da sua casa</p>
+          </div>
+          <div className="text-sm text-[#8b5e3c] tracking-[2px]">
+            {escalas.length} ESCALAS
+          </div>
         </div>
 
         {escalas.length === 0 ? (
@@ -103,7 +161,7 @@ export default function Dashboard() {
               <Link 
                 key={escala.id}
                 to={`/escala/${escala.id}`}
-                className="group border border-[#e8dcc6] bg-white rounded-3xl p-8 hover:shadow-xl transition-all duration-300 block"
+                className="group border border-[#e8dcc6] bg-white rounded-3xl p-8 hover:shadow-xl transition-all duration-300 block relative"
               >
                 <div className="flex items-start justify-between mb-6">
                   <div>
@@ -124,6 +182,14 @@ export default function Dashboard() {
                   <Calendar className="w-4 h-4" />
                   <span>{escala.dias.join(" • ")}</span>
                 </div>
+
+                {/* Botão de excluir */}
+                <button
+                  onClick={(e) => excluirEscala(escala.id, e)}
+                  className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-red-600/60 hover:text-red-600 text-xs px-3 py-1 border border-red-200 rounded-full transition"
+                >
+                  Excluir
+                </button>
               </Link>
             ))}
           </div>
@@ -135,18 +201,43 @@ export default function Dashboard() {
         <div className="fixed inset-0 bg-[#2c2118]/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
           <div className="bg-white w-full max-w-md rounded-3xl p-10 border border-[#e8dcc6]">
             <h2 className="font-serif text-4xl tracking-[-1.5px] mb-2">Nova escala</h2>
-            <p className="text-[#6f5e4f] mb-8">Dê um nome para sua nova rotina</p>
+            <p className="text-[#6f5e4f] mb-8">Dê um nome e escolha os dias</p>
 
-            <input
-              type="text"
-              value={novoNome}
-              onChange={(e) => setNovoNome(e.target.value)}
-              placeholder="Ex: Rotina da Semana"
-              className="w-full border border-[#d4c3a3] px-6 py-4 rounded-2xl text-lg focus:border-[#b89a6f] focus:outline-none mb-6"
-              autoFocus
-            />
+            <div className="space-y-6">
+              <div>
+                <label className="block text-xs tracking-[2px] mb-2 text-[#6f5e4f]">NOME DA ESCALA</label>
+                <input
+                  type="text"
+                  value={novoNome}
+                  onChange={(e) => setNovoNome(e.target.value)}
+                  placeholder="Ex: Rotina da Semana"
+                  className="w-full border border-[#d4c3a3] px-6 py-4 rounded-2xl text-lg focus:border-[#b89a6f] focus:outline-none"
+                  autoFocus
+                />
+              </div>
 
-            <div className="flex gap-3">
+              <div>
+                <label className="block text-xs tracking-[2px] mb-3 text-[#6f5e4f]">DIAS DA SEMANA</label>
+                <div className="flex flex-wrap gap-2">
+                  {DIAS_SEMANA.map(dia => (
+                    <button
+                      key={dia}
+                      type="button"
+                      onClick={() => toggleDia(dia)}
+                      className={`px-4 py-2 rounded-full text-sm border transition-all ${
+                        diasSelecionados.includes(dia)
+                          ? 'bg-[#2c2118] text-white border-[#2c2118]'
+                          : 'border-[#d4c3a3] hover:border-[#b89a6f]'
+                      }`}
+                    >
+                      {dia}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-8">
               <button 
                 onClick={() => setShowModal(false)}
                 className="flex-1 py-4 border border-[#d4c3a3] rounded-2xl text-sm tracking-[2px] hover:bg-[#f9f5f0] transition"

@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import Dashboard from './pages/Dashboard';
 import EscalaEditor from './pages/EscalaEditor';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
@@ -14,7 +15,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <ErrorBoundary>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
+  );
 }
 
 export default App;
