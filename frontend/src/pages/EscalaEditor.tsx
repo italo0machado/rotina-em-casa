@@ -170,18 +170,18 @@ export default function EscalaEditor() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-6 py-2.5 border border-[#e8dcc6] rounded-full text-sm tracking-[2px] hover:bg-white transition">
+            <button className="flex items-center gap-2 px-6 py-2.5 border border-[#e8dcc6] rounded-2xl text-sm tracking-[2px] hover:bg-white transition">
               <Download className="w-4 h-4" /> EXPORTAR PDF
             </button>
             <button
               onClick={adicionarAtividade}
-              className="flex items-center gap-2 px-6 py-2.5 bg-[#2c2118] text-white rounded-full text-sm tracking-[2px] hover:bg-[#3f2a1d] transition"
+              className="flex items-center gap-2 px-6 py-2.5 bg-[#2c2118] text-white rounded-2xl text-sm tracking-[2px] hover:bg-[#3f2a1d] transition"
             >
               <Plus className="w-4 h-4" /> ADICIONAR
             </button>
             <button
               onClick={surpreendaMe}
-              className="flex items-center gap-2 px-6 py-2.5 border border-[#b89a6f] text-[#b89a6f] rounded-full text-sm tracking-[2px] hover:bg-[#b89a6f] hover:text-white transition"
+              className="flex items-center gap-2 px-6 py-2.5 border border-[#b89a6f] text-[#b89a6f] rounded-2xl text-sm tracking-[2px] hover:bg-[#b89a6f] hover:text-white transition"
             >
               <Sparkles className="w-4 h-4" /> SURPREENDA-ME
             </button>
@@ -211,7 +211,7 @@ export default function EscalaEditor() {
               <span>PROGRESSO DO DIA</span>
               <span>{progresso}%</span>
             </div>
-            <div className="h-2 bg-[#e8dcc6] rounded-full overflow-hidden">
+            <div className="h-2 bg-[#e8dcc6] rounded-2xl overflow-hidden">
               <div 
                 className="h-2 bg-[#b89a6f] transition-all duration-500" 
                 style={{ width: `${progresso}%` }}
@@ -228,7 +228,7 @@ export default function EscalaEditor() {
               <p className="text-[#6f5e4f]">Nenhuma atividade adicionada ainda.</p>
               <button
                 onClick={adicionarAtividade}
-                className="mt-6 px-8 py-3 bg-[#2c2118] text-white rounded-full text-sm tracking-[2px]"
+                className="mt-6 px-8 py-3 bg-[#2c2118] text-white rounded-2xl text-sm tracking-[2px]"
               >
                 ADICIONAR PRIMEIRA ATIVIDADE
               </button>
@@ -286,7 +286,7 @@ export default function EscalaEditor() {
                               <div className="flex items-center gap-3 text-sm text-[#6f5e4f]">
                                 <button
                                   onClick={() => editarAtividade(atividade.id)}
-                                  className="px-4 py-1.5 border border-[#e8dcc6] rounded-full hover:bg-[#f9f5f0] transition"
+                                  className="px-4 py-1.5 border border-[#e8dcc6] rounded-2xl hover:bg-[#f9f5f0] transition"
                                 >
                                   Editar
                                 </button>
