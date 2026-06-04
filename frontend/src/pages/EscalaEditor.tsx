@@ -78,7 +78,7 @@ export default function EscalaEditor() {
 
   // === ESPIRAL PREMIUM ===
   const rotation = useMotionValue(0);
-  const springRotation = useSpring(rotation, { stiffness: 60, damping: 20, mass: 0.8 });
+  const springRotation = useSpring(rotation, { stiffness: 70, damping: 18, mass: 0.7 });
 
   const filteredCategorias = CATEGORIAS.filter(cat =>
     cat.toLowerCase().includes(search.toLowerCase())
@@ -120,6 +120,10 @@ export default function EscalaEditor() {
     setAtividades(recalculateHorarios(atividades.filter(a => a.id !== id)));
   };
 
+  const centralizarEspiral = () => {
+    rotation.set(0);
+  };
+
   const totalMinutos = atividades.reduce((s, a) => s + a.duracao, 0);
   const totalHoras = Math.floor(totalMinutos / 60);
   const minsRestantes = totalMinutos % 60;
@@ -130,21 +134,21 @@ export default function EscalaEditor() {
     const baseAngle = (index / total) * 360;
     const angle = baseAngle + springRotation.get();
 
-    const radius = 155;
+    const radius = 168; // Raio maior para mais espaço
     const x = Math.cos((angle * Math.PI) / 180) * radius;
     const y = Math.sin((angle * Math.PI) / 180) * radius;
 
     // Escala e opacidade baseadas no ângulo (efeito 3D)
     const normalizedAngle = ((angle % 360) + 360) % 360;
-    const scale = 0.75 + Math.sin((normalizedAngle * Math.PI) / 180) * 0.25;
-    const opacity = 0.4 + Math.sin((normalizedAngle * Math.PI) / 180) * 0.6;
+    const scale = 0.78 + Math.sin((normalizedAngle * Math.PI) / 180) * 0.22;
+    const opacity = 0.35 + Math.sin((normalizedAngle * Math.PI) / 180) * 0.65;
 
     return { x, y, scale, opacity, angle };
   };
 
   return (
     <div className="min-h-screen bg-[#f8f4eb] text-[#2c2118]">
-      {/* Navbar */}
+      {/* Navbar Premium */}
       <nav className="border-b border-[#e8dcc6] bg-[#f8f4eb]/95 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
           <div className="flex items-center gap-4">
@@ -219,9 +223,9 @@ export default function EscalaEditor() {
 
           {/* Espiral Premium */}
           <div className="lg:col-span-6 flex flex-col items-center">
-            <div className="relative w-[420px] h-[420px] flex items-center justify-center mb-6">
-              {/* Centro */}
-              <div className="absolute w-28 h-28 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-20 shadow-inner">
+            <div className="relative w-[440px] h-[440px] flex items-center justify-center mb-6">
+              {/* Centro refinado */}
+              <div className="absolute w-32 h-32 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-20 shadow-inner">
                 <div className="text-center">
                   <div className="text-xs text-[#8b5e3c] tracking-[2px]">CATEGORIA</div>
                   <div className="font-serif text-2xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
@@ -237,7 +241,7 @@ export default function EscalaEditor() {
                   <motion.button
                     key={atividade.id}
                     onClick={() => adicionarAtividade(atividade)}
-                    className="absolute flex items-center gap-3 px-6 py-3 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
+                    className="absolute flex items-center gap-3 px-7 py-3.5 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
                     style={{
                       left: '50%',
                       top: '50%',
@@ -247,8 +251,8 @@ export default function EscalaEditor() {
                       opacity: pos.opacity,
                       zIndex: Math.floor(pos.scale * 100),
                     }}
-                    whileHover={{ scale: pos.scale * 1.15, opacity: 1 }}
-                    whileTap={{ scale: pos.scale * 0.95 }}
+                    whileHover={{ scale: pos.scale * 1.12, opacity: 1 }}
+                    whileTap={{ scale: pos.scale * 0.92 }}
                   >
                     <span className="text-xl">{config.icone}</span>
                     <span className="font-medium tracking-[-0.3px] whitespace-nowrap">{atividade.nome}</span>
@@ -260,16 +264,22 @@ export default function EscalaEditor() {
             {/* Controles da Espiral */}
             <div className="flex gap-4">
               <button 
-                onClick={() => rotation.set(rotation.get() - 60)} 
+                onClick={() => rotation.set(rotation.get() - 55)} 
                 className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]"
               >
                 ← Girar
               </button>
               <button 
-                onClick={() => rotation.set(rotation.get() + 60)} 
+                onClick={() => rotation.set(rotation.get() + 55)} 
                 className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]"
               >
                 Girar →
+              </button>
+              <button 
+                onClick={centralizarEspiral} 
+                className="px-6 py-3 border border-[#b89a6f] text-[#b89a6f] rounded-2xl text-sm hover:bg-[#b89a6f] hover:text-white transition active:scale-[0.985]"
+              >
+                Centralizar
               </button>
             </div>
           </div>
