@@ -1,7 +1,7 @@
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Download, Sparkles, Search } from 'lucide-react';
 import { useState } from 'react';
-import { Reorder, motion, AnimatePresence } from 'framer-motion';
+import { Reorder, motion, useMotionValue, useSpring } from 'framer-motion';
 
 interface Atividade {
   id: number;
@@ -75,8 +75,10 @@ export default function EscalaEditor() {
 
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>('Saúde');
   const [search, setSearch] = useState('');
-  const [rotation, setRotation] = useState(0);
-  
+
+  // === ESPIRAL PREMIUM ===
+  const rotation = useMotionValue(0);
+  const springRotation = useSpring(rotation, { stiffness: 60, damping: 20, mass: 0.8 });
 
   const filteredCategorias = CATEGORIAS.filter(cat =>
     cat.toLowerCase().includes(search.toLowerCase())
@@ -99,10 +101,7 @@ export default function EscalaEditor() {
 
   const adicionarAtividade = (atividade: Atividade) => {
     const nova = { ...atividade, id: Date.now() };
-    const atualizadas = recalculateHorarios([...atividades, nova]);
-    setAtividades(atualizadas);
-
-    // Feedback visual
+    setAtividades(recalculateHorarios([...atividades, nova]));
   };
 
   const surpreendaMe = () => {
@@ -126,9 +125,26 @@ export default function EscalaEditor() {
   const minsRestantes = totalMinutos % 60;
   const progresso = Math.min(Math.round((totalMinutos / (16 * 60)) * 100), 100);
 
+  // Função para calcular posição, escala e opacidade de cada item na espiral
+  const getSpiralPosition = (index: number, total: number) => {
+    const baseAngle = (index / total) * 360;
+    const angle = baseAngle + springRotation.get();
+
+    const radius = 155;
+    const x = Math.cos((angle * Math.PI) / 180) * radius;
+    const y = Math.sin((angle * Math.PI) / 180) * radius;
+
+    // Escala e opacidade baseadas no ângulo (efeito 3D)
+    const normalizedAngle = ((angle % 360) + 360) % 360;
+    const scale = 0.75 + Math.sin((normalizedAngle * Math.PI) / 180) * 0.25;
+    const opacity = 0.4 + Math.sin((normalizedAngle * Math.PI) / 180) * 0.6;
+
+    return { x, y, scale, opacity, angle };
+  };
+
   return (
     <div className="min-h-screen bg-[#f8f4eb] text-[#2c2118]">
-      {/* Navbar Premium */}
+      {/* Navbar */}
       <nav className="border-b border-[#e8dcc6] bg-[#f8f4eb]/95 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
           <div className="flex items-center gap-4">
@@ -165,7 +181,7 @@ export default function EscalaEditor() {
           </div>
         </div>
 
-        {/* Barra de Busca */}
+        {/* Busca */}
         <div className="relative mb-8 max-w-md">
           <Search className="absolute left-5 top-4 text-[#b89a6f] w-4 h-4" />
           <input
@@ -178,7 +194,7 @@ export default function EscalaEditor() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Sidebar Categorias */}
+          {/* Categorias */}
           <div className="lg:col-span-3">
             <div className="text-xs tracking-[3px] text-[#8b5e3c] mb-4 px-1">CATEGORIAS</div>
             <div className="space-y-1">
@@ -201,50 +217,60 @@ export default function EscalaEditor() {
             </div>
           </div>
 
-          {/* Espiral Central */}
+          {/* Espiral Premium */}
           <div className="lg:col-span-6 flex flex-col items-center">
-            <div className="relative w-[380px] h-[380px] flex items-center justify-center mb-6">
-              {/* Círculo central */}
-              <div className="absolute w-24 h-24 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-10">
+            <div className="relative w-[420px] h-[420px] flex items-center justify-center mb-6">
+              {/* Centro */}
+              <div className="absolute w-28 h-28 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-20 shadow-inner">
                 <div className="text-center">
                   <div className="text-xs text-[#8b5e3c] tracking-[2px]">CATEGORIA</div>
-                  <div className="font-serif text-xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
+                  <div className="font-serif text-2xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
                 </div>
               </div>
 
-              {/* Espiral de Atividades */}
-              <AnimatePresence>
-                {filteredAtividades.map((atividade, index) => {
-                  const angle = (index / filteredAtividades.length) * 360 + rotation;
-                  const radius = 145;
-                  const x = Math.cos((angle * Math.PI) / 180) * radius;
-                  const y = Math.sin((angle * Math.PI) / 180) * radius;
+              {/* Itens da Espiral */}
+              {filteredAtividades.map((atividade, index) => {
+                const pos = getSpiralPosition(index, filteredAtividades.length);
+                const config = TIPO_CONFIG[atividade.tipo || 'Casa'];
 
-                  return (
-                    <motion.button
-                      key={atividade.id}
-                      onClick={() => adicionarAtividade(atividade)}
-                      className="absolute px-5 py-2.5 bg-white border border-[#e8dcc6] rounded-2xl text-sm hover:border-[#b89a6f] transition-all shadow-sm active:scale-95 flex items-center gap-2"
-                      style={{
-                        left: `calc(50% + ${x}px)`,
-                        top: `calc(50% + ${y}px)`,
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <span>{TIPO_CONFIG[atividade.tipo || 'Casa']?.icone}</span>
-                      <span className="font-medium tracking-[-0.3px]">{atividade.nome}</span>
-                    </motion.button>
-                  );
-                })}
-              </AnimatePresence>
+                return (
+                  <motion.button
+                    key={atividade.id}
+                    onClick={() => adicionarAtividade(atividade)}
+                    className="absolute flex items-center gap-3 px-6 py-3 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
+                    style={{
+                      left: '50%',
+                      top: '50%',
+                      x: pos.x,
+                      y: pos.y,
+                      scale: pos.scale,
+                      opacity: pos.opacity,
+                      zIndex: Math.floor(pos.scale * 100),
+                    }}
+                    whileHover={{ scale: pos.scale * 1.15, opacity: 1 }}
+                    whileTap={{ scale: pos.scale * 0.95 }}
+                  >
+                    <span className="text-xl">{config.icone}</span>
+                    <span className="font-medium tracking-[-0.3px] whitespace-nowrap">{atividade.nome}</span>
+                  </motion.button>
+                );
+              })}
             </div>
 
             {/* Controles da Espiral */}
-            <div className="flex gap-3">
-              <button onClick={() => setRotation(r => r - 45)} className="px-6 py-2 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition">← Girar</button>
-              <button onClick={() => setRotation(r => r + 45)} className="px-6 py-2 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition">Girar →</button>
+            <div className="flex gap-4">
+              <button 
+                onClick={() => rotation.set(rotation.get() - 60)} 
+                className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]"
+              >
+                ← Girar
+              </button>
+              <button 
+                onClick={() => rotation.set(rotation.get() + 60)} 
+                className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]"
+              >
+                Girar →
+              </button>
             </div>
           </div>
 
@@ -257,7 +283,11 @@ export default function EscalaEditor() {
               ) : (
                 <Reorder.Group axis="y" values={atividades} onReorder={handleReorder} className="space-y-2">
                   {atividades.map((atividade) => (
-                    <Reorder.Item key={atividade.id} value={atividade} className="flex items-center justify-between bg-[#f8f4eb] border border-[#e8dcc6] rounded-2xl px-4 py-3 text-sm group">
+                    <Reorder.Item 
+                      key={atividade.id} 
+                      value={atividade} 
+                      className="flex items-center justify-between bg-[#f8f4eb] border border-[#e8dcc6] rounded-2xl px-4 py-3 text-sm group"
+                    >
                       <div className="flex items-center gap-3">
                         <span>{TIPO_CONFIG[atividade.tipo || 'Casa']?.icone}</span>
                         <div>
@@ -274,7 +304,7 @@ export default function EscalaEditor() {
           </div>
         </div>
 
-        {/* Barra de Progresso */}
+        {/* Progresso */}
         <div className="mt-10 max-w-md mx-auto">
           <div className="flex justify-between text-xs text-[#8b5e3c] mb-2 px-1">
             <div>Progresso do dia</div>
