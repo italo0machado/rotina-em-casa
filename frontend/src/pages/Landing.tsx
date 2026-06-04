@@ -123,6 +123,12 @@ const Landing = () => {
               BENEFÍCIOS
             </button>
             <button 
+              onClick={() => window.location.href = '/escala-spiral'}
+              className="text-[#6f5e4f] hover:text-[#2c2118] transition px-5 py-2 tracking-[1px]"
+            >
+              ESPIRAL
+            </button>
+            <button 
               onClick={() => window.location.href = '/login'}
               className="px-6 py-3 border border-[#e8dcc6] rounded-2xl text-xs tracking-[2px] hover:bg-white transition"
             >
@@ -244,6 +250,46 @@ const Landing = () => {
       </section>
 
       {/* Benefícios */}
+
+      {/* Espiral Interativa - Destaque Principal */}
+      <section className="max-w-7xl mx-auto px-8 py-20 border-t border-[#e8dcc6]">
+        <div className="grid md:grid-cols-12 gap-x-12 gap-y-10 items-center">
+          <div className="md:col-span-7">
+            <div className="inline-block px-4 py-1 bg-[#f9f5f0] text-[#8b5e3c] text-xs tracking-[4px] rounded-2xl mb-6">NOVIDADE</div>
+            
+            <h3 className="font-serif text-[72px] tracking-[-3.5px] leading-[0.92] mb-8">
+              A espiral que<br />transforma rotina<br />em prazer.
+            </h3>
+            
+            <p className="text-[#6f5e4f] text-[17px] max-w-lg leading-relaxed tracking-[-0.1px] mb-10">
+              Arraste para girar. Explore 350 atividades reais. Monte sua escala com leveza e elegância. Uma experiência completamente nova de organizar o dia a dia em casa.
+            </p>
+
+            <button 
+              onClick={() => window.location.href = '/escala-spiral'}
+              className="group inline-flex items-center gap-4 border border-[#2c2118] text-[#2c2118] px-10 py-4 rounded-2xl text-sm tracking-[3px] hover:bg-[#2c2118] hover:text-white transition-all duration-300"
+            >
+              EXPERIMENTAR A ESPIRAL AGORA
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+            </button>
+          </div>
+
+          <div className="md:col-span-5">
+            <div className="bg-[#2c2118] text-[#f9f5f0] rounded-3xl p-12 text-center">
+              <div className="font-serif text-[140px] leading-none tracking-[-10px] text-[#b89a6f] mb-2">350</div>
+              <div className="text-xs tracking-[5px] mb-8 text-[#d4c3a3]">ATIVIDADES REAIS</div>
+              
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-left max-w-[260px] mx-auto">
+                <div>Saúde</div><div>Estudos</div>
+                <div>Fé</div><div>Casa</div>
+                <div>Lazer</div><div>Trabalho</div>
+                <div>Amigos</div><div>Família</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="beneficios" className="max-w-7xl mx-auto px-8 py-20">
         <div className="flex items-end justify-between mb-12">
           <div>
