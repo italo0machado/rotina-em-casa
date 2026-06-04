@@ -76,7 +76,7 @@ export default function EscalaEditor() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>('Saúde');
   const [search, setSearch] = useState('');
 
-  // === ESPIRAL PREMIUM AVANÇADA ===
+  // === ESPIRAL AVANÇADA ===
   const rotation = useMotionValue(0);
   const springRotation = useSpring(rotation, { stiffness: 60, damping: 20, mass: 0.8 });
 
@@ -129,22 +129,30 @@ export default function EscalaEditor() {
   const minsRestantes = totalMinutos % 60;
   const progresso = Math.min(Math.round((totalMinutos / (16 * 60)) * 100), 100);
 
-  // Posicionamento em espiral avançada com profundidade
-  const getSpiralPosition = (index: number, total: number) => {
-    const t = index / Math.max(total - 1, 1);
-    const baseAngle = t * 360 * 2.2; // mais voltas
+  // Função para calcular posição avançada na espiral
+  const getSpiralItemStyle = (index: number, total: number) => {
+    const baseAngle = (index / total) * 360;
     const angle = baseAngle + springRotation.get();
 
-    const radius = 95 + t * 95; // espiral expandindo
+    // Espiral mais interessante (raio aumenta levemente)
+    const radius = 155 + (index * 4);
+
     const x = Math.cos((angle * Math.PI) / 180) * radius;
     const y = Math.sin((angle * Math.PI) / 180) * radius;
 
+    // Profundidade (escala e opacidade)
     const normalized = ((angle % 360) + 360) % 360;
     const depth = Math.sin((normalized * Math.PI) / 180);
-    const scale = 0.65 + depth * 0.35;
-    const opacity = 0.25 + depth * 0.75;
+    const scale = 0.72 + depth * 0.28;
+    const opacity = 0.3 + depth * 0.7;
 
-    return { x, y, scale, opacity };
+    return {
+      x,
+      y,
+      scale,
+      opacity,
+      zIndex: Math.floor(scale * 100),
+    };
   };
 
   return (
@@ -203,7 +211,10 @@ export default function EscalaEditor() {
               {filteredCategorias.map(cat => (
                 <button
                   key={cat}
-                  onClick={() => { setCategoriaSelecionada(cat); setSearch(''); }}
+                  onClick={() => {
+                    setCategoriaSelecionada(cat);
+                    setSearch('');
+                  }}
                   className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-left transition-all ${categoriaSelecionada === cat
                       ? 'bg-[#2c2118] text-white shadow-sm'
                       : 'hover:bg-white border border-transparent hover:border-[#e8dcc6]'
@@ -216,25 +227,27 @@ export default function EscalaEditor() {
             </div>
           </div>
 
-          {/* Espiral Avançada */}
+          {/* ESPIRAL AVANÇADA */}
           <div className="lg:col-span-6 flex flex-col items-center">
-            <div className="relative w-[480px] h-[480px] flex items-center justify-center mb-6">
-              <div className="absolute w-36 h-36 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-20 shadow-inner">
+            <div className="relative w-[460px] h-[460px] flex items-center justify-center mb-6">
+              {/* Centro */}
+              <div className="absolute w-28 h-28 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-30 shadow-inner">
                 <div className="text-center">
                   <div className="text-xs text-[#8b5e3c] tracking-[2px]">CATEGORIA</div>
                   <div className="font-serif text-2xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
                 </div>
               </div>
 
+              {/* Itens da Espiral */}
               {filteredAtividades.map((atividade, index) => {
-                const pos = getSpiralPosition(index, filteredAtividades.length);
+                const pos = getSpiralItemStyle(index, filteredAtividades.length);
                 const config = TIPO_CONFIG[atividade.tipo || 'Casa'];
 
                 return (
                   <motion.button
                     key={atividade.id}
                     onClick={() => adicionarAtividade(atividade)}
-                    className="absolute flex items-center gap-3 px-7 py-3.5 bg-white border border-[#e8dcc6] rounded-3xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
+                    className="absolute flex items-center gap-3 px-6 py-3 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
                     style={{
                       left: '50%',
                       top: '50%',
@@ -242,7 +255,7 @@ export default function EscalaEditor() {
                       y: pos.y,
                       scale: pos.scale,
                       opacity: pos.opacity,
-                      zIndex: Math.floor(pos.scale * 100),
+                      zIndex: pos.zIndex,
                     }}
                     whileHover={{ scale: pos.scale * 1.15, opacity: 1 }}
                     whileTap={{ scale: pos.scale * 0.9 }}
@@ -254,10 +267,17 @@ export default function EscalaEditor() {
               })}
             </div>
 
+            {/* Controles */}
             <div className="flex gap-4">
-              <button onClick={() => rotation.set(rotation.get() - 48)} className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]">← Girar</button>
-              <button onClick={() => rotation.set(rotation.get() + 48)} className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]">Girar →</button>
-              <button onClick={centralizarEspiral} className="px-6 py-3 border border-[#b89a6f] text-[#b89a6f] rounded-2xl text-sm hover:bg-[#b89a6f] hover:text-white transition active:scale-[0.985]">Centralizar</button>
+              <button onClick={() => rotation.set(rotation.get() - 50)} className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]">
+                ← Girar
+              </button>
+              <button onClick={() => rotation.set(rotation.get() + 50)} className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]">
+                Girar →
+              </button>
+              <button onClick={centralizarEspiral} className="px-6 py-3 border border-[#b89a6f] text-[#b89a6f] rounded-2xl text-sm hover:bg-[#b89a6f] hover:text-white transition active:scale-[0.985]">
+                Centralizar
+              </button>
             </div>
           </div>
 
