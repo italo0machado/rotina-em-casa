@@ -76,10 +76,9 @@ export default function EscalaEditor() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>('Saúde');
   const [search, setSearch] = useState('');
 
-  // === ESPIRAL COM DRAG TO ROTATE ===
+  // === ESPIRAL COM DRAG ===
   const rotation = useMotionValue(0);
-  const springRotation = useSpring(rotation, { stiffness: 80, damping: 20, mass: 0.8 });
-  const containerRef = useRef<HTMLDivElement>(null);
+  const springRotation = useSpring(rotation, { stiffness: 80, damping: 20, mass: 0.6 });
   const isDragging = useRef(false);
   const lastAngle = useRef(0);
 
@@ -103,6 +102,7 @@ export default function EscalaEditor() {
   };
 
   const adicionarAtividade = (atividade: Atividade) => {
+    if (isDragging.current) return; // evita clique durante drag
     const nova = { ...atividade, id: Date.now() };
     setAtividades(recalculateHorarios([...atividades, nova]));
   };
@@ -123,31 +123,30 @@ export default function EscalaEditor() {
     setAtividades(recalculateHorarios(atividades.filter(a => a.id !== id)));
   };
 
-  // === DRAG TO ROTATE LOGIC ===
+  // === DRAG TO ROTATE ===
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (!containerRef.current) return;
     isDragging.current = true;
-    
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-    lastAngle.current = angle;
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    lastAngle.current = Math.atan2(dy, dx) * (180 / Math.PI);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging.current || !containerRef.current) return;
+    if (!isDragging.current) return;
 
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const currentAngle = Math.atan2(dy, dx) * (180 / Math.PI);
 
-    const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-    const delta = angle - lastAngle.current;
-
+    const delta = currentAngle - lastAngle.current;
     rotation.set(rotation.get() + delta);
-    lastAngle.current = angle;
+    lastAngle.current = currentAngle;
   };
 
   const handlePointerUp = () => {
@@ -188,7 +187,7 @@ export default function EscalaEditor() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <h1 className="font-serif text-6xl tracking-[-2.5px]">Sua Escala</h1>
-            <p className="text-[#6f5e4f] mt-2 text-lg">Arraste a espiral para girar</p>
+            <p className="text-[#6f5e4f] mt-2 text-lg">Organize seu dia com calma e intenção</p>
           </div>
           <div className="text-right">
             <div className="text-4xl font-serif tracking-tighter text-[#2c2118]">{totalHoras}h {minsRestantes}min</div>
@@ -231,43 +230,42 @@ export default function EscalaEditor() {
             </div>
           </div>
 
-          {/* Espiral com Drag to Rotate */}
+          {/* Espiral com Drag */}
           <div className="lg:col-span-6 flex flex-col items-center">
             <div 
-              ref={containerRef}
-              className="relative w-[460px] h-[460px] flex items-center justify-center mb-6 cursor-grab active:cursor-grabbing select-none"
+              className="relative w-[460px] h-[460px] flex items-center justify-center mb-6 select-none touch-none"
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onPointerLeave={handlePointerUp}
             >
               {/* Centro */}
-              <div className="absolute w-28 h-28 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-20 shadow-inner">
+              <div className="absolute w-36 h-36 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-20 shadow-inner">
                 <div className="text-center">
                   <div className="text-xs text-[#8b5e3c] tracking-[2px]">CATEGORIA</div>
-                  <div className="font-serif text-xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
+                  <div className="font-serif text-2xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
                 </div>
               </div>
 
               {/* Itens da Espiral */}
               {filteredAtividades.map((atividade, index) => {
-                const total = filteredAtividades.length;
-                const baseAngle = (index / total) * 360;
+                const baseAngle = (index / filteredAtividades.length) * 360;
                 const angle = baseAngle + springRotation.get();
                 const radius = 175;
-
                 const x = Math.cos((angle * Math.PI) / 180) * radius;
                 const y = Math.sin((angle * Math.PI) / 180) * radius;
 
                 const normalized = ((angle % 360) + 360) % 360;
                 const scale = 0.75 + Math.sin((normalized * Math.PI) / 180) * 0.25;
-                const opacity = 0.4 + Math.sin((normalized * Math.PI) / 180) * 0.6;
+                const opacity = 0.3 + Math.sin((normalized * Math.PI) / 180) * 0.7;
+
+                const config = TIPO_CONFIG[atividade.tipo || 'Casa'];
 
                 return (
                   <motion.button
                     key={atividade.id}
                     onClick={() => adicionarAtividade(atividade)}
-                    className="absolute flex items-center gap-3 px-6 py-3 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.97] transition-all"
+                    className="absolute flex items-center gap-3 px-7 py-3.5 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
                     style={{
                       left: '50%',
                       top: '50%',
@@ -277,15 +275,18 @@ export default function EscalaEditor() {
                       opacity,
                       zIndex: Math.floor(scale * 100),
                     }}
+                    whileHover={{ scale: scale * 1.15, opacity: 1 }}
                   >
-                    <span className="text-xl">{TIPO_CONFIG[atividade.tipo || 'Casa']?.icone}</span>
+                    <span className="text-xl">{config.icone}</span>
                     <span className="font-medium tracking-[-0.3px] whitespace-nowrap">{atividade.nome}</span>
                   </motion.button>
                 );
               })}
             </div>
 
-            <p className="text-xs text-[#8b5e3c] tracking-[2px]">ARRASTE A ESPIRAL PARA GIRAR</p>
+            <div className="text-xs text-[#8b5e3c] tracking-[2px]">
+              Arraste a área da espiral para girar
+            </div>
           </div>
 
           {/* Timeline */}
