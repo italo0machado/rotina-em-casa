@@ -76,9 +76,9 @@ export default function EscalaEditor() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>('Saúde');
   const [search, setSearch] = useState('');
 
-  // === ESPIRAL PREMIUM ===
+  // === ESPIRAL AVANÇADA ===
   const rotation = useMotionValue(0);
-  const springRotation = useSpring(rotation, { stiffness: 70, damping: 18, mass: 0.7 });
+  const springRotation = useSpring(rotation, { stiffness: 65, damping: 22, mass: 0.8 });
 
   const filteredCategorias = CATEGORIAS.filter(cat =>
     cat.toLowerCase().includes(search.toLowerCase())
@@ -129,26 +129,30 @@ export default function EscalaEditor() {
   const minsRestantes = totalMinutos % 60;
   const progresso = Math.min(Math.round((totalMinutos / (16 * 60)) * 100), 100);
 
-  // Função para calcular posição, escala e opacidade de cada item na espiral
+  // Posicionamento em espiral mais sofisticado
   const getSpiralPosition = (index: number, total: number) => {
-    const baseAngle = (index / total) * 360;
-    const angle = baseAngle + springRotation.get();
+    const angle = (index / total) * 360 + springRotation.get();
+    const t = index / (total - 1 || 1);
 
-    const radius = 168; // Raio maior para mais espaço
+    // Raio que aumenta levemente (espiral suave)
+    const radius = 125 + t * 55;
+
     const x = Math.cos((angle * Math.PI) / 180) * radius;
     const y = Math.sin((angle * Math.PI) / 180) * radius;
 
-    // Escala e opacidade baseadas no ângulo (efeito 3D)
-    const normalizedAngle = ((angle % 360) + 360) % 360;
-    const scale = 0.78 + Math.sin((normalizedAngle * Math.PI) / 180) * 0.22;
-    const opacity = 0.35 + Math.sin((normalizedAngle * Math.PI) / 180) * 0.65;
+    // Efeito de profundidade
+    const normalized = ((angle % 360) + 360) % 360;
+    const depth = Math.sin((normalized * Math.PI) / 180);
 
-    return { x, y, scale, opacity, angle };
+    const scale = 0.72 + depth * 0.28;
+    const opacity = 0.25 + depth * 0.75;
+    const zIndex = Math.floor(scale * 100);
+
+    return { x, y, scale, opacity, zIndex };
   };
 
   return (
     <div className="min-h-screen bg-[#f8f4eb] text-[#2c2118]">
-      {/* Navbar Premium */}
       <nav className="border-b border-[#e8dcc6] bg-[#f8f4eb]/95 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
           <div className="flex items-center gap-4">
@@ -173,7 +177,6 @@ export default function EscalaEditor() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-8 py-10">
-        {/* Header */}
         <div className="flex items-end justify-between mb-8">
           <div>
             <h1 className="font-serif text-6xl tracking-[-2.5px]">Sua Escala</h1>
@@ -185,7 +188,6 @@ export default function EscalaEditor() {
           </div>
         </div>
 
-        {/* Busca */}
         <div className="relative mb-8 max-w-md">
           <Search className="absolute left-5 top-4 text-[#b89a6f] w-4 h-4" />
           <input
@@ -221,11 +223,11 @@ export default function EscalaEditor() {
             </div>
           </div>
 
-          {/* Espiral Premium */}
+          {/* Espiral Avançada */}
           <div className="lg:col-span-6 flex flex-col items-center">
-            <div className="relative w-[440px] h-[440px] flex items-center justify-center mb-6">
-              {/* Centro refinado */}
-              <div className="absolute w-32 h-32 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-20 shadow-inner">
+            <div className="relative w-[460px] h-[460px] flex items-center justify-center mb-6">
+              {/* Centro */}
+              <div className="absolute w-36 h-36 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-30 shadow-inner">
                 <div className="text-center">
                   <div className="text-xs text-[#8b5e3c] tracking-[2px]">CATEGORIA</div>
                   <div className="font-serif text-2xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
@@ -241,7 +243,7 @@ export default function EscalaEditor() {
                   <motion.button
                     key={atividade.id}
                     onClick={() => adicionarAtividade(atividade)}
-                    className="absolute flex items-center gap-3 px-7 py-3.5 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
+                    className="absolute flex items-center gap-3 px-6 py-3 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
                     style={{
                       left: '50%',
                       top: '50%',
@@ -249,10 +251,10 @@ export default function EscalaEditor() {
                       y: pos.y,
                       scale: pos.scale,
                       opacity: pos.opacity,
-                      zIndex: Math.floor(pos.scale * 100),
+                      zIndex: pos.zIndex,
                     }}
-                    whileHover={{ scale: pos.scale * 1.12, opacity: 1 }}
-                    whileTap={{ scale: pos.scale * 0.92 }}
+                    whileHover={{ scale: pos.scale * 1.15, opacity: 1 }}
+                    whileTap={{ scale: pos.scale * 0.9 }}
                   >
                     <span className="text-xl">{config.icone}</span>
                     <span className="font-medium tracking-[-0.3px] whitespace-nowrap">{atividade.nome}</span>
@@ -261,26 +263,10 @@ export default function EscalaEditor() {
               })}
             </div>
 
-            {/* Controles da Espiral */}
             <div className="flex gap-4">
-              <button 
-                onClick={() => rotation.set(rotation.get() - 55)} 
-                className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]"
-              >
-                ← Girar
-              </button>
-              <button 
-                onClick={() => rotation.set(rotation.get() + 55)} 
-                className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]"
-              >
-                Girar →
-              </button>
-              <button 
-                onClick={centralizarEspiral} 
-                className="px-6 py-3 border border-[#b89a6f] text-[#b89a6f] rounded-2xl text-sm hover:bg-[#b89a6f] hover:text-white transition active:scale-[0.985]"
-              >
-                Centralizar
-              </button>
+              <button onClick={() => rotation.set(rotation.get() - 50)} className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]">← Girar</button>
+              <button onClick={() => rotation.set(rotation.get() + 50)} className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]">Girar →</button>
+              <button onClick={centralizarEspiral} className="px-6 py-3 border border-[#b89a6f] text-[#b89a6f] rounded-2xl text-sm hover:bg-[#b89a6f] hover:text-white transition active:scale-[0.985]">Centralizar</button>
             </div>
           </div>
 
@@ -293,11 +279,7 @@ export default function EscalaEditor() {
               ) : (
                 <Reorder.Group axis="y" values={atividades} onReorder={handleReorder} className="space-y-2">
                   {atividades.map((atividade) => (
-                    <Reorder.Item 
-                      key={atividade.id} 
-                      value={atividade} 
-                      className="flex items-center justify-between bg-[#f8f4eb] border border-[#e8dcc6] rounded-2xl px-4 py-3 text-sm group"
-                    >
+                    <Reorder.Item key={atividade.id} value={atividade} className="flex items-center justify-between bg-[#f8f4eb] border border-[#e8dcc6] rounded-2xl px-4 py-3 text-sm group">
                       <div className="flex items-center gap-3">
                         <span>{TIPO_CONFIG[atividade.tipo || 'Casa']?.icone}</span>
                         <div>
@@ -314,7 +296,6 @@ export default function EscalaEditor() {
           </div>
         </div>
 
-        {/* Progresso */}
         <div className="mt-10 max-w-md mx-auto">
           <div className="flex justify-between text-xs text-[#8b5e3c] mb-2 px-1">
             <div>Progresso do dia</div>
