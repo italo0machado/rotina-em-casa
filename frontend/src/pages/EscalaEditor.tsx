@@ -1,6 +1,6 @@
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Download, Sparkles, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Reorder, motion, useMotionValue, useSpring } from 'framer-motion';
 
 interface Atividade {
@@ -76,9 +76,12 @@ export default function EscalaEditor() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string>('Saúde');
   const [search, setSearch] = useState('');
 
-  // === ESPIRAL AVANÇADA ===
+  // === ESPIRAL COM DRAG TO ROTATE ===
   const rotation = useMotionValue(0);
-  const springRotation = useSpring(rotation, { stiffness: 60, damping: 20, mass: 0.8 });
+  const springRotation = useSpring(rotation, { stiffness: 80, damping: 20, mass: 0.8 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const lastAngle = useRef(0);
 
   const filteredCategorias = CATEGORIAS.filter(cat =>
     cat.toLowerCase().includes(search.toLowerCase())
@@ -120,40 +123,41 @@ export default function EscalaEditor() {
     setAtividades(recalculateHorarios(atividades.filter(a => a.id !== id)));
   };
 
-  const centralizarEspiral = () => {
-    rotation.set(0);
+  // === DRAG TO ROTATE LOGIC ===
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (!containerRef.current) return;
+    isDragging.current = true;
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+    lastAngle.current = angle;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging.current || !containerRef.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+    const delta = angle - lastAngle.current;
+
+    rotation.set(rotation.get() + delta);
+    lastAngle.current = angle;
+  };
+
+  const handlePointerUp = () => {
+    isDragging.current = false;
   };
 
   const totalMinutos = atividades.reduce((s, a) => s + a.duracao, 0);
   const totalHoras = Math.floor(totalMinutos / 60);
   const minsRestantes = totalMinutos % 60;
   const progresso = Math.min(Math.round((totalMinutos / (16 * 60)) * 100), 100);
-
-  // Função para calcular posição avançada na espiral
-  const getSpiralItemStyle = (index: number, total: number) => {
-    const baseAngle = (index / total) * 360;
-    const angle = baseAngle + springRotation.get();
-
-    // Espiral mais interessante (raio aumenta levemente)
-    const radius = 155 + (index * 4);
-
-    const x = Math.cos((angle * Math.PI) / 180) * radius;
-    const y = Math.sin((angle * Math.PI) / 180) * radius;
-
-    // Profundidade (escala e opacidade)
-    const normalized = ((angle % 360) + 360) % 360;
-    const depth = Math.sin((normalized * Math.PI) / 180);
-    const scale = 0.72 + depth * 0.28;
-    const opacity = 0.3 + depth * 0.7;
-
-    return {
-      x,
-      y,
-      scale,
-      opacity,
-      zIndex: Math.floor(scale * 100),
-    };
-  };
 
   return (
     <div className="min-h-screen bg-[#f8f4eb] text-[#2c2118]">
@@ -184,7 +188,7 @@ export default function EscalaEditor() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <h1 className="font-serif text-6xl tracking-[-2.5px]">Sua Escala</h1>
-            <p className="text-[#6f5e4f] mt-2 text-lg">Organize seu dia com calma e intenção</p>
+            <p className="text-[#6f5e4f] mt-2 text-lg">Arraste a espiral para girar</p>
           </div>
           <div className="text-right">
             <div className="text-4xl font-serif tracking-tighter text-[#2c2118]">{totalHoras}h {minsRestantes}min</div>
@@ -227,58 +231,61 @@ export default function EscalaEditor() {
             </div>
           </div>
 
-          {/* ESPIRAL AVANÇADA */}
+          {/* Espiral com Drag to Rotate */}
           <div className="lg:col-span-6 flex flex-col items-center">
-            <div className="relative w-[460px] h-[460px] flex items-center justify-center mb-6">
+            <div 
+              ref={containerRef}
+              className="relative w-[460px] h-[460px] flex items-center justify-center mb-6 cursor-grab active:cursor-grabbing select-none"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerLeave={handlePointerUp}
+            >
               {/* Centro */}
-              <div className="absolute w-28 h-28 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-30 shadow-inner">
+              <div className="absolute w-28 h-28 rounded-full bg-[#f8f4eb] border border-[#e8dcc6] flex items-center justify-center z-20 shadow-inner">
                 <div className="text-center">
                   <div className="text-xs text-[#8b5e3c] tracking-[2px]">CATEGORIA</div>
-                  <div className="font-serif text-2xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
+                  <div className="font-serif text-xl tracking-[-1px] text-[#2c2118]">{categoriaSelecionada}</div>
                 </div>
               </div>
 
               {/* Itens da Espiral */}
               {filteredAtividades.map((atividade, index) => {
-                const pos = getSpiralItemStyle(index, filteredAtividades.length);
-                const config = TIPO_CONFIG[atividade.tipo || 'Casa'];
+                const total = filteredAtividades.length;
+                const baseAngle = (index / total) * 360;
+                const angle = baseAngle + springRotation.get();
+                const radius = 175;
+
+                const x = Math.cos((angle * Math.PI) / 180) * radius;
+                const y = Math.sin((angle * Math.PI) / 180) * radius;
+
+                const normalized = ((angle % 360) + 360) % 360;
+                const scale = 0.75 + Math.sin((normalized * Math.PI) / 180) * 0.25;
+                const opacity = 0.4 + Math.sin((normalized * Math.PI) / 180) * 0.6;
 
                 return (
                   <motion.button
                     key={atividade.id}
                     onClick={() => adicionarAtividade(atividade)}
-                    className="absolute flex items-center gap-3 px-6 py-3 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.985] transition-all"
+                    className="absolute flex items-center gap-3 px-6 py-3 bg-white border border-[#e8dcc6] rounded-2xl text-sm shadow-sm hover:border-[#b89a6f] active:scale-[0.97] transition-all"
                     style={{
                       left: '50%',
                       top: '50%',
-                      x: pos.x,
-                      y: pos.y,
-                      scale: pos.scale,
-                      opacity: pos.opacity,
-                      zIndex: pos.zIndex,
+                      x,
+                      y,
+                      scale,
+                      opacity,
+                      zIndex: Math.floor(scale * 100),
                     }}
-                    whileHover={{ scale: pos.scale * 1.15, opacity: 1 }}
-                    whileTap={{ scale: pos.scale * 0.9 }}
                   >
-                    <span className="text-xl">{config.icone}</span>
+                    <span className="text-xl">{TIPO_CONFIG[atividade.tipo || 'Casa']?.icone}</span>
                     <span className="font-medium tracking-[-0.3px] whitespace-nowrap">{atividade.nome}</span>
                   </motion.button>
                 );
               })}
             </div>
 
-            {/* Controles */}
-            <div className="flex gap-4">
-              <button onClick={() => rotation.set(rotation.get() - 50)} className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]">
-                ← Girar
-              </button>
-              <button onClick={() => rotation.set(rotation.get() + 50)} className="px-8 py-3 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white transition active:scale-[0.985]">
-                Girar →
-              </button>
-              <button onClick={centralizarEspiral} className="px-6 py-3 border border-[#b89a6f] text-[#b89a6f] rounded-2xl text-sm hover:bg-[#b89a6f] hover:text-white transition active:scale-[0.985]">
-                Centralizar
-              </button>
-            </div>
+            <p className="text-xs text-[#8b5e3c] tracking-[2px]">ARRASTE A ESPIRAL PARA GIRAR</p>
           </div>
 
           {/* Timeline */}
@@ -290,7 +297,11 @@ export default function EscalaEditor() {
               ) : (
                 <Reorder.Group axis="y" values={atividades} onReorder={handleReorder} className="space-y-2">
                   {atividades.map((atividade) => (
-                    <Reorder.Item key={atividade.id} value={atividade} className="flex items-center justify-between bg-[#f8f4eb] border border-[#e8dcc6] rounded-2xl px-4 py-3 text-sm group">
+                    <Reorder.Item 
+                      key={atividade.id} 
+                      value={atividade} 
+                      className="flex items-center justify-between bg-[#f8f4eb] border border-[#e8dcc6] rounded-2xl px-4 py-3 text-sm group"
+                    >
                       <div className="flex items-center gap-3">
                         <span>{TIPO_CONFIG[atividade.tipo || 'Casa']?.icone}</span>
                         <div>
