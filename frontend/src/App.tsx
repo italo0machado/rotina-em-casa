@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import Dashboard from './pages/Dashboard';
 import EscalaEditor from './pages/EscalaEditor';
+import EscalaSpiral from './pages/EscalaSpiral';
 import ErrorBoundary from './components/ErrorBoundary';
 
 const router = createBrowserRouter([
@@ -11,6 +12,7 @@ const router = createBrowserRouter([
   { path: '/login', element: <Login /> },
   { path: '/cadastro', element: <Cadastro /> },
   { path: '/dashboard', element: <Dashboard /> },
+{ path: '/escala-spiral', element: <EscalaSpiral /> },
   { path: '/escala/:id', element: <EscalaEditor /> },
 ]);
 
