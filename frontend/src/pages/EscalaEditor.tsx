@@ -1,14 +1,14 @@
-import { useParams, Link, useLocation } from 'react-router-dom';
-import { ArrowLeft, Download, Plus, Clock, Sparkles } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, Download, Search, RotateCw } from 'lucide-react';
 import { useState } from 'react';
-import { Reorder } from 'framer-motion';
+import { Reorder, motion } from 'framer-motion';
 
 interface Atividade {
   id: number;
   nome: string;
   duracao: number;
   horario?: string;
-  tipo?: 'autocuidado' | 'casa' | 'movimento' | 'estudo' | 'familia';
+  categoria: string;
 }
 
 interface Escala {
@@ -17,211 +17,291 @@ interface Escala {
   dias: string[];
 }
 
-const TIPO_CONFIG = {
-  autocuidado: { cor: '#3b82f6', label: 'Autocuidado', icone: '🧘' },
-  casa:        { cor: '#10b981', label: 'Casa',        icone: '🏠' },
-  movimento:   { cor: '#f59e0b', label: 'Movimento',   icone: '🏃' },
-  estudo:      { cor: '#8b5cf6', label: 'Estudo',      icone: '📚' },
-  familia:     { cor: '#ec4899', label: 'Família',     icone: '👨‍👩‍👧' },
-};
-
-const sugestoes = [
-  "Alongamento matinal", "Ler 15 minutos", "Jogar com as crianças",
-  "Meditação", "Organizar a geladeira", "Caminhada rápida"
+const CATEGORIAS = [
+  { nome: 'Saúde', cor: '#3b82f6', icone: '🧘' },
+  { nome: 'Estudos', cor: '#8b5cf6', icone: '📚' },
+  { nome: 'Fé', cor: '#6366f1', icone: '🙏' },
+  { nome: 'Casa', cor: '#10b981', icone: '🏠' },
+  { nome: 'Lazer', cor: '#f59e0b', icone: '🎨' },
+  { nome: 'Trabalho', cor: '#ef4444', icone: '💼' },
+  { nome: 'Amigos', cor: '#ec4899', icone: '👥' },
+  { nome: 'Família', cor: '#14b8a6', icone: '👨‍👩‍👧' },
 ];
 
+const ATIVIDADES_POR_CATEGORIA: Record<string, Omit<Atividade, 'id' | 'horario'>[]> = {
+  Saúde: [
+    { nome: 'Academia', duracao: 60, categoria: 'Saúde' },
+    { nome: 'Alongamento matinal', duracao: 15, categoria: 'Saúde' },
+    { nome: 'Meditação', duracao: 20, categoria: 'Saúde' },
+    { nome: 'Caminhada', duracao: 30, categoria: 'Saúde' },
+  ],
+  Estudos: [
+    { nome: 'Estudar inglês', duracao: 45, categoria: 'Estudos' },
+    { nome: 'Ler 30 páginas', duracao: 40, categoria: 'Estudos' },
+    { nome: 'Revisar anotações', duracao: 25, categoria: 'Estudos' },
+  ],
+  Fé: [
+    { nome: 'Oração', duracao: 15, categoria: 'Fé' },
+    { nome: 'Leitura bíblica', duracao: 20, categoria: 'Fé' },
+  ],
+  Casa: [
+    { nome: 'Arrumar a cozinha', duracao: 20, categoria: 'Casa' },
+    { nome: 'Lavar roupa', duracao: 30, categoria: 'Casa' },
+    { nome: 'Organizar armário', duracao: 25, categoria: 'Casa' },
+  ],
+  Lazer: [
+    { nome: 'Assistir série', duracao: 60, categoria: 'Lazer' },
+    { nome: 'Jogar', duracao: 45, categoria: 'Lazer' },
+    { nome: 'Passear no parque', duracao: 40, categoria: 'Lazer' },
+  ],
+  Trabalho: [
+    { nome: 'Reunião equipe', duracao: 50, categoria: 'Trabalho' },
+    { nome: 'Responder e-mails', duracao: 30, categoria: 'Trabalho' },
+  ],
+  Amigos: [
+    { nome: 'Café com amigos', duracao: 90, categoria: 'Amigos' },
+    { nome: 'Chamada de vídeo', duracao: 30, categoria: 'Amigos' },
+  ],
+  Família: [
+    { nome: 'Jantar em família', duracao: 60, categoria: 'Família' },
+    { nome: 'Brincar com as crianças', duracao: 40, categoria: 'Família' },
+    { nome: 'Filme em casa', duracao: 120, categoria: 'Família' },
+  ],
+};
+
 function formatTime(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 }
 
-function recalculateHorarios(atividades: Atividade[], startHour = 6): Atividade[] {
-  let currentMinutes = startHour * 60;
-  return atividades.map((atividade) => {
-    const horario = formatTime(currentMinutes);
-    currentMinutes += atividade.duracao;
-    return { ...atividade, horario };
+function recalcularHorarios(lista: Atividade[]): Atividade[] {
+  let minutos = 6 * 60;
+  return lista.map((a) => {
+    const horario = formatTime(minutos);
+    minutos += a.duracao;
+    return { ...a, horario };
   });
-}
-
-function getMensagemProgresso(atividades: Atividade[]): string {
-  const total = atividades.length;
-  if (total === 0) return "Comece adicionando sua primeira atividade.";
-  if (total <= 3) return "Bom começo! Continue assim.";
-  if (total <= 6) return "Você está indo muito bem!";
-  return "Ótimo ritmo! A casa agradece.";
 }
 
 export default function EscalaEditor() {
   const { id } = useParams();
-  const location = useLocation();
-  const escalaInicial = location.state?.escala as Escala | undefined;
+  const [escala] = useState<Escala>({ id: Number(id), nome: `Escala #${id}`, dias: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'] });
 
-  const [escala] = useState<Escala>(escalaInicial || {
-    id: Number(id),
-    nome: `Escala #${id}`,
-    dias: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex']
-  });
+  const [atividades, setAtividades] = useState<Atividade[]>(() =>
+    recalcularHorarios([
+      { id: 1, nome: 'Academia', duracao: 60, categoria: 'Saúde', horario: '06:00' },
+      { id: 2, nome: 'Café da manhã', duracao: 25, categoria: 'Casa', horario: '07:00' },
+    ])
+  );
 
-  const [atividades, setAtividades] = useState<Atividade[]>(() => {
-    const iniciais: Atividade[] = [
-      { id: 1, nome: "Acordar e higiene pessoal", duracao: 30, tipo: 'autocuidado' },
-      { id: 2, nome: "Preparar café da manhã", duracao: 25, tipo: 'casa' },
-      { id: 3, nome: "Café da manhã em família", duracao: 30, tipo: 'familia' },
-      { id: 4, nome: "Arrumar a casa", duracao: 20, tipo: 'casa' },
-    ];
-    return recalculateHorarios(iniciais);
-  });
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState('Saúde');
+  const [busca, setBusca] = useState('');
+  const [rotacao, setRotacao] = useState(0);
+
+  const categoriasFiltradas = CATEGORIAS.filter((c) =>
+    c.nome.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  const atividadesDaCategoria = ATIVIDADES_POR_CATEGORIA[categoriaSelecionada] || [];
+  const atividadesFiltradas = atividadesDaCategoria.filter((a) =>
+    a.nome.toLowerCase().includes(busca.toLowerCase())
+  );
 
   const handleReorder = (novaOrdem: Atividade[]) => {
-    setAtividades(recalculateHorarios(novaOrdem));
+    setAtividades(recalcularHorarios(novaOrdem));
   };
 
-  const adicionarAtividade = () => {
+  const adicionarDaEspiral = (atividadeBase: Omit<Atividade, 'id' | 'horario'>) => {
     const nova: Atividade = {
       id: Date.now(),
-      nome: "Nova atividade",
-      duracao: 20,
-      tipo: 'casa'
+      ...atividadeBase,
     };
-    setAtividades(recalculateHorarios([...atividades, nova]));
+    setAtividades((prev) => recalcularHorarios([...prev, nova]));
   };
 
-  const surpreendaMe = () => {
-    const sugestao = sugestoes[Math.floor(Math.random() * sugestoes.length)];
-    const nova: Atividade = {
-      id: Date.now(),
-      nome: sugestao,
-      duracao: 15,
-      tipo: 'movimento'
-    };
-    setAtividades(recalculateHorarios([...atividades, nova]));
+  const girarEspiral = (direcao: number) => {
+    setRotacao((prev) => prev + direcao * 45);
   };
 
-  const removerAtividade = (id: number) => {
-    setAtividades(recalculateHorarios(atividades.filter(a => a.id !== id)));
-  };
-
-  const editarAtividade = (id: number) => {
-    const atividade = atividades.find(a => a.id === id);
-    if (!atividade) return;
-
-    const novoNome = prompt('Nome da atividade:', atividade.nome);
-    if (novoNome === null) return;
-
-    const novaDuracaoStr = prompt('Duração em minutos:', atividade.duracao.toString());
-    if (novaDuracaoStr === null) return;
-
-    const novaDuracao = parseInt(novaDuracaoStr) || 20;
-
-    const atualizadas = atividades.map(a =>
-      a.id === id ? { ...a, nome: novoNome.trim() || a.nome, duracao: novaDuracao } : a
-    );
-    setAtividades(recalculateHorarios(atualizadas));
-  };
-
-  const totalMinutos = atividades.reduce((sum, a) => sum + a.duracao, 0);
+  const totalMinutos = atividades.reduce((s, a) => s + a.duracao, 0);
   const totalHoras = Math.floor(totalMinutos / 60);
-  const minutosRestantes = totalMinutos % 60;
-  const progresso = Math.min(Math.round((totalMinutos / (16 * 60)) * 100), 100);
-  const mensagem = getMensagemProgresso(atividades);
+  const minsRestantes = totalMinutos % 60;
 
   return (
-    <div className="min-h-screen bg-[#f9f5f0] text-[#2c2118]">
-      <nav className="border-b border-[#e8dcc6] bg-[#f9f5f0]/95 backdrop-blur-md sticky top-0 z-40">
+    <div className="min-h-screen bg-[#f8f4eb] text-[#2c2118] font-light">
+      {/* Navbar Premium */}
+      <nav className="border-b border-[#e8dcc6] bg-[#f8f4eb]/95 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
           <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="flex items-center gap-2 text-[#6f5e4f] hover:text-[#2c2118] transition">
+            <Link to="/dashboard" className="flex items-center gap-2 text-[#6f5e4f] hover:text-[#2c2118]">
               <ArrowLeft className="w-4 h-4" /> Voltar
             </Link>
-            <div className="w-px h-6 bg-[#e8dcc6] mx-2" />
+            <div className="w-px h-6 bg-[#e8dcc6]" />
             <div>
               <div className="font-serif text-2xl tracking-[-1px]">{escala.nome}</div>
-              <div className="text-xs text-[#8b5e3c] tracking-[2px]">{escala.dias.join(" • ")}</div>
+              <div className="text-xs text-[#8b5e3c] tracking-[2px]">{escala.dias.join(' • ')}</div>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button className="flex items-center gap-2 px-6 py-2.5 border border-[#e8dcc6] rounded-2xl text-sm tracking-[2px] hover:bg-white transition">
-              <Download className="w-4 h-4" /> EXPORTAR PDF
-            </button>
-            <button onClick={adicionarAtividade} className="flex items-center gap-2 px-6 py-2.5 bg-[#2c2118] text-white rounded-2xl text-sm tracking-[2px] hover:bg-[#3f2a1d] transition">
-              <Plus className="w-4 h-4" /> ADICIONAR
-            </button>
-            <button onClick={surpreendaMe} className="flex items-center gap-2 px-6 py-2.5 border border-[#b89a6f] text-[#b89a6f] rounded-2xl text-sm tracking-[2px] hover:bg-[#b89a6f] hover:text-white transition">
-              <Sparkles className="w-4 h-4" /> SURPREENDA-ME
+              <Download className="w-4 h-4" /> Exportar PDF
             </button>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-5xl mx-auto px-8 py-12">
-        <div className="mb-8">
-          <div className="flex items-end justify-between mb-4">
-            <div>
-              <h1 className="font-serif text-5xl tracking-[-2px]">Timeline da Escala</h1>
-              <p className="text-[#6f5e4f] mt-2">Arraste as atividades para reorganizar • Horários são recalculados automaticamente</p>
-            </div>
-            <div className="text-right">
-              <div className="text-3xl font-serif tracking-tighter text-[#2c2118]">
-                {totalHoras}h{minutosRestantes > 0 ? ` ${minutosRestantes}min` : ''}
+      <div className="max-w-7xl mx-auto px-8 py-10">
+        {/* Header */}
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <h1 className="font-serif text-6xl tracking-[-3px]">Organize sua semana</h1>
+            <p className="text-[#6f5e4f] mt-2 text-lg">Arraste, gire e descubra o que realmente importa</p>
+          </div>
+          <div className="text-right">
+            <div className="font-serif text-5xl tracking-tighter text-[#2c2118]">{totalHoras}h {minsRestantes > 0 && `${minsRestantes}min`}</div>
+            <div className="text-xs text-[#8b5e3c] tracking-[3px] mt-1">DURAÇÃO TOTAL</div>
+          </div>
+        </div>
+
+        {/* Busca */}
+        <div className="relative mb-8 max-w-md">
+          <Search className="absolute left-5 top-4 text-[#b89a6f]" />
+          <input
+            type="text"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Busque por categoria ou atividade..."
+            className="w-full pl-12 pr-6 py-3.5 bg-white border border-[#e8dcc6] rounded-2xl text-sm focus:outline-none focus:border-[#b89a6f] placeholder:text-[#9c8a6e]"
+          />
+        </div>
+
+        <div className="grid grid-cols-12 gap-8">
+          {/* Sidebar Categorias */}
+          <div className="col-span-12 md:col-span-3">
+            <div className="sticky top-24">
+              <div className="text-xs tracking-[3px] text-[#8b5e3c] mb-4 px-1">CATEGORIAS</div>
+              <div className="space-y-1">
+                {CATEGORIAS.map((cat) => {
+                  const isActive = categoriaSelecionada === cat.nome;
+                  const isFiltered = categoriasFiltradas.some((c) => c.nome === cat.nome);
+                  if (!isFiltered && busca) return null;
+
+                  return (
+                    <button
+                      key={cat.nome}
+                      onClick={() => {
+                        setCategoriaSelecionada(cat.nome);
+                        setBusca('');
+                      }}
+                      className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all text-left ${
+                        isActive
+                          ? 'bg-[#2c2118] text-white shadow'
+                          : 'hover:bg-white border border-transparent hover:border-[#e8dcc6]'
+                      }`}
+                    >
+                      <span className="text-2xl">{cat.icone}</span>
+                      <span className="font-medium tracking-[-0.3px]">{cat.nome}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <div className="text-xs text-[#8b5e3c] tracking-[2px]">DURAÇÃO TOTAL</div>
             </div>
           </div>
 
-          {/* Barra de Progresso */}
-          <div className="flex items-center gap-4">
-            <div className="flex-1 h-2 bg-[#e8dcc6] rounded-full overflow-hidden">
-              <div className="h-full bg-[#b89a6f] transition-all" style={{ width: `${progresso}%` }} />
-            </div>
-            <div className="text-sm text-[#8b5e3c] w-12 text-right">{progresso}%</div>
-          </div>
-          <p className="text-sm text-[#6f5e4f] mt-2 italic">{mensagem}</p>
-        </div>
+          {/* Espiral Central */}
+          <div className="col-span-12 md:col-span-6 flex flex-col items-center">
+            <div className="relative w-[380px] h-[380px] flex items-center justify-center mb-6">
+              <motion.div
+                className="w-[320px] h-[320px] rounded-full border-[14px] border-[#e8dcc6] relative flex items-center justify-center"
+                animate={{ rotate: rotacao }}
+                transition={{ type: 'spring', stiffness: 60, damping: 20 }}
+              >
+                <div className="w-[220px] h-[220px] rounded-full border-[10px] border-[#d4c3a3]" />
+                <div className="w-[120px] h-[120px] rounded-full border-[8px] border-[#b89a6f]" />
+              </motion.div>
 
-        <div className="border border-[#e8dcc6] bg-white rounded-3xl p-10">
-          {atividades.length === 0 ? (
-            <div className="text-center py-16">
-              <Clock className="w-10 h-10 mx-auto text-[#b89a6f] mb-4" />
-              <p className="text-[#6f5e4f]">Nenhuma atividade adicionada ainda.</p>
+              {/* Atividades na Espiral */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                {atividadesFiltradas.map((ativ, index) => {
+                  const angle = (index * (360 / Math.max(atividadesFiltradas.length, 3))) + rotacao;
+                  return (
+                    <motion.button
+                      key={index}
+                      onClick={() => adicionarDaEspiral(ativ)}
+                      className="absolute px-5 py-2 bg-white border border-[#e8dcc6] rounded-2xl shadow-sm text-sm hover:shadow-md active:scale-95 transition"
+                      style={{
+                        transform: `rotate(${angle}deg) translateY(-130px) rotate(${-angle}deg)`,
+                      }}
+                    >
+                      {ativ.nome}
+                    </motion.button>
+                  );
+                })}
+              </div>
             </div>
-          ) : (
-            <Reorder.Group axis="y" values={atividades} onReorder={handleReorder} className="space-y-3">
-              {atividades.map((atividade) => {
-                const config = atividade.tipo ? TIPO_CONFIG[atividade.tipo] : TIPO_CONFIG.casa;
-                return (
-                  <Reorder.Item
-                    key={atividade.id}
-                    value={atividade}
-                    className="flex items-center gap-6 border border-[#e8dcc6] rounded-2xl p-6 hover:border-[#b89a6f] transition cursor-grab active:cursor-grabbing bg-white"
+
+            <div className="flex gap-3">
+              <button onClick={() => girarEspiral(-1)} className="flex items-center gap-2 px-5 py-2 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white">
+                <RotateCw className="w-4 h-4 rotate-180" /> Girar
+              </button>
+              <button onClick={() => girarEspiral(1)} className="flex items-center gap-2 px-5 py-2 border border-[#e8dcc6] rounded-2xl text-sm hover:bg-white">
+                Girar <RotateCw className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Painel Direito */}
+          <div className="col-span-12 md:col-span-3">
+            <div className="text-xs tracking-[3px] text-[#8b5e3c] mb-4">ATIVIDADES NA CATEGORIA</div>
+            <div className="space-y-2">
+              {atividadesFiltradas.length > 0 ? (
+                atividadesFiltradas.map((ativ, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => adicionarDaEspiral(ativ)}
+                    className="w-full text-left px-5 py-3 bg-white border border-[#e8dcc6] rounded-2xl hover:border-[#b89a6f] transition flex justify-between items-center text-sm"
                   >
-                    <div className="text-2xl">{config.icone}</div>
-                    <div className="w-20 text-right">
-                      <div className="font-mono text-xl tracking-tighter text-[#2c2118]">{atividade.horario}</div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-lg tracking-[-0.3px]">{atividade.nome}</div>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-sm text-[#8b5e3c]">{atividade.duracao} min</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ backgroundColor: config.cor + '20', color: config.cor }}>
-                          {config.label}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm text-[#6f5e4f]">
-                      <button onClick={() => editarAtividade(atividade.id)} className="px-4 py-1.5 border border-[#e8dcc6] rounded-xl hover:bg-[#f9f5f0] transition">Editar</button>
-                      <button onClick={() => removerAtividade(atividade.id)} className="px-4 py-1.5 text-red-600/70 hover:text-red-600 transition">Remover</button>
-                    </div>
-                  </Reorder.Item>
-                );
-              })}
-            </Reorder.Group>
-          )}
+                    <span>{ativ.nome}</span>
+                    <span className="text-[#8b5e3c]">{ativ.duracao} min</span>
+                  </button>
+                ))
+              ) : (
+                <div className="text-[#8b5e3c] text-sm px-2">Nenhuma atividade encontrada.</div>
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="mt-6 text-xs text-[#8b5e3c] tracking-[2px] text-center">
-          {atividades.length} ATIVIDADES • {escala.dias.length} DIAS
+        {/* Timeline */}
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-4 px-1">
+            <div>
+              <div className="font-serif text-3xl tracking-[-1px]">Sua Timeline</div>
+              <div className="text-sm text-[#8b5e3c]">Arraste para reorganizar</div>
+            </div>
+            <button onClick={() => setAtividades([])} className="text-xs tracking-[2px] text-red-600/70 hover:text-red-600">Limpar tudo</button>
+          </div>
+
+          <div className="border border-[#e8dcc6] bg-white rounded-3xl p-8 min-h-[220px]">
+            {atividades.length === 0 ? (
+              <div className="h-40 flex items-center justify-center text-[#8b5e3c]">Comece adicionando atividades da espiral ou categorias</div>
+            ) : (
+              <Reorder.Group axis="y" values={atividades} onReorder={handleReorder} className="space-y-3">
+                {atividades.map((atividade) => {
+                  const cat = CATEGORIAS.find((c) => c.nome === atividade.categoria);
+                  return (
+                    <Reorder.Item key={atividade.id} value={atividade} className="flex items-center gap-5 border border-[#e8dcc6] rounded-2xl px-6 py-4 bg-white cursor-grab active:cursor-grabbing">
+                      <div className="text-2xl w-8">{cat?.icone}</div>
+                      <div className="flex-1 font-medium tracking-[-0.2px]">{atividade.nome}</div>
+                      <div className="font-mono text-[#6f5e4f] w-16 text-right">{atividade.horario}</div>
+                      <div className="text-sm text-[#8b5e3c] w-20 text-right">{atividade.duracao} min</div>
+                    </Reorder.Item>
+                  );
+                })}
+              </Reorder.Group>
+            )}
+          </div>
         </div>
       </div>
     </div>
