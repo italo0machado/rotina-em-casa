@@ -39,10 +39,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#faf7f2] flex items-center justify-center px-5 md:px-6 py-10">
       <div className="w-full max-w-[380px]">
         {/* Logo */}
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center mb-10 md:mb-12">
           <Link to="/" className="flex items-center gap-3">
             <div className="w-9 h-9 bg-[#1f1810] rounded-2xl flex items-center justify-center">
               <span className="text-[#faf7f2] text-xl font-serif tracking-[-1px]">R</span>
@@ -53,7 +53,7 @@ export default function Login() {
           </Link>
         </div>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8 md:mb-10">
           <h1 className="font-serif text-5xl tracking-[-2.5px] text-[#1f1810] mb-3">
             Bem-vindo de volta
           </h1>
@@ -68,28 +68,24 @@ export default function Login() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-[#d4c3a3] bg-white px-6 py-4 rounded-2xl text-[15px] focus:border-[#b89a6f] focus:outline-none placeholder:text-[#b89a6f]/50"
-              placeholder="Email"
-              required
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border border-[#d4c3a3] bg-white px-6 py-4 rounded-2xl text-[15px] focus:border-[#b89a6f] focus:outline-none placeholder:text-[#b89a6f]/50"
+            placeholder="Email"
+            required
+          />
 
-          <div>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-[#d4c3a3] bg-white px-6 py-4 rounded-2xl text-[15px] focus:border-[#b89a6f] focus:outline-none placeholder:text-[#b89a6f]/50"
-              placeholder="Senha"
-              required
-            />
-          </div>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border border-[#d4c3a3] bg-white px-6 py-4 rounded-2xl text-[15px] focus:border-[#b89a6f] focus:outline-none placeholder:text-[#b89a6f]/50"
+            placeholder="Senha"
+            required
+          />
 
           <button
             type="submit"
