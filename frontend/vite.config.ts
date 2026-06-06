@@ -4,6 +4,12 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: ['@blossom-carousel/react', '@blossom-carousel/core']
+    include: ['@blossom-carousel/react', '@blossom-carousel/core'],
+    esbuildOptions: {
+      target: 'es2020'
+    }
+  },
+  build: {
+    target: 'es2020'
   }
 })
