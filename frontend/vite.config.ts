@@ -11,7 +11,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: []
+      external: ['@blossom-carousel/react', '@blossom-carousel/core']
     }
   }
 })
