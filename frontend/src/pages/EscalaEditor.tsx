@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
@@ -12,7 +12,6 @@ interface Atividade {
 
 const CATEGORIAS = ['Saúde', 'Estudos', 'Fé', 'Casa', 'Lazer', 'Trabalho', 'Amigos', 'Família'];
 
-const COR_CATEGORIA: Record<string, string> = {
   Saúde: '#e07a5f',
   Estudos: '#81b29a',
   Fé: '#b08968',
