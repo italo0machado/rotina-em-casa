@@ -8,5 +8,10 @@ export default defineConfig({
   },
   ssr: {
     noExternal: ['@blossom-carousel/react', '@blossom-carousel/core']
+  },
+  build: {
+    rollupOptions: {
+      external: []
+    }
   }
 })
