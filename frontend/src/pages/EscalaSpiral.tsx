@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Check, Clock } from 'lucide-react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
@@ -61,20 +61,6 @@ export default function EscalaSpiral() {
     return atividadesSelecionadas.some(a => a.id === id);
   };
 
-  // Refs para os containers de scroll
-  const categoriesRef = useRef<HTMLDivElement>(null);
-  const activitiesRef = useRef<HTMLDivElement>(null);
-
-  // Função para scroll suave programático (se necessário)
-  const scrollToCard = (ref: React.RefObject<HTMLDivElement>, index: number) => {
-    if (ref.current) {
-      const cards = ref.current.children;
-      if (cards[index]) {
-        cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-      }
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#f8f5f0] text-[#1f1810]">
       {/* Header */}
@@ -101,7 +87,6 @@ export default function EscalaSpiral() {
             </div>
 
             <div 
-              ref={categoriesRef}
               className="max-h-[620px] overflow-y-auto pr-4 custom-scroll"
               style={{ 
                 scrollSnapType: 'y mandatory',
@@ -153,7 +138,6 @@ export default function EscalaSpiral() {
             </div>
 
             <div 
-              ref={activitiesRef}
               className="max-h-[620px] overflow-y-auto pr-4 custom-scroll"
               style={{ 
                 scrollSnapType: 'y mandatory',
