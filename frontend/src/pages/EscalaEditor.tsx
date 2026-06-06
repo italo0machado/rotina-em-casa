@@ -8,19 +8,19 @@ interface AtividadeSelecionada extends AtividadeBase {
 }
 
 const CATEGORIAS = [
-  { nome: 'Saúde', cor: '#e07a5f', icon: '❤️' },
-  { nome: 'Estudos', cor: '#81b29a', icon: '📚' },
-  { nome: 'Fé', cor: '#b08968', icon: '🙏' },
-  { nome: 'Casa', cor: '#6d6875', icon: '🏠' },
-  { nome: 'Lazer', cor: '#e9c46a', icon: '🎨' },
-  { nome: 'Trabalho', cor: '#457b9d', icon: '💼' },
-  { nome: 'Amigos', cor: '#f4a261', icon: '👥' },
-  { nome: 'Família', cor: '#2a9d8f', icon: '👨‍👩‍👧' },
+  { nome: 'Saúde', cor: '#e07a5f' },
+  { nome: 'Estudos', cor: '#81b29a' },
+  { nome: 'Fé', cor: '#b08968' },
+  { nome: 'Casa', cor: '#6d6875' },
+  { nome: 'Lazer', cor: '#e9c46a' },
+  { nome: 'Trabalho', cor: '#457b9d' },
+  { nome: 'Amigos', cor: '#f4a261' },
+  { nome: 'Família', cor: '#2a9d8f' },
 ];
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-// Atualizado: 06/06 02:10
+// Atualizado: 06/06 02:50
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -93,12 +93,12 @@ export default function EscalaEditor() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* CATEGORIAS */}
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-4">
             <div className="mb-4 px-2">
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="space-y-3 max-h-[640px] overflow-y-auto pr-3 custom-scroll">
+            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-2 custom-scroll">
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = todasAtividades.filter(a => a.categoria === cat.nome).length;
@@ -108,31 +108,21 @@ export default function EscalaEditor() {
                     key={index}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left flex items-center gap-5 transition-all active:scale-[0.985]
+                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985]
                       ${isActive 
                         ? 'bg-white border-[#1f1810] shadow-xl' 
                         : 'bg-white/70 border-transparent active:bg-white'
                       }
                     `}
                   >
-                    <div 
-                      className="absolute left-0 top-0 bottom-0 w-2 rounded-l-3xl"
-                      style={{ backgroundColor: cat.cor }}
-                    />
-                    
-                    <div 
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0"
-                      style={{ backgroundColor: cat.cor + '18' }}
-                    >
-                      {cat.icon}
-                    </div>
-
-                    <div className="flex-1">
+                    <div className="flex items-center gap-4">
+                      <div 
+                        className="w-3 h-3 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: cat.cor }}
+                      />
                       <div className="font-medium text-2xl tracking-[-0.6px]">{cat.nome}</div>
-                      <div className="text-sm text-[#8b7a65] mt-0.5">{count} atividades</div>
                     </div>
-
-                    {isActive && <Check className="ml-auto" />}
+                    <div className="text-sm text-[#8b7a65] mt-1 ml-7">{count} atividades</div>
                   </button>
                 );
               })}
@@ -140,7 +130,7 @@ export default function EscalaEditor() {
           </div>
 
           {/* ATIVIDADES */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-8">
             <div className="mb-4 px-2 flex items-end justify-between">
               <div>
                 <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Atividades</div>
@@ -150,7 +140,7 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <div className="max-h-[640px] overflow-y-auto pr-3 custom-scroll space-y-4">
+            <div className="max-h-[620px] overflow-y-auto pr-2 custom-scroll space-y-4">
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -161,48 +151,45 @@ export default function EscalaEditor() {
                       key={atividade.id}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
-                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985]
+                        group relative cursor-pointer rounded-3xl border p-8 transition-all active:scale-[0.985]
                         ${selecionada 
                           ? 'bg-white border-[#1f1810] shadow-xl' 
                           : 'bg-white/70 border-transparent active:bg-white'
                         }
                       `}
                     >
-                      <div 
-                        className="w-2.5 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: cor }}
-                      />
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-3">
-                          <div 
-                            className="px-4 py-1 rounded-full text-xs font-medium"
-                            style={{ backgroundColor: cor + '15', color: cor }}
-                          >
-                            {atividade.categoria}
+                      <div className="flex items-start justify-between gap-6">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div 
+                              className="px-4 py-1 rounded-full text-xs font-medium"
+                              style={{ backgroundColor: cor + '15', color: cor }}
+                            >
+                              {atividade.categoria}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-xs text-[#8b7a65]">
+                              <Clock className="w-3.5 h-3.5" /> {atividade.duracao} min
+                            </div>
                           </div>
-                          <div className="flex items-center gap-1.5 text-xs text-[#8b7a65]">
-                            <Clock className="w-3.5 h-3.5" /> {atividade.duracao} min
+
+                          <div className="font-medium text-3xl tracking-[-0.8px] pr-4 leading-tight">
+                            {atividade.nome}
                           </div>
                         </div>
 
-                        <div className="font-medium text-2xl tracking-[-0.5px] pr-4">
-                          {atividade.nome}
+                        <div className={`
+                          mt-2 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
+                          ${selecionada 
+                            ? 'bg-[#1f1810] border-[#1f1810]' 
+                            : 'border-[#d4c9b3]'
+                          }
+                        `}>
+                          {selecionada && <Check className="w-5 h-5 text-white" />}
                         </div>
-                      </div>
-
-                      <div className={`
-                        mt-1 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
-                        ${selecionada 
-                          ? 'bg-[#1f1810] border-[#1f1810]' 
-                          : 'border-[#d4c9b3]'
-                        }
-                      `}>
-                        {selecionada && <Check className="w-5 h-5 text-white" />}
                       </div>
 
                       {selecionada && (
-                        <div className="absolute bottom-0 left-0 right-0 px-7 pb-6 pt-5 border-t border-[#f0e9dc] flex flex-wrap gap-2">
+                        <div className="mt-6 pt-6 border-t border-[#f0e9dc] flex flex-wrap gap-2">
                           {DIAS.map(dia => {
                             const diaSelecionado = atividadesSelecionadas
                               .find(a => a.id === atividade.id)
@@ -216,7 +203,7 @@ export default function EscalaEditor() {
                                   toggleDia(atividade.id, dia);
                                 }}
                                 className={`
-                                  px-5 py-1.5 text-xs rounded-2xl border font-medium transition-all active:scale-95
+                                  px-6 py-2 text-sm rounded-2xl border font-medium transition-all active:scale-95
                                   ${diaSelecionado 
                                     ? 'bg-[#1f1810] text-white border-[#1f1810]' 
                                     : 'border-[#d4c9b3] text-[#5c5245]'
