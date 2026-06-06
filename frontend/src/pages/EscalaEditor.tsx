@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
+import BlossomCarousel from '@blossom-carousel/react';
 import { atividades as todasAtividades, type AtividadeBase } from '../data/atividades';
 
 interface AtividadeSelecionada extends AtividadeBase {
@@ -20,7 +21,7 @@ const CATEGORIAS = [
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-// Atualizado: 06/06 02:50
+// Atualizado: 06/06 03:45
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -98,7 +99,11 @@ export default function EscalaEditor() {
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-2 custom-scroll">
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
+            >
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = todasAtividades.filter(a => a.categoria === cat.nome).length;
@@ -108,7 +113,7 @@ export default function EscalaEditor() {
                     key={index}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985]
+                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985] mb-3
                       ${isActive 
                         ? 'bg-white border-[#1f1810] shadow-xl' 
                         : 'bg-white/70 border-transparent active:bg-white'
@@ -126,7 +131,7 @@ export default function EscalaEditor() {
                   </button>
                 );
               })}
-            </div>
+            </BlossomCarousel>
           </div>
 
           {/* ATIVIDADES */}
@@ -140,7 +145,11 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <div className="max-h-[620px] overflow-y-auto pr-2 custom-scroll space-y-4">
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
+            >
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -151,45 +160,48 @@ export default function EscalaEditor() {
                       key={atividade.id}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
-                        group relative cursor-pointer rounded-3xl border p-8 transition-all active:scale-[0.985]
+                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985] mb-4
                         ${selecionada 
                           ? 'bg-white border-[#1f1810] shadow-xl' 
                           : 'bg-white/70 border-transparent active:bg-white'
                         }
                       `}
                     >
-                      <div className="flex items-start justify-between gap-6">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div 
-                              className="px-4 py-1 rounded-full text-xs font-medium"
-                              style={{ backgroundColor: cor + '15', color: cor }}
-                            >
-                              {atividade.categoria}
-                            </div>
-                            <div className="flex items-center gap-1.5 text-xs text-[#8b7a65]">
-                              <Clock className="w-3.5 h-3.5" /> {atividade.duracao} min
-                            </div>
-                          </div>
+                      <div 
+                        className="w-2.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: cor }}
+                      />
 
-                          <div className="font-medium text-3xl tracking-[-0.8px] pr-4 leading-tight">
-                            {atividade.nome}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div 
+                            className="px-4 py-1 rounded-full text-xs font-medium"
+                            style={{ backgroundColor: cor + '15', color: cor }}
+                          >
+                            {atividade.categoria}
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs text-[#8b7a65]">
+                            <Clock className="w-3.5 h-3.5" /> {atividade.duracao} min
                           </div>
                         </div>
 
-                        <div className={`
-                          mt-2 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
-                          ${selecionada 
-                            ? 'bg-[#1f1810] border-[#1f1810]' 
-                            : 'border-[#d4c9b3]'
-                          }
-                        `}>
-                          {selecionada && <Check className="w-5 h-5 text-white" />}
+                        <div className="font-medium text-2xl tracking-[-0.5px] pr-4">
+                          {atividade.nome}
                         </div>
                       </div>
 
+                      <div className={`
+                        mt-1 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
+                        ${selecionada 
+                          ? 'bg-[#1f1810] border-[#1f1810]' 
+                          : 'border-[#d4c9b3]'
+                        }
+                      `}>
+                        {selecionada && <Check className="w-5 h-5 text-white" />}
+                      </div>
+
                       {selecionada && (
-                        <div className="mt-6 pt-6 border-t border-[#f0e9dc] flex flex-wrap gap-2">
+                        <div className="absolute bottom-0 left-0 right-0 px-7 pb-6 pt-5 border-t border-[#f0e9dc] flex flex-wrap gap-2">
                           {DIAS.map(dia => {
                             const diaSelecionado = atividadesSelecionadas
                               .find(a => a.id === atividade.id)
@@ -203,7 +215,7 @@ export default function EscalaEditor() {
                                   toggleDia(atividade.id, dia);
                                 }}
                                 className={`
-                                  px-6 py-2 text-sm rounded-2xl border font-medium transition-all active:scale-95
+                                  px-5 py-1.5 text-xs rounded-2xl border font-medium transition-all active:scale-95
                                   ${diaSelecionado 
                                     ? 'bg-[#1f1810] text-white border-[#1f1810]' 
                                     : 'border-[#d4c9b3] text-[#5c5245]'
@@ -224,7 +236,7 @@ export default function EscalaEditor() {
                   Nenhuma atividade encontrada.
                 </div>
               )}
-            </div>
+            </BlossomCarousel>
           </div>
 
           {/* Lista de selecionadas */}

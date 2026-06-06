@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Check, Clock } from 'lucide-react';
+import BlossomCarousel from '@blossom-carousel/react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
 
@@ -24,7 +25,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 06/06 03:25
+// Atualizado: 06/06 03:40
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
@@ -79,13 +80,17 @@ export default function EscalaSpiral() {
       <div className="max-w-screen-2xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* CATEGORIAS - Esquerda */}
+          {/* CATEGORIAS - Carousel Esquerdo */}
           <div className="lg:col-span-4">
             <div className="mb-4 px-2">
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-2 custom-scroll">
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
+            >
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = atividades.filter(a => a.categoria === cat.nome).length;
@@ -95,7 +100,7 @@ export default function EscalaSpiral() {
                     key={index}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985]
+                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985] mb-3
                       ${isActive 
                         ? 'bg-white border-[#1f1810] shadow-xl' 
                         : 'bg-white/70 border-transparent active:bg-white'
@@ -113,10 +118,10 @@ export default function EscalaSpiral() {
                   </button>
                 );
               })}
-            </div>
+            </BlossomCarousel>
           </div>
 
-          {/* ATIVIDADES - Direita */}
+          {/* ATIVIDADES - Carousel Direito */}
           <div className="lg:col-span-8">
             <div className="mb-4 px-2 flex items-end justify-between">
               <div>
@@ -127,7 +132,11 @@ export default function EscalaSpiral() {
               </div>
             </div>
 
-            <div className="max-h-[620px] overflow-y-auto pr-2 custom-scroll space-y-4">
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
+            >
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -138,7 +147,7 @@ export default function EscalaSpiral() {
                       key={atividade.id}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
-                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985]
+                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985] mb-4
                         ${selecionada 
                           ? 'bg-white border-[#1f1810] shadow-xl' 
                           : 'bg-white/70 border-transparent active:bg-white'
@@ -214,7 +223,7 @@ export default function EscalaSpiral() {
                   Nenhuma atividade encontrada.
                 </div>
               )}
-            </div>
+            </BlossomCarousel>
           </div>
 
         </div>
