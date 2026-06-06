@@ -13,7 +13,7 @@ interface Atividade {
 const CATEGORIAS = ['Saúde', 'Estudos', 'Fé', 'Casa', 'Lazer', 'Trabalho', 'Amigos', 'Família'];
 
 
-// Atualizado: 05/06 21:48
+// Atualizado: 05/06 21:50
 export default function EscalaEditor() {
   const { id } = useParams();
   
