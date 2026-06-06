@@ -1,7 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
-import { BlossomCarousel } from '@blossom-carousel/react';
 import { atividades as todasAtividades, type AtividadeBase } from '../data/atividades';
 
 interface AtividadeSelecionada extends AtividadeBase {
@@ -21,7 +20,7 @@ const CATEGORIAS = [
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-// Atualizado: 06/06 06:05
+// Atualizado: 06/06 06:25
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -100,10 +99,10 @@ export default function EscalaEditor() {
               <div className="text-2xl tracking-[-0.5px]">Onde você quer focar?</div>
             </div>
 
-            <BlossomCarousel
-              orientation="vertical"
-              snap="mandatory"
-              className="max-h-[620px] pr-2"
+            <blossom-carousel 
+              orientation="vertical" 
+              snap="mandatory" 
+              class="max-h-[620px] pr-2 block"
             >
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
@@ -134,7 +133,7 @@ export default function EscalaEditor() {
                   </button>
                 );
               })}
-            </BlossomCarousel>
+            </blossom-carousel>
           </div>
 
           {/* ATIVIDADES */}
@@ -148,10 +147,10 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <BlossomCarousel
-              orientation="vertical"
-              snap="mandatory"
-              className="max-h-[620px] pr-2"
+            <blossom-carousel 
+              orientation="vertical" 
+              snap="mandatory" 
+              class="max-h-[620px] pr-2 block"
             >
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
@@ -239,7 +238,7 @@ export default function EscalaEditor() {
                   Nenhuma atividade encontrada.
                 </div>
               )}
-            </BlossomCarousel>
+            </blossom-carousel>
           </div>
 
           {/* Lista de selecionadas */}
