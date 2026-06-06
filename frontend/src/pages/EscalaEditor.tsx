@@ -1,7 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 interface Atividade {
   id: number;
@@ -10,10 +9,29 @@ interface Atividade {
   tipo?: string;
 }
 
-const CATEGORIAS = ['Saúde', 'Estudos', 'Fé', 'Casa', 'Lazer', 'Trabalho', 'Amigos', 'Família'];
+const CATEGORIAS = [
+  { nome: 'Saúde', cor: '#e07a5f', icon: '❤️' },
+  { nome: 'Estudos', cor: '#81b29a', icon: '📚' },
+  { nome: 'Fé', cor: '#b08968', icon: '🙏' },
+  { nome: 'Casa', cor: '#6d6875', icon: '🏠' },
+  { nome: 'Lazer', cor: '#e9c46a', icon: '🎨' },
+  { nome: 'Trabalho', cor: '#457b9d', icon: '💼' },
+  { nome: 'Amigos', cor: '#f4a261', icon: '👥' },
+  { nome: 'Família', cor: '#2a9d8f', icon: '👨‍👩‍👧' },
+];
 
+const TODAS_ATIVIDADES = [
+  { id: 1, nome: "Alongamento matinal", duracao: 15, tipo: 'Saúde' },
+  { id: 2, nome: "Academia", duracao: 60, tipo: 'Saúde' },
+  { id: 3, nome: "Ler 20 minutos", duracao: 20, tipo: 'Estudos' },
+  { id: 4, nome: "Oração / Meditação", duracao: 15, tipo: 'Fé' },
+  { id: 5, nome: "Arrumar o quarto", duracao: 20, tipo: 'Casa' },
+  { id: 6, nome: "Caminhada", duracao: 30, tipo: 'Lazer' },
+  { id: 7, nome: "Revisar matéria", duracao: 45, tipo: 'Estudos' },
+  { id: 8, nome: "Café com a família", duracao: 30, tipo: 'Família' },
+];
 
-// Atualizado: 05/06 21:50
+// Atualizado: 06/06 00:25
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -23,38 +41,31 @@ export default function EscalaEditor() {
     { id: 2, nome: "Café da manhã", duracao: 25, tipo: 'Casa' },
     { id: 3, nome: "Café com a família", duracao: 30, tipo: 'Família' },
   ]);
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState('Saúde');
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
 
-  // Espiral
-  const rotation = useMotionValue(0);
-  const springRotation = useSpring(rotation, { stiffness: 70, damping: 18 });
+  const totalMinutos = atividades.reduce((s, a) => s + a.duracao, 0);
 
-  const sugestoes = [
-    "Alongamento matinal", "Ler 20min", "Oração", "Arrumar quarto",
-    "Caminhada", "Revisar matéria", "Meditar", "Lavar louça"
-  ];
+  const atividadesFiltradas = TODAS_ATIVIDADES.filter(a => 
+    !categoriaSelecionada || a.tipo === categoriaSelecionada
+  );
 
-  const adicionarAtividade = (nome: string) => {
-    const nova: Atividade = {
-      id: Date.now(),
-      nome,
-      duracao: 20,
-      tipo: categoriaSelecionada
-    };
-    setAtividades([...atividades, nova]);
+  const adicionarAtividade = (atividade: Atividade) => {
+    if (!atividades.some(a => a.id === atividade.id)) {
+      setAtividades([...atividades, atividade]);
+    }
   };
 
   const removerAtividade = (id: number) => {
     setAtividades(atividades.filter(a => a.id !== id));
   };
 
-  const totalMinutos = atividades.reduce((s, a) => s + a.duracao, 0);
+  const jaAdicionada = (id: number) => atividades.some(a => a.id === id);
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] text-[#1f1810]">
+    <div className="min-h-screen bg-[#f8f5f0] text-[#1f1810]">
       {/* Header */}
-      <nav className="border-b border-[#e8dcc6] bg-[#faf7f2]/95 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
+      <nav className="border-b border-[#e8dcc6] bg-[#f8f5f0]/95 backdrop-blur sticky top-0 z-50">
+        <div className="max-w-screen-2xl mx-auto px-8 flex items-center justify-between h-20">
           <div className="flex items-center gap-4">
             <Link to="/dashboard" className="flex items-center gap-2 text-[#8b7a65] hover:text-[#1f1810]">
               <ArrowLeft size={18} /> Voltar
@@ -71,62 +82,114 @@ export default function EscalaEditor() {
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-12 gap-8">
+      <div className="max-w-screen-2xl mx-auto px-8 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Espiral */}
-          <div className="lg:col-span-7">
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <div className="text-sm tracking-[2px] text-[#8b7a65]">ESPIRAL DE ATIVIDADES</div>
-                <div className="font-serif text-3xl tracking-[-1px]">Arraste para girar</div>
-              </div>
+          {/* Carrossel Esquerdo - Categorias */}
+          <div className="lg:col-span-5">
+            <div className="mb-4 px-2">
+              <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="bg-white border border-[#e8dcc6] rounded-3xl p-8 flex justify-center">
-              <div className="relative w-[480px] h-[480px] flex items-center justify-center">
-                <motion.div
-                  drag="x"
-                  dragMomentum={false}
-                  onDrag={(_, info) => rotation.set(rotation.get() + info.delta.x * 0.9)}
-                  style={{ rotate: springRotation }}
-                  className="relative w-[400px] h-[400px] cursor-grab active:cursor-grabbing"
-                >
-                  {sugestoes.map((nome, index) => {
-                    const angle = (index / sugestoes.length) * 360;
-                    const radius = 155;
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => adicionarAtividade(nome)}
-                        className="absolute px-5 py-2 text-sm bg-white border border-[#e8dcc6] rounded-full hover:border-[#b89a6f] active:scale-95 transition-all whitespace-nowrap"
-                        style={{
-                          left: '50%',
-                          top: '50%',
-                          transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px) rotate(-${angle}deg)`
-                        }}
-                      >
-                        {nome}
-                      </button>
-                    );
-                  })}
-                </motion.div>
-              </div>
+            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-3 custom-scroll">
+              {CATEGORIAS.map((cat, index) => {
+                const isActive = categoriaSelecionada === cat.nome;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setCategoriaSelecionada(cat.nome)}
+                    className={`
+                      w-full group relative overflow-hidden rounded-3xl border p-5 text-left flex items-center gap-4 transition-all
+                      ${isActive 
+                        ? 'bg-white border-[#1f1810] shadow-lg' 
+                        : 'bg-white/70 border-transparent hover:border-[#e8dcc6] hover:bg-white'
+                      }
+                    `}
+                  >
+                    <div 
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+                      style={{ backgroundColor: cat.cor + '18' }}
+                    >
+                      {cat.icon}
+                    </div>
+                    <div>
+                      <div className="font-medium text-xl tracking-[-0.4px]">{cat.nome}</div>
+                    </div>
+                    {isActive && <Check className="ml-auto text-[#1f1810]" />}
+                  </button>
+                );
+              })}
             </div>
-            <p className="text-center text-sm text-[#8b7a65] mt-4">Clique nas atividades para adicionar</p>
           </div>
 
-          {/* Lista de Atividades */}
-          <div className="lg:col-span-5">
-            <div className="bg-white border border-[#e8dcc6] rounded-3xl p-7 sticky top-24">
-              <div className="flex items-center justify-between mb-6">
-                <div className="font-medium">Atividades da escala</div>
-                <div className="text-sm text-[#8b7a65]">{atividades.length} itens</div>
+          {/* Carrossel Direito - Atividades */}
+          <div className="lg:col-span-7">
+            <div className="mb-4 px-2 flex justify-between items-end">
+              <div>
+                <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Atividades</div>
+                <div className="text-3xl tracking-[-1px] font-medium">
+                  {categoriaSelecionada || 'Todas'}
+                </div>
+              </div>
+              {categoriaSelecionada && (
+                <button onClick={() => setCategoriaSelecionada(null)} className="text-sm text-[#8b7a65]">
+                  Limpar
+                </button>
+              )}
+            </div>
+
+            <div className="max-h-[620px] overflow-y-auto pr-3 custom-scroll space-y-3">
+              {atividadesFiltradas.map((atividade) => {
+                const adicionada = jaAdicionada(atividade.id);
+                const cor = CATEGORIAS.find(c => c.nome === atividade.tipo)?.cor || '#b89a6f';
+
+                return (
+                  <div
+                    key={atividade.id}
+                    onClick={() => !adicionada && adicionarAtividade(atividade)}
+                    className={`
+                      group flex items-center gap-5 border rounded-3xl p-6 cursor-pointer transition-all
+                      ${adicionada 
+                        ? 'bg-white border-[#1f1810] opacity-60' 
+                        : 'bg-white/70 border-transparent hover:border-[#e8dcc6] hover:bg-white'
+                      }
+                    `}
+                  >
+                    <div 
+                      className="w-2 h-12 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: cor }}
+                    />
+                    
+                    <div className="flex-1">
+                      <div className="font-medium text-xl tracking-[-0.4px]">{atividade.nome}</div>
+                      <div className="flex items-center gap-2 text-sm text-[#8b7a65] mt-1">
+                        <Clock className="w-4 h-4" /> {atividade.duracao} min
+                      </div>
+                    </div>
+
+                    <div className={`
+                      w-9 h-9 rounded-2xl border flex items-center justify-center flex-shrink-0
+                      ${adicionada ? 'bg-[#1f1810] border-[#1f1810]' : 'border-[#d4c9b3] group-hover:border-[#b89a6f]'}
+                    `}>
+                      {adicionada ? <Check className="text-white w-4 h-4" /> : <span className="text-xs">+</span>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Lista de Atividades Selecionadas */}
+          <div className="lg:col-span-12 mt-8">
+            <div className="bg-white border border-[#e8dcc6] rounded-3xl p-8">
+              <div className="flex justify-between mb-6">
+                <div className="font-medium text-xl">Atividades da escala</div>
+                <div className="text-sm text-[#8b7a65]">{atividades.length} itens • {totalMinutos} min</div>
               </div>
 
-              <div className="space-y-2 mb-8">
-                {atividades.length > 0 ? (
-                  atividades.map((atividade) => (
+              {atividades.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {atividades.map((atividade) => (
                     <div key={atividade.id} className="flex items-center justify-between bg-[#faf7f2] px-5 py-4 rounded-2xl">
                       <div>
                         <div>{atividade.nome}</div>
@@ -136,29 +199,11 @@ export default function EscalaEditor() {
                         <Trash2 size={16} />
                       </button>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8 text-[#8b7a65]">Nenhuma atividade adicionada</div>
-                )}
-              </div>
-
-              {/* Categorias */}
-              <div className="text-xs tracking-[2px] text-[#8b7a65] mb-3">CATEGORIAS</div>
-              <div className="flex flex-wrap gap-2">
-                {CATEGORIAS.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setCategoriaSelecionada(cat)}
-                    className={`px-4 py-1.5 text-sm rounded-full border transition-all ${
-                      categoriaSelecionada === cat 
-                        ? 'bg-[#1f1810] text-white border-[#1f1810]' 
-                        : 'border-[#e8dcc6] hover:border-[#b89a6f]'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-[#8b7a65]">Nenhuma atividade adicionada ainda</div>
+              )}
             </div>
           </div>
 
