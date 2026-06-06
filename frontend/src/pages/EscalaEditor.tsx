@@ -23,7 +23,7 @@ const COR_CATEGORIA: Record<string, string> = {
   Família: '#2a9d8f',
 };
 
-// Atualizado: 05/06 21:47
+// Atualizado: 05/06 21:48
 export default function EscalaEditor() {
   const { id } = useParams();
   
