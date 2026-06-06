@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
-import BlossomCarousel from '@blossom-carousel/react';
+import { BlossomCarousel } from '@blossom-carousel/react';
 import { atividades as todasAtividades, type AtividadeBase } from '../data/atividades';
 
 interface AtividadeSelecionada extends AtividadeBase {

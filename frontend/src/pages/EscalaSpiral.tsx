@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import BlossomCarousel from '@blossom-carousel/react';
+import { BlossomCarousel } from '@blossom-carousel/react';
 import { Check, Clock } from 'lucide-react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
