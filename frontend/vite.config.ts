@@ -6,9 +6,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@blossom-carousel/react', '@blossom-carousel/core']
   },
-  build: {
-    rollupOptions: {
-      external: []
-    }
+  ssr: {
+    noExternal: ['@blossom-carousel/react', '@blossom-carousel/core']
   }
 })
