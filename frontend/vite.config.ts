@@ -7,9 +7,9 @@ export default defineConfig({
     include: ['@blossom-carousel/react', '@blossom-carousel/core']
   },
   build: {
-    rolldownOptions: {
-      resolve: {
-        conditionNames: ['import', 'module', 'browser', 'default']
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
       }
     }
   }
