@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Check, Clock } from 'lucide-react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
@@ -18,9 +19,12 @@ const CATEGORIAS = [
 ];
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-const getCorCategoria = (categoria: string) => CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 
-// Atualizado: 06/06 03:10
+const getCorCategoria = (categoria: string) => {
+  return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
+};
+
+// Atualizado: 06/06 03:20
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
@@ -75,13 +79,13 @@ export default function EscalaSpiral() {
       <div className="max-w-screen-2xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* CATEGORIAS - Carousel Esquerdo */}
+          {/* CATEGORIAS - Esquerda */}
           <div className="lg:col-span-4">
             <div className="mb-4 px-2">
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="max-h-[620px] overflow-y-auto pr-2 custom-scroll space-y-3">
+            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-2 custom-scroll">
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = atividades.filter(a => a.categoria === cat.nome).length;
@@ -112,7 +116,7 @@ export default function EscalaSpiral() {
             </div>
           </div>
 
-          {/* ATIVIDADES - Carousel Direito */}
+          {/* ATIVIDADES - Direita */}
           <div className="lg:col-span-8">
             <div className="mb-4 px-2 flex items-end justify-between">
               <div>
@@ -127,7 +131,7 @@ export default function EscalaSpiral() {
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
-                  const cor = CATEGORIAS.find(c => c.nome === atividade.categoria)?.cor || '#b89a6f';
+                  const cor = getCorCategoria(atividade.categoria);
 
                   return (
                     <div
