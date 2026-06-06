@@ -1,3 +1,4 @@
+import { Check, Clock } from 'lucide-react';
 import { useState } from 'react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
@@ -18,6 +19,9 @@ const CATEGORIAS = [
 ];
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+const getCorCategoria = (categoria: string) => {
+  return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
+};
 
 // Atualizado: 06/06 02:45
 export default function EscalaSpiral() {
