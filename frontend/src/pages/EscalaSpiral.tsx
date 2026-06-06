@@ -187,7 +187,6 @@ export default function EscalaSpiral() {
                             {atividade.nome}
                           </div>
                           
-                          )}
                         </div>
 
                         <div className={`
