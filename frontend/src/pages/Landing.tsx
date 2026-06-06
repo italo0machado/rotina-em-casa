@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 
-// Atualizado: 06/06 04:10
+// Atualizado: 06/06 04:30
 const Landing = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -46,10 +46,10 @@ const Landing = () => {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-8 pt-20 pb-24 text-center">
+      <section className="max-w-5xl mx-auto px-8 pt-24 pb-20 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white border border-[#e8dcc6] mb-8 text-xs tracking-[1.5px]">
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-          MAIS DE 2.400 FAMÍLIAS ORGANIZADAS
+          MAIS DE 2.400 FAMÍLIAS JÁ ORGANIZARAM SUA ROTINA
         </div>
 
         <h1 className="font-serif text-[64px] md:text-[92px] leading-[0.92] tracking-[-5px] md:tracking-[-6.5px] mb-8">
@@ -77,23 +77,26 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Demo Preview */}
-      <section className="max-w-7xl mx-auto px-8 pb-24">
+      {/* Visual Preview */}
+      <section className="max-w-6xl mx-auto px-8 pb-24">
         <div className="text-center mb-10">
           <div className="text-sm tracking-[2px] text-[#8b7a65] mb-3">COMO FUNCIONA</div>
-          <h2 className="font-serif text-5xl tracking-[-1.5px]">Dois carousels.<br />Zero complexidade.</h2>
+          <h2 className="font-serif text-6xl tracking-[-2px]">Dois carousels.<br />Zero complexidade.</h2>
         </div>
 
-        <div className="bg-white border border-[#e8dcc6] rounded-3xl p-8 md:p-12 shadow-xl">
-          <div className="grid md:grid-cols-12 gap-8">
+        <div className="bg-white border border-[#e8dcc6] rounded-3xl p-8 md:p-14 shadow-xl">
+          <div className="grid md:grid-cols-12 gap-10">
             {/* Categorias */}
             <div className="md:col-span-5">
-              <div className="text-sm text-[#8b7a65] mb-4 px-2">CATEGORIAS</div>
+              <div className="text-sm text-[#8b7a65] mb-4 px-2 tracking-[0.5px]">CATEGORIAS</div>
               <div className="space-y-3">
-                {['Saúde', 'Estudos', 'Fé', 'Casa', 'Lazer'].map((cat, i) => (
-                  <div key={i} className={`flex items-center gap-4 px-6 py-5 rounded-2xl border ${i === 0 ? 'bg-[#1f1810] text-white border-[#1f1810]' : 'bg-white border-[#e8dcc6]'}`}>
+                {['Saúde', 'Estudos', 'Fé', 'Casa', 'Lazer', 'Trabalho'].map((cat, i) => (
+                  <div 
+                    key={i} 
+                    className={`flex items-center gap-4 px-6 py-5 rounded-3xl border transition-all ${i === 0 ? 'bg-[#1f1810] text-white border-[#1f1810]' : 'bg-white border-[#e8dcc6]'}`}
+                  >
                     <div className="w-2.5 h-2.5 rounded-full bg-current opacity-60" />
-                    <div className="font-medium text-lg tracking-[-0.3px]">{cat}</div>
+                    <div className="font-medium text-xl tracking-[-0.3px]">{cat}</div>
                   </div>
                 ))}
               </div>
@@ -101,15 +104,22 @@ const Landing = () => {
 
             {/* Atividades */}
             <div className="md:col-span-7">
-              <div className="text-sm text-[#8b7a65] mb-4 px-2">ATIVIDADES DE SAÚDE</div>
+              <div className="text-sm text-[#8b7a65] mb-4 px-2 tracking-[0.5px]">ATIVIDADES DE SAÚDE</div>
               <div className="space-y-4">
-                {['Alongamento matinal', 'Academia', 'Caminhada leve', 'Meditação guiada'].map((act, i) => (
-                  <div key={i} className="flex items-center justify-between px-7 py-6 bg-white border border-[#e8dcc6] rounded-3xl">
+                {[
+                  { nome: 'Alongamento matinal', tempo: '15 min' },
+                  { nome: 'Academia', tempo: '60 min' },
+                  { nome: 'Caminhada leve', tempo: '30 min' },
+                  { nome: 'Meditação guiada', tempo: '20 min' }
+                ].map((act, i) => (
+                  <div key={i} className="flex items-center justify-between px-7 py-6 bg-white border border-[#e8dcc6] rounded-3xl group">
                     <div>
-                      <div className="font-medium text-xl tracking-[-0.4px]">{act}</div>
-                      <div className="text-sm text-[#8b7a65] mt-1">15–60 min</div>
+                      <div className="font-medium text-2xl tracking-[-0.4px]">{act.nome}</div>
+                      <div className="text-sm text-[#8b7a65] mt-1 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5" /> {act.tempo}
+                      </div>
                     </div>
-                    <div className="w-8 h-8 rounded-2xl border border-[#d4c9b3]" />
+                    <div className="w-8 h-8 rounded-2xl border border-[#d4c9b3] group-hover:border-[#1f1810] transition" />
                   </div>
                 ))}
               </div>
@@ -127,14 +137,14 @@ const Landing = () => {
 
         <div className="grid md:grid-cols-3 gap-6">
           {[
-            { num: "01", title: "Escolha as categorias", desc: "Saúde, Estudos, Fé, Casa, Lazer, Trabalho, Amigos ou Família." },
-            { num: "02", title: "Selecione as atividades", desc: "Cada categoria tem dezenas de atividades prontas. Escolha as que fazem sentido para você." },
-            { num: "03", title: "Defina os dias", desc: "Marque em quais dias da semana cada atividade deve acontecer. Pronto." }
+            { num: "01", title: "Escolha as categorias", desc: "Saúde, Estudos, Fé, Casa, Lazer, Trabalho, Amigos ou Família. Escolha o que importa para você." },
+            { num: "02", title: "Selecione as atividades", desc: "Cada categoria tem dezenas de atividades prontas. Escolha as que fazem sentido para sua família." },
+            { num: "03", title: "Defina os dias", desc: "Marque em quais dias da semana cada atividade deve acontecer. Simples assim." }
           ].map((step, i) => (
-            <div key={i} className="bg-white border border-[#e8dcc6] rounded-3xl p-8">
-              <div className="text-6xl font-serif tracking-[-2px] text-[#d4c3a3] mb-6">{step.num}</div>
-              <div className="font-medium text-2xl tracking-[-0.5px] mb-3">{step.title}</div>
-              <p className="text-[#6b5c4a] leading-relaxed">{step.desc}</p>
+            <div key={i} className="bg-white border border-[#e8dcc6] rounded-3xl p-9">
+              <div className="text-6xl font-serif tracking-[-2px] text-[#d4c3a3] mb-8">{step.num}</div>
+              <div className="font-medium text-2xl tracking-[-0.5px] mb-4">{step.title}</div>
+              <p className="text-[#6b5c4a] leading-relaxed text-[15px]">{step.desc}</p>
             </div>
           ))}
         </div>
