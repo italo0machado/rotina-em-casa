@@ -27,7 +27,6 @@ const getCorCategoria = (categoria: string) => {
 
 // Atualizado: 05/06 21:20
 export default function EscalaSpiral() {
-  const [search, setSearch] = useState('');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
 
@@ -35,7 +34,7 @@ export default function EscalaSpiral() {
   const springRotation = useSpring(rotation, { stiffness: 80, damping: 20, mass: 0.7 });
 
   const atividadesFiltradas = atividades.filter((atividade) => {
-    const matchSearch = atividade.nome.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = atividade.nome.toLowerCase().includes("".toLowerCase());
     const matchCategoria = !categoriaSelecionada || atividade.categoria === categoriaSelecionada;
     return matchSearch && matchCategoria;
   });
