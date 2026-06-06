@@ -1,6 +1,4 @@
 import { Check, Clock } from 'lucide-react';
-import { useState } from 'react';
-import { Check, Clock } from 'lucide-react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
 
