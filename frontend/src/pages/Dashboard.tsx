@@ -12,7 +12,6 @@ interface Escala {
   criadaEm?: string;
 }
 
-
 const TEMAS = [
   { id: 'praia', nome: 'Praia', cor: '#e07a5f' },
   { id: 'floresta', nome: 'Floresta', cor: '#81b29a' },
@@ -20,7 +19,7 @@ const TEMAS = [
   { id: 'dinossauro', nome: 'Dinossauro', cor: '#f4a261' },
 ];
 
-// Atualizado: 05/06 21:20
+// Atualizado: 06/06 04:40
 export default function Dashboard() {
   const navigate = useNavigate();
 
@@ -104,148 +103,147 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] text-[#1f1810]">
+    <div className="min-h-screen bg-[#f8f5f0] text-[#1f1810]">
       {/* Header */}
-      <nav className="border-b border-[#e8dcc6] bg-[#faf7f2]/95 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#1f1810] rounded-2xl flex items-center justify-center">
-              <span className="text-[#faf7f2] text-xl font-serif tracking-[-1px]">R</span>
-            </div>
-            <div className="font-serif text-2xl tracking-[-1.5px]">Rotina em Casa</div>
+      <div className="border-b border-[#e8dcc6] bg-[#f8f5f0]/95 backdrop-blur sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
+          <div>
+            <div className="font-serif text-2xl tracking-[-1px]">Dashboard</div>
+            <div className="text-xs text-[#8b7a65]">Suas escalas</div>
           </div>
-
-          <button
+          <button 
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-[#1f1810] text-white px-6 py-2.5 rounded-2xl text-sm hover:bg-black transition"
+            className="flex items-center gap-2 px-6 py-2.5 bg-[#1f1810] text-white rounded-2xl text-sm hover:bg-black transition"
           >
-            <Plus size={16} /> Nova Escala
+            <Plus className="w-4 h-4" /> Nova escala
           </button>
         </div>
-      </nav>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
-        {/* Stats */}
-        <div className="flex items-center gap-8 mb-10">
-          <div>
-            <div className="text-4xl font-serif tracking-[-2px]">{escalas.length}</div>
-            <div className="text-sm text-[#8b7a65]">Escalas ativas</div>
+      <div className="max-w-7xl mx-auto px-8 py-12">
+        {escalas.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-6xl mb-6">📋</div>
+            <div className="text-2xl tracking-[-0.5px] mb-3">Nenhuma escala ainda</div>
+            <p className="text-[#6b5c4a] mb-8">Crie sua primeira escala e comece a organizar sua rotina.</p>
+            <button 
+              onClick={() => setShowModal(true)}
+              className="px-8 py-3 bg-[#1f1810] text-white rounded-2xl text-sm tracking-[1px]"
+            >
+              CRIAR PRIMEIRA ESCALA
+            </button>
           </div>
-          <div>
-            <div className="text-4xl font-serif tracking-[-2px]">
-              {escalas.reduce((sum, e) => sum + e.totalAtividades, 0)}
-            </div>
-            <div className="text-sm text-[#8b7a65]">Atividades no total</div>
-          </div>
-        </div>
-
-        {/* Lista de Escalas */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="text-sm tracking-[2px] text-[#8b7a65]">SUAS ESCALAS</div>
-          </div>
-
-          {escalas.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {escalas.map((escala) => {
-                const tema = getTemaInfo(escala.tema);
-                return (
-                  <div
-                    key={escala.id}
-                    onClick={() => navigate(`/escala/${escala.id}`)}
-                    className="group bg-white border border-[#e8dcc6] rounded-3xl p-7 hover:border-[#b89a6f] transition cursor-pointer"
-                  >
-                    <div className="flex justify-between items-start mb-6">
-                      <div 
-                        className="w-10 h-10 rounded-2xl flex items-center justify-center"
-                        style={{ backgroundColor: tema.cor + '20', color: tema.cor }}
-                      >
-                        <Calendar size={20} />
-                      </div>
-                      <button
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {escalas.map((escala) => {
+              const tema = getTemaInfo(escala.tema);
+              return (
+                <div 
+                  key={escala.id}
+                  className="group bg-white border border-[#e8dcc6] rounded-3xl p-7 hover:shadow-xl transition-all cursor-pointer"
+                  onClick={() => navigate(`/escala/${escala.id}`)}
+                >
+                  <div className="flex items-start justify-between mb-6">
+                    <div 
+                      className="w-3 h-3 rounded-full mt-2"
+                      style={{ backgroundColor: tema.cor }}
+                    />
+                    <div className="relative">
+                      <button 
                         onClick={(e) => {
                           e.stopPropagation();
                           setMenuAberto(menuAberto === escala.id ? null : escala.id);
                         }}
-                        className="text-[#8b7a65] hover:text-[#1f1810]"
+                        className="p-2 text-[#8b7a65] hover:text-[#1f1810]"
                       >
-                        <MoreVertical size={18} />
+                        <MoreVertical className="w-4 h-4" />
                       </button>
+                      {menuAberto === escala.id && (
+                        <div className="absolute right-0 mt-1 w-44 bg-white border border-[#e8dcc6] rounded-2xl shadow-lg py-2 z-50">
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); duplicarEscala(escala); }}
+                            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-[#f8f5f0]"
+                          >
+                            <Copy className="w-4 h-4" /> Duplicar
+                          </button>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); excluirEscala(escala.id); }}
+                            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
+                          >
+                            <Trash2 className="w-4 h-4" /> Excluir
+                          </button>
+                        </div>
+                      )}
                     </div>
-
-                    <div className="font-serif text-2xl tracking-[-1px] mb-1 group-hover:text-[#b89a6f] transition">
-                      {escala.nome}
-                    </div>
-                    <div className="text-sm text-[#8b7a65] mb-6">{escala.criadaEm}</div>
-
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="flex -space-x-1">
-                        {escala.dias.slice(0, 5).map((dia, i) => (
-                          <div key={i} className="w-7 h-7 rounded-full bg-[#faf7f2] border border-[#e8dcc6] flex items-center justify-center text-[10px]">
-                            {dia[0]}
-                          </div>
-                        ))}
-                      </div>
-                      <span className="text-[#8b7a65] ml-2">{escala.totalAtividades} atividades</span>
-                    </div>
-
-                    {/* Menu */}
-                    {menuAberto === escala.id && (
-                      <div className="absolute mt-2 right-6 bg-white border border-[#e8dcc6] rounded-2xl shadow-sm py-1 z-10" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => duplicarEscala(escala)} className="flex items-center gap-3 px-5 py-2.5 text-sm w-full hover:bg-[#faf7f2]">
-                          <Copy size={15} /> Duplicar
-                        </button>
-                        <button onClick={() => excluirEscala(escala.id)} className="flex items-center gap-3 px-5 py-2.5 text-sm w-full text-red-600 hover:bg-red-50">
-                          <Trash2 size={15} /> Excluir
-                        </button>
-                      </div>
-                    )}
                   </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-16 text-[#8b7a65]">
-              Você ainda não tem nenhuma escala.
-            </div>
-          )}
-        </div>
+
+                  <div className="font-medium text-2xl tracking-[-0.5px] mb-2 pr-8">{escala.nome}</div>
+                  
+                  <div className="flex items-center gap-2 text-sm text-[#8b7a65] mb-6">
+                    <Calendar className="w-4 h-4" />
+                    {escala.dias.join(' • ')}
+                  </div>
+
+                  <div className="flex items-center justify-between text-sm">
+                    <div>
+                      <span className="font-medium">{escala.totalAtividades}</span>
+                      <span className="text-[#8b7a65]"> atividades</span>
+                    </div>
+                    <div className="text-[#8b7a65]">{escala.ultimaAtualizacao}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Modal Criar Escala */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-md">
-            <h2 className="font-serif text-3xl tracking-[-1px] mb-6">Nova escala</h2>
-
-            <input
-              type="text"
-              value={novoNome}
-              onChange={(e) => setNovoNome(e.target.value)}
-              placeholder="Nome da escala"
-              className="w-full border border-[#e8dcc6] px-5 py-4 rounded-2xl text-lg mb-6 focus:outline-none focus:border-[#b89a6f]"
-            />
-
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-6">
+          <div className="bg-white rounded-3xl w-full max-w-md p-8">
+            <div className="font-medium text-2xl tracking-[-0.5px] mb-8">Nova escala</div>
+            
             <div className="mb-6">
-              <div className="text-xs tracking-[2px] mb-3 text-[#8b7a65]">TEMA</div>
+              <div className="text-sm text-[#8b7a65] mb-2">Nome da escala</div>
+              <input 
+                type="text" 
+                value={novoNome}
+                onChange={(e) => setNovoNome(e.target.value)}
+                placeholder="Ex: Rotina da Semana"
+                className="w-full border border-[#e8dcc6] rounded-2xl px-5 py-3.5 text-lg focus:outline-none focus:border-[#1f1810]"
+                autoFocus
+              />
+            </div>
+
+            <div className="mb-8">
+              <div className="text-sm text-[#8b7a65] mb-3">Tema visual</div>
               <div className="flex gap-3">
                 {TEMAS.map(tema => (
                   <button
                     key={tema.id}
                     onClick={() => setTemaSelecionado(tema.id)}
-                    className={`w-9 h-9 rounded-2xl border-2 ${temaSelecionado === tema.id ? 'border-[#1f1810]' : 'border-transparent'}`}
-                    style={{ backgroundColor: tema.cor }}
-                  />
+                    className={`flex-1 py-3 rounded-2xl border text-sm transition-all ${temaSelecionado === tema.id ? 'border-[#1f1810] bg-[#1f1810] text-white' : 'border-[#e8dcc6] hover:border-[#b89a6f]'}`}
+                  >
+                    {tema.nome}
+                  </button>
                 ))}
               </div>
             </div>
 
             <div className="flex gap-3">
-              <button onClick={() => setShowModal(false)} className="flex-1 py-3 border border-[#e8dcc6] rounded-2xl">
-                Cancelar
+              <button 
+                onClick={() => setShowModal(false)}
+                className="flex-1 py-3.5 rounded-2xl border border-[#e8dcc6] text-sm tracking-[1px]"
+              >
+                CANCELAR
               </button>
-              <button onClick={criarEscala} className="flex-1 py-3 bg-[#1f1810] text-white rounded-2xl">
-                Criar Escala
+              <button 
+                onClick={criarEscala}
+                disabled={!novoNome.trim()}
+                className="flex-1 py-3.5 rounded-2xl bg-[#1f1810] text-white text-sm tracking-[1px] disabled:opacity-50"
+              >
+                CRIAR ESCALA
               </button>
             </div>
           </div>
