@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Check, Clock } from 'lucide-react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
@@ -25,7 +24,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 06/06 01:35
+// Atualizado: 06/06 02:05
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
@@ -69,7 +68,7 @@ export default function EscalaSpiral() {
         <div className="max-w-screen-2xl mx-auto px-8 py-6 flex items-center justify-between">
           <div>
             <div className="font-serif text-3xl tracking-[-1.5px]">Escolha sua rotina</div>
-            <div className="text-sm text-[#8b7a65] mt-1">Selecione as categorias e atividades</div>
+            <div className="text-sm text-[#8b7a65] mt-1">Selecione as atividades do seu dia</div>
           </div>
           <div className="px-5 py-2 bg-white rounded-2xl border border-[#e8dcc6] text-sm">
             {atividadesSelecionadas.length} selecionadas
@@ -80,28 +79,26 @@ export default function EscalaSpiral() {
       <div className="max-w-screen-2xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* CAROUSEL ESQUERDO - CATEGORIAS */}
+          {/* CATEGORIAS - Lado Esquerdo */}
           <div className="lg:col-span-5">
             <div className="mb-4 px-2">
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="space-y-4 max-h-[660px] overflow-y-auto pr-3 custom-scroll">
+            <div className="space-y-3 max-h-[660px] overflow-y-auto pr-3 custom-scroll">
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = atividades.filter(a => a.categoria === cat.nome).length;
 
                 return (
-                  <motion.button
+                  <button
                     key={index}
-                    whileHover={{ scale: isActive ? 1.01 : 1.03 }}
-                    whileTap={{ scale: 0.985 }}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
                       w-full group relative overflow-hidden rounded-3xl border p-6 text-left flex items-center gap-5 transition-all active:scale-[0.985]
                       ${isActive 
-                        ? 'bg-white border-[#1f1810] shadow-2xl ring-1 ring-[#1f1810]/10' 
-                        : 'bg-white/80 border-transparent active:bg-white'
+                        ? 'bg-white border-[#1f1810] shadow-xl' 
+                        : 'bg-white/70 border-transparent active:bg-white'
                       }
                     `}
                   >
@@ -123,17 +120,17 @@ export default function EscalaSpiral() {
                     </div>
 
                     {isActive && (
-                      <div className="px-5 py-1.5 rounded-2xl bg-[#1f1810] text-white text-xs flex items-center gap-2">
-                        ATIVO
+                      <div className="px-5 py-1.5 rounded-2xl bg-[#1f1810] text-white text-xs">
+                        Selecionado
                       </div>
                     )}
-                  </motion.button>
+                  </button>
                 );
               })}
             </div>
           </div>
 
-          {/* CAROUSEL DIREITO - ATIVIDADES */}
+          {/* ATIVIDADES - Lado Direito */}
           <div className="lg:col-span-7">
             <div className="mb-4 px-2 flex items-end justify-between">
               <div>
@@ -151,16 +148,14 @@ export default function EscalaSpiral() {
                   const cor = getCorCategoria(atividade.categoria);
 
                   return (
-                    <motion.div
+                    <div
                       key={atividade.id}
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.985 }}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
                         group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985]
                         ${selecionada 
-                          ? 'bg-white border-[#1f1810] shadow-2xl' 
-                          : 'bg-white/75 border-transparent active:bg-white'
+                          ? 'bg-white border-[#1f1810] shadow-xl' 
+                          : 'bg-white/70 border-transparent active:bg-white'
                         }
                       `}
                     >
@@ -225,7 +220,7 @@ export default function EscalaSpiral() {
                           })}
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                   );
                 })
               ) : (

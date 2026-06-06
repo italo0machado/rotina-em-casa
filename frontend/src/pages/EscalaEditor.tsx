@@ -1,7 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { atividades as todasAtividades, type AtividadeBase } from '../data/atividades';
 
 interface AtividadeSelecionada extends AtividadeBase {
@@ -21,7 +20,7 @@ const CATEGORIAS = [
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-// Atualizado: 06/06 01:25
+// Atualizado: 06/06 02:10
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -93,36 +92,28 @@ export default function EscalaEditor() {
       <div className="max-w-screen-2xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Carrossel Esquerdo - Categorias (3D forte) */}
+          {/* CATEGORIAS */}
           <div className="lg:col-span-5">
             <div className="mb-4 px-2">
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="space-y-4 max-h-[640px] overflow-y-auto pr-3 custom-scroll" style={{ perspective: '1400px' }}>
+            <div className="space-y-3 max-h-[640px] overflow-y-auto pr-3 custom-scroll">
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = todasAtividades.filter(a => a.categoria === cat.nome).length;
 
                 return (
-                  <motion.button
+                  <button
                     key={index}
-                    whileHover={{ 
-                      rotateX: isActive ? 0 : -18, 
-                      rotateY: isActive ? 0 : 12,
-                      scale: isActive ? 1.01 : 1.04,
-                      z: 70
-                    }}
-                    transition={{ type: "spring", stiffness: 260, damping: 16 }}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left flex items-center gap-5 transition-all
+                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left flex items-center gap-5 transition-all active:scale-[0.985]
                       ${isActive 
-                        ? 'bg-white border-[#1f1810] shadow-2xl' 
-                        : 'bg-white/75 border-transparent hover:border-[#e8dcc6]'
+                        ? 'bg-white border-[#1f1810] shadow-xl' 
+                        : 'bg-white/70 border-transparent active:bg-white'
                       }
                     `}
-                    style={{ transformStyle: 'preserve-3d' }}
                   >
                     <div 
                       className="absolute left-0 top-0 bottom-0 w-2 rounded-l-3xl"
@@ -142,13 +133,13 @@ export default function EscalaEditor() {
                     </div>
 
                     {isActive && <Check className="ml-auto" />}
-                  </motion.button>
+                  </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Carrossel Direito - Atividades (3D forte) */}
+          {/* ATIVIDADES */}
           <div className="lg:col-span-7">
             <div className="mb-4 px-2 flex items-end justify-between">
               <div>
@@ -159,31 +150,23 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <div className="max-h-[640px] overflow-y-auto pr-3 custom-scroll space-y-4" style={{ perspective: '1400px' }}>
+            <div className="max-h-[640px] overflow-y-auto pr-3 custom-scroll space-y-4">
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
                   const cor = CATEGORIAS.find(c => c.nome === atividade.categoria)?.cor || '#b89a6f';
 
                   return (
-                    <motion.div
+                    <div
                       key={atividade.id}
-                      whileHover={{ 
-                        rotateX: selecionada ? 0 : -14, 
-                        rotateY: selecionada ? 0 : 9,
-                        scale: 1.02,
-                        z: 50
-                      }}
-                      transition={{ type: "spring", stiffness: 260, damping: 16 }}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
-                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all
+                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985]
                         ${selecionada 
-                          ? 'bg-white border-[#1f1810] shadow-2xl' 
-                          : 'bg-white/75 border-transparent hover:border-[#e8dcc6]'
+                          ? 'bg-white border-[#1f1810] shadow-xl' 
+                          : 'bg-white/70 border-transparent active:bg-white'
                         }
                       `}
-                      style={{ transformStyle: 'preserve-3d' }}
                     >
                       <div 
                         className="w-2.5 rounded-full flex-shrink-0"
@@ -212,7 +195,7 @@ export default function EscalaEditor() {
                         mt-1 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
                         ${selecionada 
                           ? 'bg-[#1f1810] border-[#1f1810]' 
-                          : 'border-[#d4c9b3] group-hover:border-[#b89a6f]'
+                          : 'border-[#d4c9b3]'
                         }
                       `}>
                         {selecionada && <Check className="w-5 h-5 text-white" />}
@@ -233,10 +216,10 @@ export default function EscalaEditor() {
                                   toggleDia(atividade.id, dia);
                                 }}
                                 className={`
-                                  px-5 py-1.5 text-xs rounded-2xl border font-medium transition-all
+                                  px-5 py-1.5 text-xs rounded-2xl border font-medium transition-all active:scale-95
                                   ${diaSelecionado 
                                     ? 'bg-[#1f1810] text-white border-[#1f1810]' 
-                                    : 'border-[#d4c9b3] hover:border-[#b89a6f] text-[#5c5245]'
+                                    : 'border-[#d4c9b3] text-[#5c5245]'
                                   }
                                 `}
                               >
@@ -246,7 +229,7 @@ export default function EscalaEditor() {
                           })}
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                   );
                 })
               ) : (
