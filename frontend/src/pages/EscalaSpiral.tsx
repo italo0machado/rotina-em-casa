@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import BlossomCarousel from '@blossom-carousel/react';
 import { Check, Clock } from 'lucide-react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
@@ -24,7 +25,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 06/06 05:20
+// Atualizado: 06/06 06:00
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
@@ -79,14 +80,18 @@ export default function EscalaSpiral() {
       <div className="max-w-screen-2xl mx-auto px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
-          {/* CATEGORIAS - Carousel Esquerdo */}
+          {/* CATEGORIAS - Carousel Esquerdo (menor) */}
           <div className="lg:col-span-4">
             <div className="mb-5 px-2">
               <div className="text-xs tracking-[2px] text-[#8b7a65] mb-1">CATEGORIAS</div>
-              <div className="text-2xl tracking-[-0.5px] text-[#1f1810]">Onde você quer focar?</div>
+              <div className="text-2xl tracking-[-0.5px]">Onde você quer focar?</div>
             </div>
 
-            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-2 custom-scroll">
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
+            >
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = atividades.filter(a => a.categoria === cat.nome).length;
@@ -96,7 +101,7 @@ export default function EscalaSpiral() {
                     key={index}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985]
+                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all mb-3 active:scale-[0.985]
                       ${isActive 
                         ? 'bg-white border-[#1f1810] shadow-xl ring-1 ring-[#1f1810]/5' 
                         : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
@@ -116,10 +121,10 @@ export default function EscalaSpiral() {
                   </button>
                 );
               })}
-            </div>
+            </BlossomCarousel>
           </div>
 
-          {/* ATIVIDADES - Carousel Direito */}
+          {/* ATIVIDADES - Carousel Direito (maior) */}
           <div className="lg:col-span-8">
             <div className="mb-5 px-2 flex items-end justify-between">
               <div>
@@ -130,7 +135,11 @@ export default function EscalaSpiral() {
               </div>
             </div>
 
-            <div className="max-h-[620px] overflow-y-auto pr-2 custom-scroll space-y-4">
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
+            >
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -141,7 +150,7 @@ export default function EscalaSpiral() {
                       key={atividade.id}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
-                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985]
+                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all mb-4 active:scale-[0.985]
                         ${selecionada 
                           ? 'bg-white border-[#1f1810] shadow-xl' 
                           : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
@@ -217,7 +226,7 @@ export default function EscalaSpiral() {
                   Nenhuma atividade encontrada nesta categoria.
                 </div>
               )}
-            </div>
+            </BlossomCarousel>
           </div>
 
         </div>
@@ -243,8 +252,3 @@ export default function EscalaSpiral() {
     </div>
   );
 }
-// force deploy 1780719185
-// force deploy 1780719700
-// force 1780720743
-// force 1780721259
-// force 1780754411

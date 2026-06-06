@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
+import BlossomCarousel from '@blossom-carousel/react';
 import { atividades as todasAtividades, type AtividadeBase } from '../data/atividades';
 
 interface AtividadeSelecionada extends AtividadeBase {
@@ -20,7 +21,7 @@ const CATEGORIAS = [
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-// Atualizado: 06/06 05:15
+// Atualizado: 06/06 06:05
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -99,7 +100,11 @@ export default function EscalaEditor() {
               <div className="text-2xl tracking-[-0.5px]">Onde você quer focar?</div>
             </div>
 
-            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-2 custom-scroll">
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
+            >
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = todasAtividades.filter(a => a.categoria === cat.nome).length;
@@ -109,7 +114,7 @@ export default function EscalaEditor() {
                     key={index}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985]
+                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all mb-3 active:scale-[0.985]
                       ${isActive 
                         ? 'bg-white border-[#1f1810] shadow-xl ring-1 ring-[#1f1810]/5' 
                         : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
@@ -129,7 +134,7 @@ export default function EscalaEditor() {
                   </button>
                 );
               })}
-            </div>
+            </BlossomCarousel>
           </div>
 
           {/* ATIVIDADES */}
@@ -143,7 +148,11 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <div className="max-h-[620px] overflow-y-auto pr-2 custom-scroll space-y-4">
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
+            >
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -154,7 +163,7 @@ export default function EscalaEditor() {
                       key={atividade.id}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
-                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985]
+                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all mb-4 active:scale-[0.985]
                         ${selecionada 
                           ? 'bg-white border-[#1f1810] shadow-xl' 
                           : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
@@ -230,7 +239,7 @@ export default function EscalaEditor() {
                   Nenhuma atividade encontrada.
                 </div>
               )}
-            </div>
+            </BlossomCarousel>
           </div>
 
           {/* Lista de selecionadas */}
