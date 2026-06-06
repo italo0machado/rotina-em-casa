@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Check, Clock } from 'lucide-react';
-import BlossomCarousel from '@blossom-carousel/react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
 
@@ -25,7 +24,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 06/06 03:40
+// Atualizado: 06/06 05:20
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
@@ -69,7 +68,7 @@ export default function EscalaSpiral() {
         <div className="max-w-screen-2xl mx-auto px-8 py-6 flex items-center justify-between">
           <div>
             <div className="font-serif text-3xl tracking-[-1.5px]">Escolha sua rotina</div>
-            <div className="text-sm text-[#8b7a65] mt-1">Categorias • Atividades</div>
+            <div className="text-sm text-[#8b7a65] mt-1">Categorias à esquerda • Atividades à direita</div>
           </div>
           <div className="px-5 py-2 bg-white rounded-2xl border border-[#e8dcc6] text-sm">
             {atividadesSelecionadas.length} selecionadas
@@ -77,20 +76,17 @@ export default function EscalaSpiral() {
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto px-8 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="max-w-screen-2xl mx-auto px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
           {/* CATEGORIAS - Carousel Esquerdo */}
           <div className="lg:col-span-4">
-            <div className="mb-4 px-2">
-              <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
+            <div className="mb-5 px-2">
+              <div className="text-xs tracking-[2px] text-[#8b7a65] mb-1">CATEGORIAS</div>
+              <div className="text-2xl tracking-[-0.5px] text-[#1f1810]">Onde você quer focar?</div>
             </div>
 
-            <BlossomCarousel
-              orientation="vertical"
-              snap="mandatory"
-              className="max-h-[620px] pr-2"
-            >
+            <div className="space-y-3 max-h-[620px] overflow-y-auto pr-2 custom-scroll">
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = atividades.filter(a => a.categoria === cat.nome).length;
@@ -100,43 +96,41 @@ export default function EscalaSpiral() {
                     key={index}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985] mb-3
+                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all active:scale-[0.985]
                       ${isActive 
-                        ? 'bg-white border-[#1f1810] shadow-xl' 
-                        : 'bg-white/70 border-transparent active:bg-white'
+                        ? 'bg-white border-[#1f1810] shadow-xl ring-1 ring-[#1f1810]/5' 
+                        : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
                       }
                     `}
                   >
                     <div className="flex items-center gap-4">
                       <div 
-                        className="w-3 h-3 rounded-full flex-shrink-0"
+                        className="w-3.5 h-3.5 rounded-full flex-shrink-0 ring-1 ring-black/5"
                         style={{ backgroundColor: cat.cor }}
                       />
-                      <div className="font-medium text-2xl tracking-[-0.6px]">{cat.nome}</div>
+                      <div>
+                        <div className="font-medium text-2xl tracking-[-0.6px]">{cat.nome}</div>
+                        <div className="text-sm text-[#8b7a65] mt-0.5">{count} atividades</div>
+                      </div>
                     </div>
-                    <div className="text-sm text-[#8b7a65] mt-1 ml-7">{count} atividades</div>
                   </button>
                 );
               })}
-            </BlossomCarousel>
+            </div>
           </div>
 
           {/* ATIVIDADES - Carousel Direito */}
           <div className="lg:col-span-8">
-            <div className="mb-4 px-2 flex items-end justify-between">
+            <div className="mb-5 px-2 flex items-end justify-between">
               <div>
-                <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Atividades</div>
-                <div className="text-3xl tracking-[-1px] font-medium mt-1">
-                  {categoriaSelecionada || 'Todas as categorias'}
+                <div className="text-xs tracking-[2px] text-[#8b7a65] mb-1">ATIVIDADES</div>
+                <div className="text-2xl tracking-[-0.5px]">
+                  {categoriaSelecionada ? categoriaSelecionada : 'Todas as categorias'}
                 </div>
               </div>
             </div>
 
-            <BlossomCarousel
-              orientation="vertical"
-              snap="mandatory"
-              className="max-h-[620px] pr-2"
-            >
+            <div className="max-h-[620px] overflow-y-auto pr-2 custom-scroll space-y-4">
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -147,41 +141,41 @@ export default function EscalaSpiral() {
                       key={atividade.id}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
-                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985] mb-4
+                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985]
                         ${selecionada 
                           ? 'bg-white border-[#1f1810] shadow-xl' 
-                          : 'bg-white/70 border-transparent active:bg-white'
+                          : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
                         }
                       `}
                     >
                       <div 
-                        className="w-2.5 rounded-full flex-shrink-0"
+                        className="w-2.5 rounded-full flex-shrink-0 mt-1.5"
                         style={{ backgroundColor: cor }}
                       />
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-3">
+                        <div className="flex items-center gap-3 mb-2">
                           <div 
-                            className="px-4 py-1 rounded-full text-xs font-medium"
+                            className="px-3.5 py-0.5 rounded-full text-[10px] font-medium tracking-wider"
                             style={{ backgroundColor: cor + '15', color: cor }}
                           >
                             {atividade.categoria}
                           </div>
-                          <div className="flex items-center gap-1.5 text-xs text-[#8b7a65]">
-                            <Clock className="w-3.5 h-3.5" /> {atividade.duracao} min
+                          <div className="flex items-center gap-1 text-xs text-[#8b7a65]">
+                            <Clock className="w-3 h-3" /> {atividade.duracao} min
                           </div>
                         </div>
 
-                        <div className="font-medium text-2xl tracking-[-0.5px] pr-4">
+                        <div className="font-medium text-2xl tracking-[-0.6px] pr-4 leading-tight">
                           {atividade.nome}
                         </div>
                       </div>
 
                       <div className={`
-                        mt-1 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
+                        mt-2 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
                         ${selecionada 
                           ? 'bg-[#1f1810] border-[#1f1810]' 
-                          : 'border-[#d4c9b3]'
+                          : 'border-[#d4c9b3] group-hover:border-[#b89a6f]'
                         }
                       `}>
                         {selecionada && <Check className="w-5 h-5 text-white" />}
@@ -220,10 +214,10 @@ export default function EscalaSpiral() {
                 })
               ) : (
                 <div className="h-64 flex items-center justify-center text-[#8b7a65]">
-                  Nenhuma atividade encontrada.
+                  Nenhuma atividade encontrada nesta categoria.
                 </div>
               )}
-            </BlossomCarousel>
+            </div>
           </div>
 
         </div>
@@ -249,4 +243,3 @@ export default function EscalaSpiral() {
     </div>
   );
 }
-// force deploy Sat Jun  6 00:32:09 -03 2026
