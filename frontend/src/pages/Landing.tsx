@@ -1,4 +1,5 @@
 import { ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight, Clock } from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
 
 // Atualizado: 06/06 04:30
