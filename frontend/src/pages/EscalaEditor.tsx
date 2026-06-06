@@ -1,3 +1,4 @@
+import { BlossomCarousel } from '@blossom-carousel/react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
@@ -99,10 +100,10 @@ export default function EscalaEditor() {
               <div className="text-2xl tracking-[-0.5px]">Onde você quer focar?</div>
             </div>
 
-            <blossom-carousel 
+            <BlossomCarousel 
               orientation="vertical" 
               snap="mandatory" 
-              class="max-h-[620px] pr-2 block"
+              className="max-h-[620px] pr-2 block"
             >
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
@@ -133,7 +134,7 @@ export default function EscalaEditor() {
                   </button>
                 );
               })}
-            </blossom-carousel>
+            </BlossomCarousel>
           </div>
 
           {/* ATIVIDADES */}
@@ -147,10 +148,10 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <blossom-carousel 
+            <BlossomCarousel 
               orientation="vertical" 
               snap="mandatory" 
-              class="max-h-[620px] pr-2 block"
+              className="max-h-[620px] pr-2 block"
             >
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
@@ -238,7 +239,7 @@ export default function EscalaEditor() {
                   Nenhuma atividade encontrada.
                 </div>
               )}
-            </blossom-carousel>
+            </BlossomCarousel>
           </div>
 
           {/* Lista de selecionadas */}

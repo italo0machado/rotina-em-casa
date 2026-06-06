@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BlossomCarousel } from '@blossom-carousel/react';
 import { Check, Clock } from 'lucide-react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
@@ -24,7 +25,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 06/06 06:20
+// Atualizado: 06/06 06:30
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
@@ -86,10 +87,10 @@ export default function EscalaSpiral() {
               <div className="text-2xl tracking-[-0.5px]">Onde você quer focar?</div>
             </div>
 
-            <blossom-carousel 
-              orientation="vertical" 
-              snap="mandatory" 
-              class="max-h-[620px] pr-2 block"
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
             >
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
@@ -120,7 +121,7 @@ export default function EscalaSpiral() {
                   </button>
                 );
               })}
-            </blossom-carousel>
+            </BlossomCarousel>
           </div>
 
           {/* ATIVIDADES - Carousel Direito */}
@@ -134,10 +135,10 @@ export default function EscalaSpiral() {
               </div>
             </div>
 
-            <blossom-carousel 
-              orientation="vertical" 
-              snap="mandatory" 
-              class="max-h-[620px] pr-2 block"
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
             >
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
@@ -225,7 +226,7 @@ export default function EscalaSpiral() {
                   Nenhuma atividade encontrada nesta categoria.
                 </div>
               )}
-            </blossom-carousel>
+            </BlossomCarousel>
           </div>
 
         </div>
