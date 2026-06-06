@@ -12,6 +12,7 @@ interface Atividade {
 
 const CATEGORIAS = ['Saúde', 'Estudos', 'Fé', 'Casa', 'Lazer', 'Trabalho', 'Amigos', 'Família'];
 
+const COR_CATEGORIA: Record<string, string> = {
   Saúde: '#e07a5f',
   Estudos: '#81b29a',
   Fé: '#b08968',
@@ -22,6 +23,7 @@ const CATEGORIAS = ['Saúde', 'Estudos', 'Fé', 'Casa', 'Lazer', 'Trabalho', 'Am
   Família: '#2a9d8f',
 };
 
+// Atualizado: 05/06 21:47
 export default function EscalaEditor() {
   const { id } = useParams();
   
