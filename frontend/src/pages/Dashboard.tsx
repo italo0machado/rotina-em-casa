@@ -20,7 +20,7 @@ const TEMAS = [
   { id: 'dinossauro', nome: 'Dinossauro', cor: '#f4a261' },
 ];
 
-// Atualizado: 05/06 21:18
+// Atualizado: 05/06 21:20
 export default function Dashboard() {
   const navigate = useNavigate();
 
