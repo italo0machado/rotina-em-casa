@@ -25,7 +25,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 06/06 01:20
+// Atualizado: 06/06 01:35
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
@@ -69,7 +69,7 @@ export default function EscalaSpiral() {
         <div className="max-w-screen-2xl mx-auto px-8 py-6 flex items-center justify-between">
           <div>
             <div className="font-serif text-3xl tracking-[-1.5px]">Escolha sua rotina</div>
-            <div className="text-sm text-[#8b7a65] mt-1">Dois carousels • Selecione categoria e depois as atividades</div>
+            <div className="text-sm text-[#8b7a65] mt-1">Selecione as categorias e atividades</div>
           </div>
           <div className="px-5 py-2 bg-white rounded-2xl border border-[#e8dcc6] text-sm">
             {atividadesSelecionadas.length} selecionadas
@@ -80,13 +80,13 @@ export default function EscalaSpiral() {
       <div className="max-w-screen-2xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* === CAROUSEL ESQUERDO: CATEGORIAS (3D forte) === */}
+          {/* CAROUSEL ESQUERDO - CATEGORIAS */}
           <div className="lg:col-span-5">
             <div className="mb-4 px-2">
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="space-y-4 max-h-[660px] overflow-y-auto pr-3 custom-scroll" style={{ perspective: '1400px' }}>
+            <div className="space-y-4 max-h-[660px] overflow-y-auto pr-3 custom-scroll">
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = atividades.filter(a => a.categoria === cat.nome).length;
@@ -94,23 +94,16 @@ export default function EscalaSpiral() {
                 return (
                   <motion.button
                     key={index}
-                    whileHover={{ 
-                      rotateX: isActive ? 0 : -18, 
-                      rotateY: isActive ? 0 : 12,
-                      scale: isActive ? 1.01 : 1.04,
-                      z: 80
-                    }}
+                    whileHover={{ scale: isActive ? 1.01 : 1.03 }}
                     whileTap={{ scale: 0.985 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 16 }}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-7 text-left flex items-center gap-6 transition-all
+                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left flex items-center gap-5 transition-all active:scale-[0.985]
                       ${isActive 
-                        ? 'bg-white border-[#1f1810] shadow-2xl' 
-                        : 'bg-white/80 border-transparent hover:border-[#e8dcc6]'
+                        ? 'bg-white border-[#1f1810] shadow-2xl ring-1 ring-[#1f1810]/10' 
+                        : 'bg-white/80 border-transparent active:bg-white'
                       }
                     `}
-                    style={{ transformStyle: 'preserve-3d' }}
                   >
                     <div 
                       className="absolute left-0 top-0 bottom-0 w-2 rounded-l-3xl"
@@ -118,20 +111,20 @@ export default function EscalaSpiral() {
                     />
                     
                     <div 
-                      className="w-16 h-16 rounded-3xl flex items-center justify-center text-4xl flex-shrink-0 shadow-inner"
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0"
                       style={{ backgroundColor: cat.cor + '18' }}
                     >
                       {cat.icon}
                     </div>
 
                     <div className="flex-1">
-                      <div className="font-medium text-3xl tracking-[-0.8px]">{cat.nome}</div>
-                      <div className="text-[#8b7a65] mt-1">{count} atividades</div>
+                      <div className="font-medium text-2xl tracking-[-0.6px]">{cat.nome}</div>
+                      <div className="text-sm text-[#8b7a65] mt-0.5">{count} atividades</div>
                     </div>
 
                     {isActive && (
-                      <div className="px-6 py-2 rounded-2xl bg-[#1f1810] text-white text-xs flex items-center gap-2">
-                        SELECIONADO <Check className="w-4 h-4" />
+                      <div className="px-5 py-1.5 rounded-2xl bg-[#1f1810] text-white text-xs flex items-center gap-2">
+                        ATIVO
                       </div>
                     )}
                   </motion.button>
@@ -140,7 +133,7 @@ export default function EscalaSpiral() {
             </div>
           </div>
 
-          {/* === CAROUSEL DIREITO: ATIVIDADES (3D forte) === */}
+          {/* CAROUSEL DIREITO - ATIVIDADES */}
           <div className="lg:col-span-7">
             <div className="mb-4 px-2 flex items-end justify-between">
               <div>
@@ -151,7 +144,7 @@ export default function EscalaSpiral() {
               </div>
             </div>
 
-            <div className="max-h-[660px] overflow-y-auto pr-3 custom-scroll space-y-4" style={{ perspective: '1400px' }}>
+            <div className="max-h-[660px] overflow-y-auto pr-3 custom-scroll space-y-4">
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -160,22 +153,16 @@ export default function EscalaSpiral() {
                   return (
                     <motion.div
                       key={atividade.id}
-                      whileHover={{ 
-                        rotateX: selecionada ? 0 : -14, 
-                        rotateY: selecionada ? 0 : 9,
-                        scale: 1.02,
-                        z: 50
-                      }}
-                      transition={{ type: "spring", stiffness: 260, damping: 16 }}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.985 }}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
-                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all
+                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all active:scale-[0.985]
                         ${selecionada 
                           ? 'bg-white border-[#1f1810] shadow-2xl' 
-                          : 'bg-white/75 border-transparent hover:border-[#e8dcc6]'
+                          : 'bg-white/75 border-transparent active:bg-white'
                         }
                       `}
-                      style={{ transformStyle: 'preserve-3d' }}
                     >
                       <div 
                         className="w-2.5 rounded-full flex-shrink-0"
@@ -204,7 +191,7 @@ export default function EscalaSpiral() {
                         mt-1 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
                         ${selecionada 
                           ? 'bg-[#1f1810] border-[#1f1810]' 
-                          : 'border-[#d4c9b3] group-hover:border-[#b89a6f]'
+                          : 'border-[#d4c9b3]'
                         }
                       `}>
                         {selecionada && <Check className="w-5 h-5 text-white" />}
@@ -225,10 +212,10 @@ export default function EscalaSpiral() {
                                   toggleDiaNaAtividade(atividade.id, dia);
                                 }}
                                 className={`
-                                  px-5 py-1.5 text-xs rounded-2xl border font-medium transition-all
+                                  px-5 py-1.5 text-xs rounded-2xl border font-medium transition-all active:scale-95
                                   ${diaSelecionado 
                                     ? 'bg-[#1f1810] text-white border-[#1f1810]' 
-                                    : 'border-[#d4c9b3] hover:border-[#b89a6f] text-[#5c5245]'
+                                    : 'border-[#d4c9b3] text-[#5c5245]'
                                   }
                                 `}
                               >
