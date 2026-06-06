@@ -58,15 +58,9 @@ export default function EscalaSpiral() {
     );
   };
 
-  const removerAtividade = (id: number) => {
-    setAtividadesSelecionadas(prev => prev.filter(a => a.id !== id));
-  };
-
   const estaSelecionada = (id: number) => {
     return atividadesSelecionadas.some(a => a.id === id);
   };
-
-  const categoriaAtual = CATEGORIAS.find(c => c.nome === categoriaSelecionada);
 
   return (
     <div className="min-h-screen bg-[#faf7f2] text-[#1f1810]">
@@ -193,10 +187,6 @@ export default function EscalaSpiral() {
                             {atividade.nome}
                           </div>
                           
-                          {atividade.descricao && (
-                            <div className="text-sm text-[#8b7a65] leading-snug">
-                              {atividade.descricao}
-                            </div>
                           )}
                         </div>
 
