@@ -25,7 +25,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 05/06 21:14
+// Atualizado: 05/06 21:18
 export default function EscalaSpiral() {
   const [search, setSearch] = useState('');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
