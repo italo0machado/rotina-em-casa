@@ -1,15 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    include: ['@blossom-carousel/react', '@blossom-carousel/core'],
-    esbuildOptions: {
-      target: 'es2020'
+  resolve: {
+    alias: {
+      '@blossom-carousel/react': path.resolve(__dirname, 'node_modules/@blossom-carousel/react/dist/blossom-carousel-react.js')
     }
   },
-  build: {
-    target: 'es2020'
+  optimizeDeps: {
+    include: ['@blossom-carousel/react', '@blossom-carousel/core']
   }
 })
