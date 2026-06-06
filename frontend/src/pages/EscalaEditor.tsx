@@ -1,8 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
-import { BlossomCarousel } from '@blossom-carousel/react';
-import '@blossom-carousel/core/style.css';
+import useEmblaCarousel from 'embla-carousel-react';
 import { atividades as todasAtividades, type AtividadeBase } from '../data/atividades';
 
 interface AtividadeSelecionada extends AtividadeBase {
@@ -22,7 +21,7 @@ const CATEGORIAS = [
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-// Atualizado: 06/06 06:35
+// Atualizado: 06/06 07:05
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -70,6 +69,10 @@ export default function EscalaEditor() {
     return atividadesSelecionadas.some(a => a.id === id);
   };
 
+  // Embla Carousel refs
+  const [emblaRefCategories] = useEmblaCarousel({ axis: 'y', loop: false });
+  const [emblaRefActivities] = useEmblaCarousel({ axis: 'y', loop: false });
+
   return (
     <div className="min-h-screen bg-[#f8f5f0] text-[#1f1810]">
       {/* Header */}
@@ -101,41 +104,39 @@ export default function EscalaEditor() {
               <div className="text-2xl tracking-[-0.5px]">Onde você quer focar?</div>
             </div>
 
-            <BlossomCarousel
-              orientation="vertical"
-              snap="mandatory"
-              className="max-h-[620px] pr-2"
-            >
-              {CATEGORIAS.map((cat, index) => {
-                const isActive = categoriaSelecionada === cat.nome;
-                const count = todasAtividades.filter(a => a.categoria === cat.nome).length;
+            <div className="overflow-hidden" ref={emblaRefCategories}>
+              <div className="flex flex-col">
+                {CATEGORIAS.map((cat, index) => {
+                  const isActive = categoriaSelecionada === cat.nome;
+                  const count = todasAtividades.filter(a => a.categoria === cat.nome).length;
 
-                return (
-                  <button
-                    key={index}
-                    onClick={() => setCategoriaSelecionada(cat.nome)}
-                    className={`
-                      w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all mb-3 active:scale-[0.985]
-                      ${isActive 
-                        ? 'bg-white border-[#1f1810] shadow-xl ring-1 ring-[#1f1810]/5' 
-                        : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
-                      }
-                    `}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div 
-                        className="w-3.5 h-3.5 rounded-full flex-shrink-0 ring-1 ring-black/5"
-                        style={{ backgroundColor: cat.cor }}
-                      />
-                      <div>
-                        <div className="font-medium text-2xl tracking-[-0.6px]">{cat.nome}</div>
-                        <div className="text-sm text-[#8b7a65] mt-0.5">{count} atividades</div>
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setCategoriaSelecionada(cat.nome)}
+                      className={`
+                        w-full group relative overflow-hidden rounded-3xl border p-6 text-left transition-all mb-3 active:scale-[0.985]
+                        ${isActive 
+                          ? 'bg-white border-[#1f1810] shadow-xl ring-1 ring-[#1f1810]/5' 
+                          : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
+                        }
+                      `}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div 
+                          className="w-3.5 h-3.5 rounded-full flex-shrink-0 ring-1 ring-black/5"
+                          style={{ backgroundColor: cat.cor }}
+                        />
+                        <div>
+                          <div className="font-medium text-2xl tracking-[-0.6px]">{cat.nome}</div>
+                          <div className="text-sm text-[#8b7a65] mt-0.5">{count} atividades</div>
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </BlossomCarousel>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           {/* ATIVIDADES */}
@@ -149,98 +150,96 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <BlossomCarousel
-              orientation="vertical"
-              snap="mandatory"
-              className="max-h-[620px] pr-2"
-            >
-              {atividadesFiltradas.length > 0 ? (
-                atividadesFiltradas.map((atividade) => {
-                  const selecionada = estaSelecionada(atividade.id);
-                  const cor = CATEGORIAS.find(c => c.nome === atividade.categoria)?.cor || '#b89a6f';
+            <div className="overflow-hidden" ref={emblaRefActivities}>
+              <div className="flex flex-col">
+                {atividadesFiltradas.length > 0 ? (
+                  atividadesFiltradas.map((atividade) => {
+                    const selecionada = estaSelecionada(atividade.id);
+                    const cor = CATEGORIAS.find(c => c.nome === atividade.categoria)?.cor || '#b89a6f';
 
-                  return (
-                    <div
-                      key={atividade.id}
-                      onClick={() => toggleAtividade(atividade)}
-                      className={`
-                        group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all mb-4 active:scale-[0.985]
-                        ${selecionada 
-                          ? 'bg-white border-[#1f1810] shadow-xl' 
-                          : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
-                        }
-                      `}
-                    >
-                      <div 
-                        className="w-2.5 rounded-full flex-shrink-0 mt-1.5"
-                        style={{ backgroundColor: cor }}
-                      />
+                    return (
+                      <div
+                        key={atividade.id}
+                        onClick={() => toggleAtividade(atividade)}
+                        className={`
+                          group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all mb-4 active:scale-[0.985]
+                          ${selecionada 
+                            ? 'bg-white border-[#1f1810] shadow-xl' 
+                            : 'bg-white/70 border-transparent active:bg-white hover:border-[#e8dcc6]'
+                          }
+                        `}
+                      >
+                        <div 
+                          className="w-2.5 rounded-full flex-shrink-0 mt-1.5"
+                          style={{ backgroundColor: cor }}
+                        />
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div 
-                            className="px-3.5 py-0.5 rounded-full text-[10px] font-medium tracking-wider"
-                            style={{ backgroundColor: cor + '15', color: cor }}
-                          >
-                            {atividade.categoria}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div 
+                              className="px-3.5 py-0.5 rounded-full text-[10px] font-medium tracking-wider"
+                              style={{ backgroundColor: cor + '15', color: cor }}
+                            >
+                              {atividade.categoria}
+                            </div>
+                            <div className="flex items-center gap-1 text-xs text-[#8b7a65]">
+                              <Clock className="w-3 h-3" /> {atividade.duracao} min
+                            </div>
                           </div>
-                          <div className="flex items-center gap-1 text-xs text-[#8b7a65]">
-                            <Clock className="w-3 h-3" /> {atividade.duracao} min
+
+                          <div className="font-medium text-2xl tracking-[-0.6px] pr-4 leading-tight">
+                            {atividade.nome}
                           </div>
                         </div>
 
-                        <div className="font-medium text-2xl tracking-[-0.6px] pr-4 leading-tight">
-                          {atividade.nome}
+                        <div className={`
+                          mt-2 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
+                          ${selecionada 
+                            ? 'bg-[#1f1810] border-[#1f1810]' 
+                            : 'border-[#d4c9b3] group-hover:border-[#b89a6f]'
+                          }
+                        `}>
+                          {selecionada && <Check className="w-5 h-5 text-white" />}
                         </div>
-                      </div>
 
-                      <div className={`
-                        mt-2 w-9 h-9 rounded-2xl border-2 flex items-center justify-center flex-shrink-0 transition-all
-                        ${selecionada 
-                          ? 'bg-[#1f1810] border-[#1f1810]' 
-                          : 'border-[#d4c9b3] group-hover:border-[#b89a6f]'
-                        }
-                      `}>
-                        {selecionada && <Check className="w-5 h-5 text-white" />}
+                        {selecionada && (
+                          <div className="absolute bottom-0 left-0 right-0 px-7 pb-6 pt-5 border-t border-[#f0e9dc] flex flex-wrap gap-2">
+                            {DIAS.map(dia => {
+                              const diaSelecionado = atividadesSelecionadas
+                                .find(a => a.id === atividade.id)
+                                ?.dias?.includes(dia);
+                              
+                              return (
+                                <button
+                                  key={dia}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleDia(atividade.id, dia);
+                                  }}
+                                  className={`
+                                    px-5 py-1.5 text-xs rounded-2xl border font-medium transition-all active:scale-95
+                                    ${diaSelecionado 
+                                      ? 'bg-[#1f1810] text-white border-[#1f1810]' 
+                                      : 'border-[#d4c9b3] text-[#5c5245]'
+                                    }
+                                  `}
+                                >
+                                  {dia}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
-
-                      {selecionada && (
-                        <div className="absolute bottom-0 left-0 right-0 px-7 pb-6 pt-5 border-t border-[#f0e9dc] flex flex-wrap gap-2">
-                          {DIAS.map(dia => {
-                            const diaSelecionado = atividadesSelecionadas
-                              .find(a => a.id === atividade.id)
-                              ?.dias?.includes(dia);
-                            
-                            return (
-                              <button
-                                key={dia}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleDia(atividade.id, dia);
-                                }}
-                                className={`
-                                  px-5 py-1.5 text-xs rounded-2xl border font-medium transition-all active:scale-95
-                                  ${diaSelecionado 
-                                    ? 'bg-[#1f1810] text-white border-[#1f1810]' 
-                                    : 'border-[#d4c9b3] text-[#5c5245]'
-                                  }
-                                `}
-                              >
-                                {dia}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="h-64 flex items-center justify-center text-[#8b7a65]">
-                  Nenhuma atividade encontrada.
-                </div>
-              )}
-            </BlossomCarousel>
+                    );
+                  })
+                ) : (
+                  <div className="h-64 flex items-center justify-center text-[#8b7a65]">
+                    Nenhuma atividade encontrada.
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Lista de selecionadas */}
