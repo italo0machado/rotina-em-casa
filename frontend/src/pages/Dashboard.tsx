@@ -12,7 +12,6 @@ interface Escala {
   criadaEm?: string;
 }
 
-const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
 const TEMAS = [
   { id: 'praia', nome: 'Praia', cor: '#e07a5f' },
