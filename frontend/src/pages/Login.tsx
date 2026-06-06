@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 
 const API_BASE = 'https://rotina-em-casa-backend.onrender.com';
 
+// Atualizado: 05/06 21:14
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');

@@ -1,5 +1,6 @@
 import { ArrowRight, Users, Clock, Heart, Star } from 'lucide-react';
 
+// Atualizado: 05/06 21:14
 const Landing = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);

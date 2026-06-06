@@ -21,6 +21,7 @@ const TEMAS = [
   { id: 'dinossauro', nome: 'Dinossauro', cor: '#f4a261' },
 ];
 
+// Atualizado: 05/06 21:14
 export default function Dashboard() {
   const navigate = useNavigate();
 
