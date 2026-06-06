@@ -25,7 +25,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 06/06 01:05
+// Atualizado: 06/06 01:20
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
@@ -80,13 +80,13 @@ export default function EscalaSpiral() {
       <div className="max-w-screen-2xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* === CAROUSEL ESQUERDO: CATEGORIAS (3D) === */}
+          {/* === CAROUSEL ESQUERDO: CATEGORIAS (3D forte) === */}
           <div className="lg:col-span-5">
             <div className="mb-4 px-2">
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="space-y-4 max-h-[660px] overflow-y-auto pr-3 custom-scroll perspective-[1200px]">
+            <div className="space-y-4 max-h-[660px] overflow-y-auto pr-3 custom-scroll" style={{ perspective: '1400px' }}>
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = atividades.filter(a => a.categoria === cat.nome).length;
@@ -95,13 +95,13 @@ export default function EscalaSpiral() {
                   <motion.button
                     key={index}
                     whileHover={{ 
-                      rotateX: isActive ? 0 : -6, 
-                      rotateY: isActive ? 0 : 4,
-                      scale: isActive ? 1.01 : 1.015,
-                      z: 50
+                      rotateX: isActive ? 0 : -18, 
+                      rotateY: isActive ? 0 : 12,
+                      scale: isActive ? 1.01 : 1.04,
+                      z: 80
                     }}
                     whileTap={{ scale: 0.985 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 16 }}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
                       w-full group relative overflow-hidden rounded-3xl border p-7 text-left flex items-center gap-6 transition-all
@@ -140,7 +140,7 @@ export default function EscalaSpiral() {
             </div>
           </div>
 
-          {/* === CAROUSEL DIREITO: ATIVIDADES (3D) === */}
+          {/* === CAROUSEL DIREITO: ATIVIDADES (3D forte) === */}
           <div className="lg:col-span-7">
             <div className="mb-4 px-2 flex items-end justify-between">
               <div>
@@ -151,7 +151,7 @@ export default function EscalaSpiral() {
               </div>
             </div>
 
-            <div className="max-h-[660px] overflow-y-auto pr-3 custom-scroll space-y-4 perspective-[1200px]">
+            <div className="max-h-[660px] overflow-y-auto pr-3 custom-scroll space-y-4" style={{ perspective: '1400px' }}>
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -161,12 +161,12 @@ export default function EscalaSpiral() {
                     <motion.div
                       key={atividade.id}
                       whileHover={{ 
-                        rotateX: selecionada ? 0 : -4, 
-                        rotateY: selecionada ? 0 : 3,
-                        scale: 1.01,
-                        z: 40
+                        rotateX: selecionada ? 0 : -14, 
+                        rotateY: selecionada ? 0 : 9,
+                        scale: 1.02,
+                        z: 50
                       }}
-                      transition={{ type: "spring", stiffness: 280, damping: 18 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 16 }}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
                         group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all
@@ -210,7 +210,6 @@ export default function EscalaSpiral() {
                         {selecionada && <Check className="w-5 h-5 text-white" />}
                       </div>
 
-                      {/* Dias da semana */}
                       {selecionada && (
                         <div className="absolute bottom-0 left-0 right-0 px-7 pb-6 pt-5 border-t border-[#f0e9dc] flex flex-wrap gap-2">
                           {DIAS.map(dia => {

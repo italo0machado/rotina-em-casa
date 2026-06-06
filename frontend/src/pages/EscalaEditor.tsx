@@ -21,7 +21,7 @@ const CATEGORIAS = [
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-// Atualizado: 06/06 01:15
+// Atualizado: 06/06 01:25
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -93,13 +93,13 @@ export default function EscalaEditor() {
       <div className="max-w-screen-2xl mx-auto px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Carrossel Esquerdo - Categorias (3D) */}
+          {/* Carrossel Esquerdo - Categorias (3D forte) */}
           <div className="lg:col-span-5">
             <div className="mb-4 px-2">
               <div className="text-sm font-medium tracking-[0.5px] text-[#8b7a65] uppercase">Categorias</div>
             </div>
 
-            <div className="space-y-4 max-h-[640px] overflow-y-auto pr-3 custom-scroll perspective-[1200px]">
+            <div className="space-y-4 max-h-[640px] overflow-y-auto pr-3 custom-scroll" style={{ perspective: '1400px' }}>
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
                 const count = todasAtividades.filter(a => a.categoria === cat.nome).length;
@@ -108,12 +108,12 @@ export default function EscalaEditor() {
                   <motion.button
                     key={index}
                     whileHover={{ 
-                      rotateX: isActive ? 0 : -6, 
-                      rotateY: isActive ? 0 : 4,
-                      scale: isActive ? 1.01 : 1.02,
-                      z: 40
+                      rotateX: isActive ? 0 : -18, 
+                      rotateY: isActive ? 0 : 12,
+                      scale: isActive ? 1.01 : 1.04,
+                      z: 70
                     }}
-                    transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 16 }}
                     onClick={() => setCategoriaSelecionada(cat.nome)}
                     className={`
                       w-full group relative overflow-hidden rounded-3xl border p-6 text-left flex items-center gap-5 transition-all
@@ -148,7 +148,7 @@ export default function EscalaEditor() {
             </div>
           </div>
 
-          {/* Carrossel Direito - Atividades (3D) */}
+          {/* Carrossel Direito - Atividades (3D forte) */}
           <div className="lg:col-span-7">
             <div className="mb-4 px-2 flex items-end justify-between">
               <div>
@@ -159,7 +159,7 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <div className="max-h-[640px] overflow-y-auto pr-3 custom-scroll space-y-4 perspective-[1200px]">
+            <div className="max-h-[640px] overflow-y-auto pr-3 custom-scroll space-y-4" style={{ perspective: '1400px' }}>
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {
                   const selecionada = estaSelecionada(atividade.id);
@@ -169,12 +169,12 @@ export default function EscalaEditor() {
                     <motion.div
                       key={atividade.id}
                       whileHover={{ 
-                        rotateX: selecionada ? 0 : -4, 
-                        rotateY: selecionada ? 0 : 3,
-                        scale: 1.01,
-                        z: 30
+                        rotateX: selecionada ? 0 : -14, 
+                        rotateY: selecionada ? 0 : 9,
+                        scale: 1.02,
+                        z: 50
                       }}
-                      transition={{ type: "spring", stiffness: 280, damping: 18 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 16 }}
                       onClick={() => toggleAtividade(atividade)}
                       className={`
                         group relative cursor-pointer rounded-3xl border p-7 flex gap-6 transition-all
