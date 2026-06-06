@@ -1,7 +1,8 @@
-import { BlossomCarousel } from '@blossom-carousel/react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check, Clock } from 'lucide-react';
 import { useState } from 'react';
+import { BlossomCarousel } from '@blossom-carousel/react';
+import '@blossom-carousel/core/style.css';
 import { atividades as todasAtividades, type AtividadeBase } from '../data/atividades';
 
 interface AtividadeSelecionada extends AtividadeBase {
@@ -21,7 +22,7 @@ const CATEGORIAS = [
 
 const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-// Atualizado: 06/06 06:25
+// Atualizado: 06/06 06:35
 export default function EscalaEditor() {
   const { id } = useParams();
   
@@ -100,10 +101,10 @@ export default function EscalaEditor() {
               <div className="text-2xl tracking-[-0.5px]">Onde você quer focar?</div>
             </div>
 
-            <BlossomCarousel 
-              orientation="vertical" 
-              snap="mandatory" 
-              className="max-h-[620px] pr-2 block"
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
             >
               {CATEGORIAS.map((cat, index) => {
                 const isActive = categoriaSelecionada === cat.nome;
@@ -148,10 +149,10 @@ export default function EscalaEditor() {
               </div>
             </div>
 
-            <BlossomCarousel 
-              orientation="vertical" 
-              snap="mandatory" 
-              className="max-h-[620px] pr-2 block"
+            <BlossomCarousel
+              orientation="vertical"
+              snap="mandatory"
+              className="max-h-[620px] pr-2"
             >
               {atividadesFiltradas.length > 0 ? (
                 atividadesFiltradas.map((atividade) => {

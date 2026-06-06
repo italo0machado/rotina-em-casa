@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "blossom-carousel-core": {
+      "source": "blossom-carousel.com",
+      "sourceType": "well-known",
+      "computedHash": "e35eb5325375b888741c9dc5de8b08ff125a729e363d2f0e48ba827dde3dd43a"
+    },
+    "blossom-carousel-migration": {
+      "source": "blossom-carousel.com",
+      "sourceType": "well-known",
+      "computedHash": "ce702fcfa1ece23132b1ee33c956209cd9fef0f635f2cf9135c29b25a2557826"
+    },
+    "blossom-carousel-react": {
+      "source": "blossom-carousel.com",
+      "sourceType": "well-known",
+      "computedHash": "0395cbd3e94a255efa27f47149370d157daac43e21d20343264de084a6de2f93"
+    },
+    "blossom-carousel-svelte": {
+      "source": "blossom-carousel.com",
+      "sourceType": "well-known",
+      "computedHash": "cddfa2f8bd8cb2230ee8f40043cdf32b2777b59794f0680f07c9b36cd26ed516"
+    },
+    "blossom-carousel-vue": {
+      "source": "blossom-carousel.com",
+      "sourceType": "well-known",
+      "computedHash": "4378966b68b8c1ebd9faba67cc9e278816e7581ee120c8aded2cbedfe8aa28bc"
+    },
+    "blossom-carousel-web": {
+      "source": "blossom-carousel.com",
+      "sourceType": "well-known",
+      "computedHash": "6dadcb06ad6c43d13f9ea23248a9f56d886a018f832ffa2f9154bcc3b4979181"
+    }
+  }
+}

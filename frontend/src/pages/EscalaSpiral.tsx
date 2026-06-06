@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BlossomCarousel } from '@blossom-carousel/react';
+import '@blossom-carousel/core/style.css';
 import { Check, Clock } from 'lucide-react';
 import type { AtividadeBase } from '../data/atividades';
 import { atividades } from '../data/atividades';
@@ -25,7 +26,7 @@ const getCorCategoria = (categoria: string) => {
   return CATEGORIAS.find(c => c.nome === categoria)?.cor || '#b89a6f';
 };
 
-// Atualizado: 06/06 06:30
+// Atualizado: 06/06 06:35
 export default function EscalaSpiral() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
