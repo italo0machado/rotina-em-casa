@@ -7,8 +7,10 @@ export default defineConfig({
     include: ['@blossom-carousel/react', '@blossom-carousel/core']
   },
   build: {
-    commonjsOptions: {
-      include: [/blossom-carousel/]
+    rolldownOptions: {
+      resolve: {
+        conditionNames: ['import', 'module', 'browser', 'default']
+      }
     }
   }
 })
