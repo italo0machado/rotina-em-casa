@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Calendar, Star, Award, Flame, Target, MoreVertical, Copy, Trash2 } from 'lucide-react';
+import { Plus, Calendar, MoreVertical, Copy, Trash2 } from 'lucide-react';
 
 interface Escala {
   id: number;
@@ -12,7 +12,7 @@ interface Escala {
   criadaEm?: string;
 }
 
-const DIAS_SEMANA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+const DIAS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
 const TEMAS = [
   { id: 'praia', nome: 'Praia', cor: '#e07a5f' },

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { Search, X } from 'lucide-react';
-import { atividades, AtividadeBase } from '../data/atividades';
+import { X } from 'lucide-react';
+import type { AtividadeBase } from '../data/atividades';
+import { atividades } from '../data/atividades';
 
 interface AtividadeSelecionada extends AtividadeBase {
   dias: string[];
@@ -29,7 +30,6 @@ export default function EscalaSpiral() {
   const [search, setSearch] = useState('');
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<string | null>(null);
   const [atividadesSelecionadas, setAtividadesSelecionadas] = useState<AtividadeSelecionada[]>([]);
-  const [diaSelecionado, setDiaSelecionado] = useState<string | null>(null);
 
   const rotation = useMotionValue(0);
   const springRotation = useSpring(rotation, { stiffness: 80, damping: 20, mass: 0.7 });
