@@ -1,4 +1,4 @@
-// Atualizado: 06/06 22:05
+// Atualizado: 06/06 22:18
 import { useState, useRef } from 'react';
 import { atividades as todasAtividades } from '../data/atividades';
 
@@ -25,9 +25,9 @@ const CATEGORIAS: Category[] = [
     id: "saude", name: "Saúde", emoji: "❤️",
     gradient: "linear-gradient(135deg,#e07a5f,#fda4af)",
     dotBg: "#fee2e2", dotColor: "#9f1239",
-    activities: todasAtividades.filter(a => a.categoria === "Saúde").slice(0, 12).map((a, i) => ({
+    activities: todasAtividades.filter(a => a.categoria === "Saúde").map((a, i) => ({
       id: a.id.toString(), name: a.nome,
-      emoji: ["🌅","💧","🤸","🧘","📝","🌬️","✨","📓","🏃","🧘‍♀️","💪","🧴"][i % 12],
+      emoji: ["🌅","💧","🤸","🧘","📝","🌬️","✨","📓","🏃","🧘‍♀️","💪","🧴","🧘‍♂️","🏊","🚴","🧎","🧖","💆","🦵","🧠"][i % 20],
       time: `${a.duracao} min`, subtitle: "Rotina diária"
     }))
   },
@@ -35,9 +35,9 @@ const CATEGORIAS: Category[] = [
     id: "estudos", name: "Estudos", emoji: "📚",
     gradient: "linear-gradient(135deg,#81b29a,#a5d6a7)",
     dotBg: "#e8f5e9", dotColor: "#1b5e20",
-    activities: todasAtividades.filter(a => a.categoria === "Estudos").slice(0, 12).map((a, i) => ({
+    activities: todasAtividades.filter(a => a.categoria === "Estudos").map((a, i) => ({
       id: a.id.toString(), name: a.nome,
-      emoji: ["📖","✏️","🔍","🗂️","🎧","💻","🌍","📝","📚","🧠","✍️","📐"][i % 12],
+      emoji: ["📖","✏️","🔍","🗂️","🎧","💻","🌍","📝","📚","🧠","✍️","📐","📕","🧮","📊","📋","🔬","📜","🖋️","📎"][i % 20],
       time: `${a.duracao} min`, subtitle: "Rotina diária"
     }))
   },
@@ -45,9 +45,9 @@ const CATEGORIAS: Category[] = [
     id: "fe", name: "Fé", emoji: "🙏",
     gradient: "linear-gradient(135deg,#b08968,#d2b48c)",
     dotBg: "#fef3c7", dotColor: "#78350f",
-    activities: todasAtividades.filter(a => a.categoria === "Fé").slice(0, 12).map((a, i) => ({
+    activities: todasAtividades.filter(a => a.categoria === "Fé").map((a, i) => ({
       id: a.id.toString(), name: a.nome,
-      emoji: ["🙏","📿","🕯️","✝️","🕌","🕉️","☸️","🕎","🕊️","📖","🕯️","🙏"][i % 12],
+      emoji: ["🙏","📿","🕯️","✝️","🕌","🕉️","☸️","🕎","🕊️","📖","🙏","🕯️","🛐","📿","🕯️","🙏","🕌","🕉️","☸️","🕎"][i % 20],
       time: `${a.duracao} min`, subtitle: "Rotina diária"
     }))
   },
@@ -55,9 +55,9 @@ const CATEGORIAS: Category[] = [
     id: "casa", name: "Casa", emoji: "🏠",
     gradient: "linear-gradient(135deg,#6d6875,#9ca3af)",
     dotBg: "#f3e8ff", dotColor: "#581c87",
-    activities: todasAtividades.filter(a => a.categoria === "Casa").slice(0, 12).map((a, i) => ({
+    activities: todasAtividades.filter(a => a.categoria === "Casa").map((a, i) => ({
       id: a.id.toString(), name: a.nome,
-      emoji: ["🏠","🧹","🧺","🪴","🛏️","🧽","🧴","🧺","🧼","🪟","🛋️","🧺"][i % 12],
+      emoji: ["🏠","🧹","🧺","🪴","🛏️","🧽","🧴","🧺","🧼","🪟","🛋️","🧺","🪑","🧹","🧺","🛏️","🪴","🧽","🧴","🧺"][i % 20],
       time: `${a.duracao} min`, subtitle: "Rotina diária"
     }))
   },
@@ -65,9 +65,9 @@ const CATEGORIAS: Category[] = [
     id: "lazer", name: "Lazer", emoji: "🎨",
     gradient: "linear-gradient(135deg,#e9c46a,#fcd34d)",
     dotBg: "#fef3c7", dotColor: "#78350f",
-    activities: todasAtividades.filter(a => a.categoria === "Lazer").slice(0, 12).map((a, i) => ({
+    activities: todasAtividades.filter(a => a.categoria === "Lazer").map((a, i) => ({
       id: a.id.toString(), name: a.nome,
-      emoji: ["🎨","🎮","🎵","🌿","📺","📚","🎭","🎪","🎳","🎬","🎤","🏕️"][i % 12],
+      emoji: ["🎨","🎮","🎵","🌿","📺","📚","🎭","🎪","🎳","🎬","🎤","🏕️","🎨","🎮","🎵","🌿","📺","🎭","🎪","🎳"][i % 20],
       time: `${a.duracao} min`, subtitle: "Rotina diária"
     }))
   },
@@ -75,9 +75,9 @@ const CATEGORIAS: Category[] = [
     id: "trabalho", name: "Trabalho", emoji: "💼",
     gradient: "linear-gradient(135deg,#457b9d,#60a5fa)",
     dotBg: "#dbeafe", dotColor: "#1e3a8a",
-    activities: todasAtividades.filter(a => a.categoria === "Trabalho").slice(0, 12).map((a, i) => ({
+    activities: todasAtividades.filter(a => a.categoria === "Trabalho").map((a, i) => ({
       id: a.id.toString(), name: a.nome,
-      emoji: ["💼","📊","💻","📈","📋","🗓️","📞","✉️","📎","🖥️","📌","🗂️"][i % 12],
+      emoji: ["💼","📊","💻","📈","📋","🗓️","📞","✉️","📎","🖥️","📌","🗂️","💼","📊","💻","📈","📋","🗓️","📞","✉️"][i % 20],
       time: `${a.duracao} min`, subtitle: "Rotina diária"
     }))
   },
@@ -85,9 +85,9 @@ const CATEGORIAS: Category[] = [
     id: "amigos", name: "Amigos", emoji: "👥",
     gradient: "linear-gradient(135deg,#f4a261,#fb923c)",
     dotBg: "#ffedd5", dotColor: "#7c2d12",
-    activities: todasAtividades.filter(a => a.categoria === "Amigos").slice(0, 12).map((a, i) => ({
+    activities: todasAtividades.filter(a => a.categoria === "Amigos").map((a, i) => ({
       id: a.id.toString(), name: a.nome,
-      emoji: ["👥","🎉","🍻","🎤","🎲","🏀","🎳","🎯","🎮","🍕","🎤","🎉"][i % 12],
+      emoji: ["👥","🎉","🍻","🎤","🎲","🏀","🎳","🎯","🎮","🍕","🎤","🎉","👥","🎉","🍻","🎤","🎲","🏀","🎳","🎯"][i % 20],
       time: `${a.duracao} min`, subtitle: "Rotina diária"
     }))
   },
@@ -95,9 +95,9 @@ const CATEGORIAS: Category[] = [
     id: "familia", name: "Família", emoji: "👨‍👩‍👧",
     gradient: "linear-gradient(135deg,#2a9d8f,#5eead4)",
     dotBg: "#d1fae5", dotColor: "#064e3b",
-    activities: todasAtividades.filter(a => a.categoria === "Família").slice(0, 12).map((a, i) => ({
+    activities: todasAtividades.filter(a => a.categoria === "Família").map((a, i) => ({
       id: a.id.toString(), name: a.nome,
-      emoji: ["👨‍👩‍👧","👨‍👩‍👧‍👦","👨‍👨‍👧","👩‍👩‍👧","👨‍👩‍👧‍👦","🧑‍🤝‍🧑","👪","👨‍👩‍👧‍👦","🧑‍🧑‍🧒","👨‍👧","👩‍👧","👨‍👩‍👧"][i % 12],
+      emoji: ["👨‍👩‍👧","👨‍👩‍👧‍👦","👨‍👨‍👧","👩‍👩‍👧","👨‍👩‍👧‍👦","🧑‍🤝‍🧑","👪","👨‍👩‍👧‍👦","🧑‍🧑‍🧒","👨‍👧","👩‍👧","👨‍👩‍👧","👨‍👩‍👧","👨‍👩‍👧‍👦","👨‍👨‍👧","👩‍👩‍👧","👨‍👩‍👧‍👦","🧑‍🤝‍🧑","👪","👨‍👩‍👧‍👦"][i % 20],
       time: `${a.duracao} min`, subtitle: "Rotina diária"
     }))
   }
@@ -174,7 +174,6 @@ export function DualCarousel({
     onActivitySelect?.(activity, selectedCategory);
   };
 
-  // Estilo 3D mais suave para categorias
   const getCatStyle = (index: number) => {
     const dist = Math.abs(index - selectedCatIndex);
     const isActive = index === selectedCatIndex;
@@ -200,7 +199,6 @@ export function DualCarousel({
     };
   };
 
-  // Estilo 3D para atividades
   const getActStyle = (index: number, total: number) => {
     const center = Math.floor(total / 2);
     const dist = Math.abs(index - center);
@@ -230,7 +228,7 @@ export function DualCarousel({
     <div className="w-full max-w-[1320px] mx-auto px-6 py-10 select-none">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         
-        {/* CATEGORIAS - Cover Flow 3D */}
+        {/* CATEGORIAS */}
         <div>
           <div className="mb-3 px-1 flex items-end justify-between">
             <div>
@@ -276,7 +274,7 @@ export function DualCarousel({
           </div>
         </div>
 
-        {/* ATIVIDADES - Cover Flow 3D com drag */}
+        {/* ATIVIDADES - agora com todas as 40+ */}
         <div>
           <div className="mb-3 px-1 flex items-end justify-between">
             <div>
