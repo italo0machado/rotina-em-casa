@@ -1,4 +1,4 @@
-// Atualizado: 06/06 21:35
+// Atualizado: 06/06 22:05
 import { useState, useRef } from 'react';
 import { atividades as todasAtividades } from '../data/atividades';
 
@@ -22,148 +22,84 @@ export interface Category {
 
 const CATEGORIAS: Category[] = [
   {
-    id: "saude",
-    name: "Saúde",
-    emoji: "❤️",
+    id: "saude", name: "Saúde", emoji: "❤️",
     gradient: "linear-gradient(135deg,#e07a5f,#fda4af)",
-    dotBg: "#fee2e2",
-    dotColor: "#9f1239",
-    activities: todasAtividades
-      .filter(a => a.categoria === "Saúde")
-      .slice(0, 8)
-      .map((a, i) => ({
-        id: a.id.toString(),
-        name: a.nome,
-        emoji: ["🌅","💧","🤸","🧘","📝","🌬️","✨","📓"][i % 8],
-        time: `${a.duracao} min`,
-        subtitle: "Rotina diária"
-      }))
+    dotBg: "#fee2e2", dotColor: "#9f1239",
+    activities: todasAtividades.filter(a => a.categoria === "Saúde").slice(0, 12).map((a, i) => ({
+      id: a.id.toString(), name: a.nome,
+      emoji: ["🌅","💧","🤸","🧘","📝","🌬️","✨","📓","🏃","🧘‍♀️","💪","🧴"][i % 12],
+      time: `${a.duracao} min`, subtitle: "Rotina diária"
+    }))
   },
   {
-    id: "estudos",
-    name: "Estudos",
-    emoji: "📚",
+    id: "estudos", name: "Estudos", emoji: "📚",
     gradient: "linear-gradient(135deg,#81b29a,#a5d6a7)",
-    dotBg: "#e8f5e9",
-    dotColor: "#1b5e20",
-    activities: todasAtividades
-      .filter(a => a.categoria === "Estudos")
-      .slice(0, 8)
-      .map((a, i) => ({
-        id: a.id.toString(),
-        name: a.nome,
-        emoji: ["📖","✏️","🔍","🗂️","🎧","💻","🌍","📝"][i % 8],
-        time: `${a.duracao} min`,
-        subtitle: "Rotina diária"
-      }))
+    dotBg: "#e8f5e9", dotColor: "#1b5e20",
+    activities: todasAtividades.filter(a => a.categoria === "Estudos").slice(0, 12).map((a, i) => ({
+      id: a.id.toString(), name: a.nome,
+      emoji: ["📖","✏️","🔍","🗂️","🎧","💻","🌍","📝","📚","🧠","✍️","📐"][i % 12],
+      time: `${a.duracao} min`, subtitle: "Rotina diária"
+    }))
   },
   {
-    id: "fe",
-    name: "Fé",
-    emoji: "🙏",
+    id: "fe", name: "Fé", emoji: "🙏",
     gradient: "linear-gradient(135deg,#b08968,#d2b48c)",
-    dotBg: "#fef3c7",
-    dotColor: "#78350f",
-    activities: todasAtividades
-      .filter(a => a.categoria === "Fé")
-      .slice(0, 8)
-      .map((a, i) => ({
-        id: a.id.toString(),
-        name: a.nome,
-        emoji: ["🙏","📿","🕯️","✝️","🕌","🕉️","☸️","🕎"][i % 8],
-        time: `${a.duracao} min`,
-        subtitle: "Rotina diária"
-      }))
+    dotBg: "#fef3c7", dotColor: "#78350f",
+    activities: todasAtividades.filter(a => a.categoria === "Fé").slice(0, 12).map((a, i) => ({
+      id: a.id.toString(), name: a.nome,
+      emoji: ["🙏","📿","🕯️","✝️","🕌","🕉️","☸️","🕎","🕊️","📖","🕯️","🙏"][i % 12],
+      time: `${a.duracao} min`, subtitle: "Rotina diária"
+    }))
   },
   {
-    id: "casa",
-    name: "Casa",
-    emoji: "🏠",
+    id: "casa", name: "Casa", emoji: "🏠",
     gradient: "linear-gradient(135deg,#6d6875,#9ca3af)",
-    dotBg: "#f3e8ff",
-    dotColor: "#581c87",
-    activities: todasAtividades
-      .filter(a => a.categoria === "Casa")
-      .slice(0, 8)
-      .map((a, i) => ({
-        id: a.id.toString(),
-        name: a.nome,
-        emoji: ["🏠","🧹","🧺","🪴","🛏️","🧽","🧴","🧺"][i % 8],
-        time: `${a.duracao} min`,
-        subtitle: "Rotina diária"
-      }))
+    dotBg: "#f3e8ff", dotColor: "#581c87",
+    activities: todasAtividades.filter(a => a.categoria === "Casa").slice(0, 12).map((a, i) => ({
+      id: a.id.toString(), name: a.nome,
+      emoji: ["🏠","🧹","🧺","🪴","🛏️","🧽","🧴","🧺","🧼","🪟","🛋️","🧺"][i % 12],
+      time: `${a.duracao} min`, subtitle: "Rotina diária"
+    }))
   },
   {
-    id: "lazer",
-    name: "Lazer",
-    emoji: "🎨",
+    id: "lazer", name: "Lazer", emoji: "🎨",
     gradient: "linear-gradient(135deg,#e9c46a,#fcd34d)",
-    dotBg: "#fef3c7",
-    dotColor: "#78350f",
-    activities: todasAtividades
-      .filter(a => a.categoria === "Lazer")
-      .slice(0, 8)
-      .map((a, i) => ({
-        id: a.id.toString(),
-        name: a.nome,
-        emoji: ["🎨","🎮","🎵","🌿","📺","📚","🎭","🎪"][i % 8],
-        time: `${a.duracao} min`,
-        subtitle: "Rotina diária"
-      }))
+    dotBg: "#fef3c7", dotColor: "#78350f",
+    activities: todasAtividades.filter(a => a.categoria === "Lazer").slice(0, 12).map((a, i) => ({
+      id: a.id.toString(), name: a.nome,
+      emoji: ["🎨","🎮","🎵","🌿","📺","📚","🎭","🎪","🎳","🎬","🎤","🏕️"][i % 12],
+      time: `${a.duracao} min`, subtitle: "Rotina diária"
+    }))
   },
   {
-    id: "trabalho",
-    name: "Trabalho",
-    emoji: "💼",
+    id: "trabalho", name: "Trabalho", emoji: "💼",
     gradient: "linear-gradient(135deg,#457b9d,#60a5fa)",
-    dotBg: "#dbeafe",
-    dotColor: "#1e3a8a",
-    activities: todasAtividades
-      .filter(a => a.categoria === "Trabalho")
-      .slice(0, 8)
-      .map((a, i) => ({
-        id: a.id.toString(),
-        name: a.nome,
-        emoji: ["💼","📊","💻","📈","📋","🗓️","📞","✉️"][i % 8],
-        time: `${a.duracao} min`,
-        subtitle: "Rotina diária"
-      }))
+    dotBg: "#dbeafe", dotColor: "#1e3a8a",
+    activities: todasAtividades.filter(a => a.categoria === "Trabalho").slice(0, 12).map((a, i) => ({
+      id: a.id.toString(), name: a.nome,
+      emoji: ["💼","📊","💻","📈","📋","🗓️","📞","✉️","📎","🖥️","📌","🗂️"][i % 12],
+      time: `${a.duracao} min`, subtitle: "Rotina diária"
+    }))
   },
   {
-    id: "amigos",
-    name: "Amigos",
-    emoji: "👥",
+    id: "amigos", name: "Amigos", emoji: "👥",
     gradient: "linear-gradient(135deg,#f4a261,#fb923c)",
-    dotBg: "#ffedd5",
-    dotColor: "#7c2d12",
-    activities: todasAtividades
-      .filter(a => a.categoria === "Amigos")
-      .slice(0, 8)
-      .map((a, i) => ({
-        id: a.id.toString(),
-        name: a.nome,
-        emoji: ["👥","🎉","🍻","🎤","🎲","🏀","🎳","🎯"][i % 8],
-        time: `${a.duracao} min`,
-        subtitle: "Rotina diária"
-      }))
+    dotBg: "#ffedd5", dotColor: "#7c2d12",
+    activities: todasAtividades.filter(a => a.categoria === "Amigos").slice(0, 12).map((a, i) => ({
+      id: a.id.toString(), name: a.nome,
+      emoji: ["👥","🎉","🍻","🎤","🎲","🏀","🎳","🎯","🎮","🍕","🎤","🎉"][i % 12],
+      time: `${a.duracao} min`, subtitle: "Rotina diária"
+    }))
   },
   {
-    id: "familia",
-    name: "Família",
-    emoji: "👨‍👩‍👧",
+    id: "familia", name: "Família", emoji: "👨‍👩‍👧",
     gradient: "linear-gradient(135deg,#2a9d8f,#5eead4)",
-    dotBg: "#d1fae5",
-    dotColor: "#064e3b",
-    activities: todasAtividades
-      .filter(a => a.categoria === "Família")
-      .slice(0, 8)
-      .map((a, i) => ({
-        id: a.id.toString(),
-        name: a.nome,
-        emoji: ["👨‍👩‍👧","👨‍👩‍👧‍👦","👨‍👨‍👧","👩‍👩‍👧","👨‍👩‍👧‍👦","🧑‍🤝‍🧑","👪","👨‍👩‍👧‍👦"][i % 8],
-        time: `${a.duracao} min`,
-        subtitle: "Rotina diária"
-      }))
+    dotBg: "#d1fae5", dotColor: "#064e3b",
+    activities: todasAtividades.filter(a => a.categoria === "Família").slice(0, 12).map((a, i) => ({
+      id: a.id.toString(), name: a.nome,
+      emoji: ["👨‍👩‍👧","👨‍👩‍👧‍👦","👨‍👨‍👧","👩‍👩‍👧","👨‍👩‍👧‍👦","🧑‍🤝‍🧑","👪","👨‍👩‍👧‍👦","🧑‍🧑‍🧒","👨‍👧","👩‍👧","👨‍👩‍👧"][i % 12],
+      time: `${a.duracao} min`, subtitle: "Rotina diária"
+    }))
   }
 ];
 
@@ -181,149 +117,158 @@ export function DualCarousel({
   const [selectedCatIndex, setSelectedCatIndex] = useState(0);
   const [selectedAct, setSelectedAct] = useState<Activity | null>(null);
 
-  const catContainerRef = useRef<HTMLDivElement>(null);
-  const actContainerRef = useRef<HTMLDivElement>(null);
+  const catRef = useRef<HTMLDivElement>(null);
+  const actRef = useRef<HTMLDivElement>(null);
 
   const selectedCategory = categories[selectedCatIndex];
 
-  // Navegação por clique centralizado com efeito 3D forte
+  // Drag state
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollStart, setScrollStart] = useState(0);
+  const [dragTarget, setDragTarget] = useState<'cat' | 'act' | null>(null);
+
+  const startDrag = (e: React.MouseEvent, target: 'cat' | 'act') => {
+    const ref = target === 'cat' ? catRef : actRef;
+    if (!ref.current) return;
+    setIsDragging(true);
+    setDragTarget(target);
+    setStartX(e.pageX);
+    setScrollStart(ref.current.scrollLeft);
+  };
+
+  const onDragMove = (e: React.MouseEvent) => {
+    if (!isDragging || !dragTarget) return;
+    const ref = dragTarget === 'cat' ? catRef : actRef;
+    if (!ref.current) return;
+    const delta = e.pageX - startX;
+    ref.current.scrollLeft = scrollStart - delta * 1.8;
+  };
+
+  const endDrag = () => {
+    setIsDragging(false);
+    setDragTarget(null);
+  };
+
   const goToCategory = (index: number) => {
+    if (isDragging) return;
     setSelectedCatIndex(index);
     onCategoryChange?.(categories[index]);
 
-    // Scroll suave com centralização
-    const container = catContainerRef.current;
+    const container = catRef.current;
     if (container) {
       const children = Array.from(container.children) as HTMLElement[];
       const target = children[index];
       if (target) {
         const containerWidth = container.offsetWidth;
-        const targetLeft = target.offsetLeft;
-        const targetWidth = target.offsetWidth;
-        const scrollPosition = targetLeft - (containerWidth / 2) + (targetWidth / 2);
-        
-        container.scrollTo({
-          left: scrollPosition,
-          behavior: 'smooth'
-        });
+        const targetCenter = target.offsetLeft + target.offsetWidth / 2;
+        const scrollPos = targetCenter - containerWidth / 2;
+        container.scrollTo({ left: scrollPos, behavior: 'smooth' });
       }
     }
   };
 
   const handleActivityClick = (activity: Activity) => {
+    if (isDragging) return;
     setSelectedAct(activity);
     onActivitySelect?.(activity, selectedCategory);
   };
 
-  // Efeito de drag simples para o carrossel de categorias
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  // Estilo 3D mais suave para categorias
+  const getCatStyle = (index: number) => {
+    const dist = Math.abs(index - selectedCatIndex);
+    const isActive = index === selectedCatIndex;
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    const container = catContainerRef.current;
-    if (!container) return;
-    setIsDragging(true);
-    setStartX(e.pageX - container.offsetLeft);
-    setScrollLeft(container.scrollLeft);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    const container = catContainerRef.current;
-    if (!container) return;
-    const x = e.pageX - container.offsetLeft;
-    const walk = (x - startX) * 1.5;
-    container.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  // Aplica estilos 3D dinamicamente nas categorias
-  const getCategoryStyle = (index: number) => {
-    const isSelected = index === selectedCatIndex;
-    const distance = Math.abs(index - selectedCatIndex);
-    
-    if (isSelected) {
+    if (isActive) {
       return {
-        transform: 'translateZ(0) scale(1.08) rotateY(0deg)',
+        transform: 'perspective(1400px) translateZ(0) scale(1.06) rotateY(0deg)',
         opacity: 1,
-        zIndex: 30,
+        zIndex: 40,
+        transition: 'transform 420ms cubic-bezier(0.23, 1.0, 0.32, 1), opacity 300ms ease'
       };
     }
-    
-    const rotate = index < selectedCatIndex ? -28 : 28;
-    const scale = Math.max(0.82, 1 - distance * 0.09);
-    const opacity = Math.max(0.65, 1 - distance * 0.18);
-    
+
+    const rotate = index < selectedCatIndex ? -32 : 32;
+    const scale = Math.max(0.78, 1 - dist * 0.095);
+    const opacity = Math.max(0.55, 1 - dist * 0.22);
+
     return {
-      transform: `perspective(1200px) translateZ(-80px) scale(${scale}) rotateY(${rotate}deg)`,
+      transform: `perspective(1400px) translateZ(-90px) scale(${scale}) rotateY(${rotate}deg)`,
       opacity,
-      zIndex: 20 - distance,
+      zIndex: 30 - dist,
+      transition: 'transform 520ms cubic-bezier(0.23, 1.0, 0.32, 1), opacity 400ms ease'
+    };
+  };
+
+  // Estilo 3D para atividades
+  const getActStyle = (index: number, total: number) => {
+    const center = Math.floor(total / 2);
+    const dist = Math.abs(index - center);
+    const isCenter = index === center;
+
+    if (isCenter) {
+      return {
+        transform: 'perspective(1200px) translateZ(10px) scale(1.04) rotateY(0deg)',
+        opacity: 1,
+        zIndex: 30,
+        transition: 'transform 380ms cubic-bezier(0.23, 1.0, 0.32, 1)'
+      };
+    }
+
+    const rotate = index < center ? -26 : 26;
+    const scale = Math.max(0.82, 1 - dist * 0.07);
+
+    return {
+      transform: `perspective(1200px) translateZ(-70px) scale(${scale}) rotateY(${rotate}deg)`,
+      opacity: Math.max(0.7, 1 - dist * 0.15),
+      zIndex: 20 - dist,
+      transition: 'transform 480ms cubic-bezier(0.23, 1.0, 0.32, 1)'
     };
   };
 
   return (
-    <div className="w-full max-w-[1280px] mx-auto px-6 py-10">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+    <div className="w-full max-w-[1320px] mx-auto px-6 py-10 select-none">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         
-        {/* === CARROSSEL DE CATEGORIAS - COVER FLOW 3D === */}
+        {/* CATEGORIAS - Cover Flow 3D */}
         <div>
-          <div className="flex items-center justify-between mb-4 px-1">
+          <div className="mb-3 px-1 flex items-end justify-between">
             <div>
-              <div className="text-[15px] font-semibold tracking-[-0.2px] text-[#1f1810]">Categorias</div>
-              <div className="text-[12px] text-[#8b7a65]">Arraste ou clique • Efeito Cover Flow 3D</div>
+              <div className="text-[15px] font-semibold tracking-[-0.3px]">Categorias</div>
+              <div className="text-[12px] text-[#8b7a65]">Arraste horizontalmente</div>
             </div>
-            <div className="text-[11px] px-3 py-1 rounded-full bg-[#f0e9d9] text-[#8b7a65]">
+            <div className="text-xs px-3.5 py-1 rounded-full bg-[#f0e9d9] text-[#8b7a65]">
               {selectedCategory.name}
             </div>
           </div>
 
-          <div 
-            ref={catContainerRef}
-            className="flex gap-4 overflow-x-auto pb-8 pt-4 px-4 snap-x snap-mandatory cursor-grab active:cursor-grabbing"
-            style={{ 
-              scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              perspective: '1400px',
-              perspectiveOrigin: 'center center'
-            }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+          <div
+            ref={catRef}
+            className="flex gap-5 overflow-x-auto pb-9 pt-5 px-2 snap-x snap-mandatory cursor-grab active:cursor-grabbing"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', perspective: '1600px' }}
+            onMouseDown={(e) => startDrag(e, 'cat')}
+            onMouseMove={onDragMove}
+            onMouseUp={endDrag}
+            onMouseLeave={endDrag}
           >
             {categories.map((cat, index) => (
               <div
                 key={cat.id}
                 onClick={() => goToCategory(index)}
-                className="flex-shrink-0 snap-center transition-all duration-500 ease-out"
-                style={{
-                  ...getCategoryStyle(index),
-                  width: '240px',
-                  height: '310px',
-                }}
+                className="flex-shrink-0 snap-center cursor-pointer"
+                style={{ width: '245px', height: '318px', ...getCatStyle(index) }}
               >
-                <div 
-                  className="relative w-full h-full rounded-[28px] overflow-hidden shadow-2xl border border-white/40"
-                  style={{ background: cat.gradient }}
-                >
-                  {/* Brilho premium */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/25 via-transparent to-black/10" />
-                  
+                <div className="relative w-full h-full rounded-[26px] overflow-hidden shadow-2xl border border-white/50" style={{ background: cat.gradient }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/10" />
                   <div className="relative h-full flex flex-col items-center justify-center p-9 text-white">
-                    <div className="text-[72px] mb-5 drop-shadow-xl">{cat.emoji}</div>
-                    <div className="text-4xl font-semibold tracking-[-1.5px] mb-3">{cat.name}</div>
-                    <div className="px-5 py-1 rounded-full bg-white/25 text-sm font-medium tracking-wide">
+                    <div className="text-[76px] mb-6 drop-shadow-2xl">{cat.emoji}</div>
+                    <div className="text-[34px] font-semibold tracking-[-1.8px] mb-3">{cat.name}</div>
+                    <div className="px-6 py-1.5 rounded-full bg-white/20 text-sm tracking-wider font-medium">
                       {cat.activities.length} atividades
                     </div>
                   </div>
-
-                  {/* Borda de destaque quando selecionado */}
                   {index === selectedCatIndex && (
-                    <div className="absolute inset-0 rounded-[28px] ring-1 ring-white/60 ring-offset-4 ring-offset-[#f8f5f0]" />
+                    <div className="absolute inset-0 rounded-[26px] ring-1 ring-white/70 ring-offset-[6px] ring-offset-[#f8f5f0]" />
                   )}
                 </div>
               </div>
@@ -331,89 +276,64 @@ export function DualCarousel({
           </div>
         </div>
 
-        {/* === CARROSSEL DE ATIVIDADES - COVER FLOW 3D === */}
+        {/* ATIVIDADES - Cover Flow 3D com drag */}
         <div>
-          <div className="flex items-center justify-between mb-4 px-1">
+          <div className="mb-3 px-1 flex items-end justify-between">
             <div>
-              <div className="text-[15px] font-semibold tracking-[-0.2px] text-[#1f1810]">
-                {selectedCategory.name}
-              </div>
-              <div className="text-[12px] text-[#8b7a65]">Toque para selecionar</div>
+              <div className="text-[15px] font-semibold tracking-[-0.3px]">{selectedCategory.name}</div>
+              <div className="text-[12px] text-[#8b7a65]">Arraste ou clique para escolher</div>
             </div>
-            <div className="text-[11px] px-3 py-1 rounded-full bg-[#f0e9d9] text-[#8b7a65]">
+            <div className="text-xs px-3.5 py-1 rounded-full bg-[#f0e9d9] text-[#8b7a65]">
               {selectedCategory.activities.length} opções
             </div>
           </div>
 
-          <div 
-            ref={actContainerRef}
-            className="flex gap-4 overflow-x-auto pb-8 pt-4 px-4 snap-x snap-mandatory"
-            style={{ 
-              scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              perspective: '1200px'
-            }}
+          <div
+            ref={actRef}
+            className="flex gap-4 overflow-x-auto pb-9 pt-5 px-2 snap-x snap-mandatory cursor-grab active:cursor-grabbing"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', perspective: '1300px' }}
+            onMouseDown={(e) => startDrag(e, 'act')}
+            onMouseMove={onDragMove}
+            onMouseUp={endDrag}
+            onMouseLeave={endDrag}
           >
-            {selectedCategory.activities.map((act, idx) => {
-              const isCenter = idx === Math.floor(selectedCategory.activities.length / 2);
-              return (
-                <div
-                  key={act.id}
-                  onClick={() => handleActivityClick(act)}
-                  className="flex-shrink-0 snap-center cursor-pointer transition-all duration-500 ease-out active:scale-[0.985]"
-                  style={{
-                    width: '195px',
-                    height: '235px',
-                    transform: isCenter 
-                      ? 'perspective(1000px) translateZ(0) scale(1.03) rotateY(0deg)' 
-                      : `perspective(1000px) translateZ(-60px) scale(0.9) rotateY(${idx % 2 === 0 ? -22 : 22}deg)`,
-                    opacity: isCenter ? 1 : 0.85,
-                    zIndex: isCenter ? 20 : 10,
-                  }}
-                >
-                  <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-xl border border-white/30 bg-[#1f1810]">
-                    <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/10 to-transparent" />
-                    
-                    <div className="relative h-full flex flex-col items-center justify-center p-7 text-white">
-                      <div className="text-[62px] mb-5 drop-shadow-lg">{act.emoji}</div>
-                      <div className="text-[21px] font-semibold tracking-[-0.6px] text-center leading-tight mb-1.5">
-                        {act.name}
-                      </div>
-                      <div className="text-xs text-white/60 mb-4 tracking-wide">{act.subtitle}</div>
-                      
-                      <div 
-                        className="px-4 py-px rounded-full text-xs font-medium tracking-wider"
-                        style={{ 
-                          background: selectedCategory.dotBg, 
-                          color: selectedCategory.dotColor 
-                        }}
-                      >
-                        {act.time}
-                      </div>
+            {selectedCategory.activities.map((act, index) => (
+              <div
+                key={act.id}
+                onClick={() => handleActivityClick(act)}
+                className="flex-shrink-0 snap-center cursor-pointer"
+                style={{ width: '198px', height: '242px', ...getActStyle(index, selectedCategory.activities.length) }}
+              >
+                <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-xl border border-white/30 bg-[#1f1810]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/10 to-transparent" />
+                  <div className="relative h-full flex flex-col items-center justify-center p-7 text-white">
+                    <div className="text-[64px] mb-5 drop-shadow-xl">{act.emoji}</div>
+                    <div className="text-[20px] font-semibold tracking-[-0.5px] text-center leading-tight mb-1.5 px-2">
+                      {act.name}
+                    </div>
+                    <div className="text-xs text-white/55 mb-4 tracking-wide">{act.subtitle}</div>
+                    <div 
+                      className="px-4 py-0.5 rounded-full text-xs font-medium tracking-wider"
+                      style={{ background: selectedCategory.dotBg, color: selectedCategory.dotColor }}
+                    >
+                      {act.time}
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Modal de atividade selecionada */}
+      {/* Modal */}
       {selectedAct && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-6" onClick={() => setSelectedAct(null)}>
-          <div 
-            className="bg-white rounded-3xl p-10 max-w-md w-full text-center shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="text-[78px] mb-6">{selectedAct.emoji}</div>
-            <div className="text-4xl font-semibold tracking-[-1px] mb-2 text-[#1f1810]">{selectedAct.name}</div>
-            <div className="text-[#8b7a65] text-lg mb-8">{selectedAct.time}</div>
-            
-            <button 
-              onClick={() => setSelectedAct(null)}
-              className="px-10 py-4 bg-[#1f1810] text-white rounded-2xl text-sm font-medium tracking-wider hover:bg-black active:bg-[#111] transition-all"
-            >
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-xl z-50 flex items-center justify-center p-6" onClick={() => setSelectedAct(null)}>
+          <div className="bg-white rounded-3xl p-12 max-w-md w-full text-center shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="text-[86px] mb-7">{selectedAct.emoji}</div>
+            <div className="text-[42px] font-semibold tracking-[-1.5px] mb-3 text-[#1f1810]">{selectedAct.name}</div>
+            <div className="text-[#8b7a65] text-xl mb-9">{selectedAct.time}</div>
+            <button onClick={() => setSelectedAct(null)} className="px-14 py-4 bg-[#1f1810] hover:bg-black active:bg-[#111] transition text-white rounded-2xl text-sm font-medium tracking-[0.5px]">
               FECHAR
             </button>
           </div>
