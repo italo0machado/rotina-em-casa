@@ -1,4 +1,4 @@
-// Atualizado: 14/06 20:30
+// Atualizado: 14/06 02:29
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { atividades as todasAtividades } from '../data/atividades';
 
@@ -41,8 +41,7 @@ const CATEGORIAS: Category[] = [
   { id: 'trabalho', name: 'Trabalho', emoji: '💼',      gradient: 'linear-gradient(145deg,#2563a8,#3b82f6)',  gradientDark: 'linear-gradient(145deg,#1a4b8a,#2563a8)', accentBg: '#dbeafe', accentColor: '#1e3a8a' },
   { id: 'amigos',   name: 'Amigos',   emoji: '👥',      gradient: 'linear-gradient(145deg,#d4620a,#f4844e)',  gradientDark: 'linear-gradient(145deg,#a84b08,#d4620a)', accentBg: '#ffedd5', accentColor: '#7c2d12' },
   { id: 'familia',  name: 'Família',  emoji: '👨‍👩‍👧',   gradient: 'linear-gradient(145deg,#0f8a7a,#2a9d8f)',  gradientDark: 'linear-gradient(145deg,#0a6a5c,#0f8a7a)', accentBg: '#d1fae5', accentColor: '#064e3b' },
-].map(cat => ({
-  ...cat,
+].map(cat => ({\n  ...cat,
   activities: todasAtividades
     .filter(a => a.categoria === cat.name)
     .map((a, i) => ({
@@ -83,7 +82,7 @@ export function DualCarousel({
   const catRef = useRef<HTMLDivElement>(null);
   const actRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
-  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const selectedCat = categories[catIdx];
 
@@ -500,7 +499,7 @@ export function DualCarousel({
                 letterSpacing: 2,
               }}
             >
-              FECHAR
+              OK
             </button>
           </div>
         </div>
@@ -508,5 +507,3 @@ export function DualCarousel({
     </div>
   );
 }
-
-export const EXAMPLE_CATEGORIES = CATEGORIAS;
