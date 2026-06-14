@@ -1,163 +1,319 @@
-import { ArrowRight, Clock } from 'lucide-react';
+// Atualizado: 14/06 18:00
+import { ArrowRight } from 'lucide-react';
+import { DualCarousel, EXAMPLE_CATEGORIES } from '../components/DualCarousel';
 
-// Atualizado: 06/06 04:30
 const Landing = () => {
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] text-[#1f1810]">
-      {/* Navigation */}
-      <nav className="border-b border-[#e8dcc6] bg-[#f8f5f0]/95 backdrop-blur-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#1f1810] rounded-2xl flex items-center justify-center">
-              <span className="text-[#f8f5f0] text-xl font-serif tracking-[-1px]">R</span>
+    <div style={{ minHeight: '100vh', background: '#f8f5f0', color: '#1f1810', fontFamily: 'inherit' }}>
+
+      {/* ── Navigation ── */}
+      <nav style={{
+        borderBottom: '1px solid #e8dcc6',
+        background: 'rgba(248,245,240,0.96)',
+        backdropFilter: 'blur(20px)',
+        position: 'sticky', top: 0, zIndex: 100,
+      }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36, height: 36, background: '#1f1810', borderRadius: 10,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <span style={{ color: '#f8f5f0', fontSize: 18, fontFamily: 'Georgia, serif', fontWeight: 700 }}>R</span>
             </div>
-            <div className="font-serif text-2xl tracking-[-1.5px]">Rotina em Casa</div>
+            <span style={{ fontFamily: 'Georgia, serif', fontSize: 20, letterSpacing: -1, fontWeight: 600 }}>Rotina em Casa</span>
           </div>
 
-          <div className="hidden md:flex items-center gap-2 text-sm">
-            <button onClick={() => scrollToSection('como-funciona')} className="px-6 py-2.5 text-[#6b5c4a] hover:text-[#1f1810] transition">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              onClick={() => scrollToSection('como-funciona')}
+              style={{ padding: '8px 20px', color: '#6b5c4a', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 14 }}
+            >
               Como funciona
             </button>
-            <button onClick={() => window.location.href = '/escala-spiral'} className="px-6 py-2.5 text-[#6b5c4a] hover:text-[#1f1810] transition">
-              Ver demo
+            <button
+              onClick={() => scrollToSection('demo')}
+              style={{ padding: '8px 20px', color: '#6b5c4a', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 14 }}
+            >
+              Demo
             </button>
-            <button onClick={() => window.location.href = '/login'} className="px-8 py-2.5 border border-[#d4c3a3] rounded-2xl hover:bg-white transition ml-2">
+            <button
+              onClick={() => (window.location.href = '/login')}
+              style={{ padding: '8px 24px', border: '1px solid #d4c3a3', borderRadius: 12, background: 'transparent', cursor: 'pointer', fontSize: 14 }}
+            >
               Entrar
             </button>
-            <button onClick={() => window.location.href = '/cadastro'} className="px-8 py-2.5 bg-[#1f1810] text-white rounded-2xl hover:bg-black transition">
+            <button
+              onClick={() => (window.location.href = '/cadastro')}
+              style={{ padding: '8px 24px', border: 'none', borderRadius: 12, background: '#1f1810', color: 'white', cursor: 'pointer', fontSize: 14, fontWeight: 600 }}
+            >
               Começar grátis
-            </button>
-          </div>
-
-          <div className="md:hidden flex items-center gap-2">
-            <button onClick={() => window.location.href = '/login'} className="px-5 py-2 text-sm border border-[#d4c3a3] rounded-2xl">
-              Entrar
-            </button>
-            <button onClick={() => window.location.href = '/cadastro'} className="px-5 py-2 text-sm bg-[#1f1810] text-white rounded-2xl">
-              Criar conta
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="max-w-5xl mx-auto px-8 pt-24 pb-20 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white border border-[#e8dcc6] mb-8 text-xs tracking-[1.5px]">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-          MAIS DE 2.400 FAMÍLIAS JÁ ORGANIZARAM SUA ROTINA
-        </div>
+      {/* ── Hero ── */}
+      <section style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* decorative background blobs */}
+        <div style={{
+          position: 'absolute', top: -120, right: -80, width: 600, height: 600,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(224,122,95,0.12) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: -100, left: -80, width: 500, height: 500,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(74,158,122,0.10) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+        <div style={{
+          position: 'absolute', top: '40%', left: '35%', width: 400, height: 400,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(176,137,104,0.08) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
 
-        <h1 className="font-serif text-[64px] md:text-[92px] leading-[0.92] tracking-[-5px] md:tracking-[-6.5px] mb-8">
-          A rotina da sua<br />casa, finalmente<br />em ordem.
-        </h1>
+        <div style={{ maxWidth: 800, margin: '0 auto', padding: '5rem 2rem 4rem', textAlign: 'center', position: 'relative' }}>
 
-        <p className="text-2xl text-[#6b5c4a] max-w-lg mx-auto mb-12 tracking-[-0.3px]">
-          Uma forma bonita e simples de organizar tarefas em família.<br className="hidden md:block" /> Sem brigas. Sem esquecimento.
-        </p>
+          {/* badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '6px 18px', borderRadius: 999,
+            background: 'white', border: '1px solid #e8dcc6',
+            fontSize: 11, letterSpacing: 2, color: '#6b5c4a',
+            marginBottom: 36, fontWeight: 600,
+            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+          }}>
+            <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', animation: 'pulse 2s infinite' }} />
+            MAIS DE 2.400 FAMÍLIAS JÁ ORGANIZARAM SUA ROTINA
+          </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button 
-            onClick={() => window.location.href = '/cadastro'}
-            className="group inline-flex items-center justify-center gap-3 bg-[#1f1810] text-white px-12 py-4 rounded-2xl text-sm tracking-[2px] hover:bg-black transition-all"
-          >
-            CRIAR MINHA ESCALA AGORA
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-          </button>
-          <button 
-            onClick={() => window.location.href = '/escala-spiral'}
-            className="inline-flex items-center justify-center gap-3 border border-[#d4c3a3] px-10 py-4 rounded-2xl text-sm tracking-[2px] hover:bg-white transition-all"
-          >
-            EXPERIMENTAR A DEMO
-          </button>
-        </div>
-      </section>
+          {/* headline */}
+          <h1 style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: 'clamp(56px, 8vw, 96px)',
+            lineHeight: 0.92,
+            letterSpacing: 'clamp(-3px, -0.06em, -6px)',
+            margin: '0 0 28px',
+            fontWeight: 400,
+          }}>
+            A rotina da sua<br />
+            casa, finalmente<br />
+            <em style={{ fontStyle: 'normal', color: '#8b7a65' }}>em ordem.</em>
+          </h1>
 
-      {/* Visual Preview */}
-      <section className="max-w-6xl mx-auto px-8 pb-24">
-        <div className="text-center mb-10">
-          <div className="text-sm tracking-[2px] text-[#8b7a65] mb-3">COMO FUNCIONA</div>
-          <h2 className="font-serif text-6xl tracking-[-2px]">Dois carousels.<br />Zero complexidade.</h2>
-        </div>
+          <p style={{
+            fontSize: 20, color: '#6b5c4a', maxWidth: 480, margin: '0 auto 44px',
+            lineHeight: 1.65, letterSpacing: -0.2,
+          }}>
+            Uma forma bonita e simples de organizar tarefas em família.
+            <br />Sem brigas. Sem esquecimento.
+          </p>
 
-        <div className="bg-white border border-[#e8dcc6] rounded-3xl p-8 md:p-14 shadow-xl">
-          <div className="grid md:grid-cols-12 gap-10">
-            {/* Categorias */}
-            <div className="md:col-span-5">
-              <div className="text-sm text-[#8b7a65] mb-4 px-2 tracking-[0.5px]">CATEGORIAS</div>
-              <div className="space-y-3">
-                {['Saúde', 'Estudos', 'Fé', 'Casa', 'Lazer', 'Trabalho'].map((cat, i) => (
-                  <div 
-                    key={i} 
-                    className={`flex items-center gap-4 px-6 py-5 rounded-3xl border transition-all ${i === 0 ? 'bg-[#1f1810] text-white border-[#1f1810]' : 'bg-white border-[#e8dcc6]'}`}
-                  >
-                    <div className="w-2.5 h-2.5 rounded-full bg-current opacity-60" />
-                    <div className="font-medium text-xl tracking-[-0.3px]">{cat}</div>
-                  </div>
-                ))}
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => (window.location.href = '/cadastro')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 12,
+                background: '#1f1810', color: 'white',
+                padding: '16px 40px', borderRadius: 16,
+                fontSize: 13, letterSpacing: 2, fontWeight: 700, border: 'none', cursor: 'pointer',
+                boxShadow: '0 8px 24px rgba(31,24,16,0.25)',
+                transition: 'transform 200ms, box-shadow 200ms',
+              }}
+              onMouseEnter={e => { (e.target as HTMLElement).style.transform = 'translateY(-2px)'; (e.target as HTMLElement).style.boxShadow = '0 12px 32px rgba(31,24,16,0.35)'; }}
+              onMouseLeave={e => { (e.target as HTMLElement).style.transform = ''; (e.target as HTMLElement).style.boxShadow = '0 8px 24px rgba(31,24,16,0.25)'; }}
+            >
+              CRIAR MINHA ESCALA AGORA
+              <ArrowRight size={16} />
+            </button>
+            <button
+              onClick={() => scrollToSection('demo')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                background: 'white', color: '#1f1810',
+                padding: '16px 36px', borderRadius: 16,
+                fontSize: 13, letterSpacing: 2, fontWeight: 600,
+                border: '1px solid #d4c3a3', cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+              }}
+            >
+              EXPERIMENTAR A DEMO
+            </button>
+          </div>
+
+          {/* social proof row */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: 24, marginTop: 52, flexWrap: 'wrap',
+          }}>
+            {[
+              { value: '2.4k+', label: 'famílias ativas' },
+              { value: '8+', label: 'categorias' },
+              { value: '350+', label: 'atividades prontas' },
+            ].map((stat, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: -1, color: '#1f1810', fontFamily: 'Georgia, serif' }}>
+                  {stat.value}
+                </div>
+                <div style={{ fontSize: 12, color: '#8b7a65', letterSpacing: 0.5, marginTop: 2 }}>
+                  {stat.label}
+                </div>
               </div>
-            </div>
-
-            {/* Atividades */}
-            <div className="md:col-span-7">
-              <div className="text-sm text-[#8b7a65] mb-4 px-2 tracking-[0.5px]">ATIVIDADES DE SAÚDE</div>
-              <div className="space-y-4">
-                {[
-                  { nome: 'Alongamento matinal', tempo: '15 min' },
-                  { nome: 'Academia', tempo: '60 min' },
-                  { nome: 'Caminhada leve', tempo: '30 min' },
-                  { nome: 'Meditação guiada', tempo: '20 min' }
-                ].map((act, i) => (
-                  <div key={i} className="flex items-center justify-between px-7 py-6 bg-white border border-[#e8dcc6] rounded-3xl group">
-                    <div>
-                      <div className="font-medium text-2xl tracking-[-0.4px]">{act.nome}</div>
-                      <div className="text-sm text-[#8b7a65] mt-1 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" /> {act.tempo}
-                      </div>
-                    </div>
-                    <div className="w-8 h-8 rounded-2xl border border-[#d4c9b3] group-hover:border-[#1f1810] transition" />
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Como funciona */}
-      <section id="como-funciona" className="max-w-5xl mx-auto px-8 pb-24">
-        <div className="text-center mb-16">
-          <div className="text-sm tracking-[2px] text-[#8b7a65] mb-3">SIMPLE E EFICAZ</div>
-          <h2 className="font-serif text-6xl tracking-[-2px]">Três passos.<br />Zero dor de cabeça.</h2>
+      {/* ── DEMO INTERATIVA ── */}
+      <section id="demo" style={{ maxWidth: 1280, margin: '0 auto', padding: '0 1.5rem 5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <div style={{ fontSize: 11, letterSpacing: 2, color: '#8b7a65', marginBottom: 12, fontWeight: 700 }}>
+            EXPERIMENTE AGORA
+          </div>
+          <h2 style={{
+            fontFamily: 'Georgia, serif', fontSize: 'clamp(36px, 5vw, 58px)',
+            letterSpacing: -2, margin: 0, lineHeight: 1.1, fontWeight: 400,
+          }}>
+            Arraste, explore,<br />
+            <span style={{ color: '#8b7a65' }}>escolha sua rotina.</span>
+          </h2>
+          <p style={{ color: '#8b7a65', marginTop: 16, fontSize: 17, maxWidth: 500, margin: '14px auto 0' }}>
+            Clique numa categoria e role as atividades para descobrir o que encaixa no seu dia.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        {/* carousel container — elevated card */}
+        <div style={{
+          background: 'white',
+          borderRadius: 32,
+          border: '1px solid #e8dcc6',
+          boxShadow: '0 32px 100px rgba(0,0,0,0.10), 0 8px 32px rgba(0,0,0,0.06)',
+          overflow: 'hidden',
+        }}>
+          <DualCarousel
+            categories={EXAMPLE_CATEGORIES}
+            onActivitySelect={() => { window.location.href = '/cadastro'; }}
+          />
+        </div>
+      </section>
+
+      {/* ── Como funciona ── */}
+      <section id="como-funciona" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 2rem 6rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+          <div style={{ fontSize: 11, letterSpacing: 2, color: '#8b7a65', marginBottom: 12, fontWeight: 700 }}>
+            SIMPLES E EFICAZ
+          </div>
+          <h2 style={{
+            fontFamily: 'Georgia, serif', fontSize: 'clamp(36px, 5vw, 58px)',
+            letterSpacing: -2, margin: 0, fontWeight: 400,
+          }}>
+            Três passos.<br />
+            <span style={{ color: '#8b7a65' }}>Zero dor de cabeça.</span>
+          </h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
           {[
-            { num: "01", title: "Escolha as categorias", desc: "Saúde, Estudos, Fé, Casa, Lazer, Trabalho, Amigos ou Família. Escolha o que importa para você." },
-            { num: "02", title: "Selecione as atividades", desc: "Cada categoria tem dezenas de atividades prontas. Escolha as que fazem sentido para sua família." },
-            { num: "03", title: "Defina os dias", desc: "Marque em quais dias da semana cada atividade deve acontecer. Simples assim." }
+            { num: '01', title: 'Escolha as categorias', desc: 'Saúde, Estudos, Fé, Casa, Lazer, Trabalho, Amigos ou Família. Escolha o que importa para você.', color: '#e07a5f' },
+            { num: '02', title: 'Selecione as atividades', desc: 'Cada categoria tem dezenas de atividades prontas. Role o carousel e escolha as que fazem sentido.', color: '#4a9e7a' },
+            { num: '03', title: 'Defina os dias', desc: 'Marque em quais dias da semana cada atividade deve acontecer. Sua rotina fica pronta em minutos.', color: '#b08968' },
           ].map((step, i) => (
-            <div key={i} className="bg-white border border-[#e8dcc6] rounded-3xl p-9">
-              <div className="text-6xl font-serif tracking-[-2px] text-[#d4c3a3] mb-8">{step.num}</div>
-              <div className="font-medium text-2xl tracking-[-0.5px] mb-4">{step.title}</div>
-              <p className="text-[#6b5c4a] leading-relaxed text-[15px]">{step.desc}</p>
+            <div key={i} style={{
+              background: 'white', border: '1px solid #e8dcc6', borderRadius: 28, padding: '2.5rem 2rem',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
+            }}>
+              <div style={{
+                fontSize: 56, fontFamily: 'Georgia, serif', fontWeight: 400,
+                color: '#e8dcc6', letterSpacing: -2, marginBottom: 24, lineHeight: 1,
+              }}>
+                {step.num}
+              </div>
+              <div style={{
+                width: 40, height: 4, borderRadius: 999,
+                background: step.color, marginBottom: 20,
+              }} />
+              <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: -0.5, marginBottom: 12 }}>
+                {step.title}
+              </div>
+              <p style={{ color: '#6b5c4a', lineHeight: 1.65, fontSize: 15, margin: 0 }}>
+                {step.desc}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="border-t border-[#e8dcc6] bg-white py-20">
-        <div className="max-w-2xl mx-auto text-center px-8">
-          <h2 className="font-serif text-6xl tracking-[-2px] mb-6">Pronto para organizar<br />sua casa?</h2>
-          <p className="text-xl text-[#6b5c4a] mb-10">Comece grátis. Sem cartão de crédito.</p>
-          <button 
-            onClick={() => window.location.href = '/cadastro'}
-            className="inline-flex items-center justify-center gap-3 bg-[#1f1810] text-white px-14 py-4 rounded-2xl text-sm tracking-[2px] hover:bg-black transition-all"
+      {/* ── Testimonials ── */}
+      <section style={{ background: 'white', borderTop: '1px solid #e8dcc6', borderBottom: '1px solid #e8dcc6', padding: '4rem 2rem' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <div style={{ fontSize: 11, letterSpacing: 2, color: '#8b7a65', fontWeight: 700 }}>
+              O QUE AS FAMÍLIAS DIZEM
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+            {[
+              { quote: 'Finalmente achei um jeito de organizar as tarefas da casa sem conflito. Minha família toda usa!', author: 'Mariana S.', city: 'São Paulo' },
+              { quote: 'O carousel de atividades é incrível. Consegui montar minha rotina de saúde em 5 minutos.', author: 'Roberto A.', city: 'Curitiba' },
+              { quote: 'Uso para organizar a rotina dos filhos. Nunca mais esquecemos de nada importante.', author: 'Fernanda L.', city: 'Porto Alegre' },
+            ].map((t, i) => (
+              <div key={i} style={{
+                padding: '2rem', borderRadius: 24,
+                background: '#f8f5f0', border: '1px solid #e8dcc6',
+              }}>
+                <div style={{ fontSize: 28, color: '#d4c3a3', lineHeight: 1, marginBottom: 12, fontFamily: 'Georgia, serif' }}>"</div>
+                <p style={{ color: '#1f1810', fontSize: 15, lineHeight: 1.7, margin: '0 0 20px', fontStyle: 'italic' }}>
+                  {t.quote}
+                </p>
+                <div style={{ fontWeight: 700, fontSize: 14, color: '#1f1810' }}>{t.author}</div>
+                <div style={{ fontSize: 12, color: '#8b7a65', marginTop: 2 }}>{t.city}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA Final ── */}
+      <section style={{ background: '#1f1810', padding: '6rem 2rem', position: 'relative', overflow: 'hidden' }}>
+        {/* decorative elements */}
+        <div style={{
+          position: 'absolute', top: -60, right: -60, width: 320, height: 320,
+          borderRadius: '50%',
+          background: 'rgba(224,122,95,0.10)',
+          pointerEvents: 'none',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: -80, left: -60, width: 280, height: 280,
+          borderRadius: '50%',
+          background: 'rgba(74,158,122,0.08)',
+          pointerEvents: 'none',
+        }} />
+
+        <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center', position: 'relative' }}>
+          <h2 style={{
+            fontFamily: 'Georgia, serif', fontSize: 'clamp(36px, 5vw, 60px)',
+            letterSpacing: -2, margin: '0 0 20px', fontWeight: 400, color: 'white', lineHeight: 1.1,
+          }}>
+            Pronto para organizar<br />sua casa?
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 18, marginBottom: 36 }}>
+            Comece grátis. Sem cartão de crédito.
+          </p>
+          <button
+            onClick={() => (window.location.href = '/cadastro')}
+            style={{
+              padding: '16px 48px', borderRadius: 16, border: 'none', cursor: 'pointer',
+              background: 'white', color: '#1f1810',
+              fontSize: 13, letterSpacing: 2, fontWeight: 700,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+            }}
           >
             CRIAR MINHA CONTA AGORA
           </button>

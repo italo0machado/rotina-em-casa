@@ -1,5 +1,5 @@
-// Atualizado: 06/06 22:18
-import { useState, useRef } from 'react';
+// Atualizado: 14/06 18:00
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { atividades as todasAtividades } from '../data/atividades';
 
 export interface Activity {
@@ -15,98 +15,56 @@ export interface Category {
   name: string;
   emoji: string;
   gradient: string;
-  dotBg: string;
-  dotColor: string;
+  gradientDark: string;
+  accentBg: string;
+  accentColor: string;
   activities: Activity[];
 }
 
+const EMOJIS: Record<string, string[]> = {
+  'Saúde':    ['🌅','💧','🤸','🧘','🏃','💪','🏊','🚴','🧎','🧖','💆','🥗','🏋️','🧗','🤽','⛹️','🚶','🏄','🧜','⛷️'],
+  'Estudos':  ['📖','✏️','🔍','🗂️','🎧','💻','🌍','📝','📚','🧠','✍️','📐','📕','🧮','📊','📋','🔬','📜','🖋️','📎'],
+  'Fé':       ['🙏','📿','🕯️','✝️','🕌','🕉️','☸️','🕎','🕊️','📖','🛐','🌿','💒','🔔','🙌','🌙','⭐','🌟','🏛️','🎵'],
+  'Casa':     ['🏠','🧹','🧺','🪴','🛏️','🧽','🧴','🧼','🪟','🛋️','🪑','🍳','☕','🌊','🪣','🪞','💡','🔧','🛠️','🔩'],
+  'Lazer':    ['🎨','🎮','🎵','🌿','📺','📚','🎭','🎪','🎳','🎬','🎤','🏕️','🎻','🎸','🎹','🎲','🃏','🎯','🎡','🎠'],
+  'Trabalho': ['💼','📊','💻','📈','📋','🗓️','📞','✉️','📎','🖥️','📌','🗂️','🖊️','📤','📥','🖨️','🔑','💡','📡','🏢'],
+  'Amigos':   ['👥','🎉','🍻','🎤','🎲','🏀','🎳','🎯','🎮','🍕','🎊','🤝','🎁','🍿','🌃','🎡','🏖️','🛶','⛺','🚀'],
+  'Família':  ['👨‍👩‍👧','👨‍👩‍👧‍👦','👪','🧑‍🤝‍🧑','🤱','👶','🧒','👧','🏡','🍽️','🎂','🛀','🧸','🎠','🏞️','🌅','📷','💝','🫶','🤗'],
+};
+
 const CATEGORIAS: Category[] = [
-  {
-    id: "saude", name: "Saúde", emoji: "❤️",
-    gradient: "linear-gradient(135deg,#e07a5f,#fda4af)",
-    dotBg: "#fee2e2", dotColor: "#9f1239",
-    activities: todasAtividades.filter(a => a.categoria === "Saúde").map((a, i) => ({
-      id: a.id.toString(), name: a.nome,
-      emoji: ["🌅","💧","🤸","🧘","📝","🌬️","✨","📓","🏃","🧘‍♀️","💪","🧴","🧘‍♂️","🏊","🚴","🧎","🧖","💆","🦵","🧠"][i % 20],
-      time: `${a.duracao} min`, subtitle: "Rotina diária"
-    }))
-  },
-  {
-    id: "estudos", name: "Estudos", emoji: "📚",
-    gradient: "linear-gradient(135deg,#81b29a,#a5d6a7)",
-    dotBg: "#e8f5e9", dotColor: "#1b5e20",
-    activities: todasAtividades.filter(a => a.categoria === "Estudos").map((a, i) => ({
-      id: a.id.toString(), name: a.nome,
-      emoji: ["📖","✏️","🔍","🗂️","🎧","💻","🌍","📝","📚","🧠","✍️","📐","📕","🧮","📊","📋","🔬","📜","🖋️","📎"][i % 20],
-      time: `${a.duracao} min`, subtitle: "Rotina diária"
-    }))
-  },
-  {
-    id: "fe", name: "Fé", emoji: "🙏",
-    gradient: "linear-gradient(135deg,#b08968,#d2b48c)",
-    dotBg: "#fef3c7", dotColor: "#78350f",
-    activities: todasAtividades.filter(a => a.categoria === "Fé").map((a, i) => ({
-      id: a.id.toString(), name: a.nome,
-      emoji: ["🙏","📿","🕯️","✝️","🕌","🕉️","☸️","🕎","🕊️","📖","🙏","🕯️","🛐","📿","🕯️","🙏","🕌","🕉️","☸️","🕎"][i % 20],
-      time: `${a.duracao} min`, subtitle: "Rotina diária"
-    }))
-  },
-  {
-    id: "casa", name: "Casa", emoji: "🏠",
-    gradient: "linear-gradient(135deg,#6d6875,#9ca3af)",
-    dotBg: "#f3e8ff", dotColor: "#581c87",
-    activities: todasAtividades.filter(a => a.categoria === "Casa").map((a, i) => ({
-      id: a.id.toString(), name: a.nome,
-      emoji: ["🏠","🧹","🧺","🪴","🛏️","🧽","🧴","🧺","🧼","🪟","🛋️","🧺","🪑","🧹","🧺","🛏️","🪴","🧽","🧴","🧺"][i % 20],
-      time: `${a.duracao} min`, subtitle: "Rotina diária"
-    }))
-  },
-  {
-    id: "lazer", name: "Lazer", emoji: "🎨",
-    gradient: "linear-gradient(135deg,#e9c46a,#fcd34d)",
-    dotBg: "#fef3c7", dotColor: "#78350f",
-    activities: todasAtividades.filter(a => a.categoria === "Lazer").map((a, i) => ({
-      id: a.id.toString(), name: a.nome,
-      emoji: ["🎨","🎮","🎵","🌿","📺","📚","🎭","🎪","🎳","🎬","🎤","🏕️","🎨","🎮","🎵","🌿","📺","🎭","🎪","🎳"][i % 20],
-      time: `${a.duracao} min`, subtitle: "Rotina diária"
-    }))
-  },
-  {
-    id: "trabalho", name: "Trabalho", emoji: "💼",
-    gradient: "linear-gradient(135deg,#457b9d,#60a5fa)",
-    dotBg: "#dbeafe", dotColor: "#1e3a8a",
-    activities: todasAtividades.filter(a => a.categoria === "Trabalho").map((a, i) => ({
-      id: a.id.toString(), name: a.nome,
-      emoji: ["💼","📊","💻","📈","📋","🗓️","📞","✉️","📎","🖥️","📌","🗂️","💼","📊","💻","📈","📋","🗓️","📞","✉️"][i % 20],
-      time: `${a.duracao} min`, subtitle: "Rotina diária"
-    }))
-  },
-  {
-    id: "amigos", name: "Amigos", emoji: "👥",
-    gradient: "linear-gradient(135deg,#f4a261,#fb923c)",
-    dotBg: "#ffedd5", dotColor: "#7c2d12",
-    activities: todasAtividades.filter(a => a.categoria === "Amigos").map((a, i) => ({
-      id: a.id.toString(), name: a.nome,
-      emoji: ["👥","🎉","🍻","🎤","🎲","🏀","🎳","🎯","🎮","🍕","🎤","🎉","👥","🎉","🍻","🎤","🎲","🏀","🎳","🎯"][i % 20],
-      time: `${a.duracao} min`, subtitle: "Rotina diária"
-    }))
-  },
-  {
-    id: "familia", name: "Família", emoji: "👨‍👩‍👧",
-    gradient: "linear-gradient(135deg,#2a9d8f,#5eead4)",
-    dotBg: "#d1fae5", dotColor: "#064e3b",
-    activities: todasAtividades.filter(a => a.categoria === "Família").map((a, i) => ({
-      id: a.id.toString(), name: a.nome,
-      emoji: ["👨‍👩‍👧","👨‍👩‍👧‍👦","👨‍👨‍👧","👩‍👩‍👧","👨‍👩‍👧‍👦","🧑‍🤝‍🧑","👪","👨‍👩‍👧‍👦","🧑‍🧑‍🧒","👨‍👧","👩‍👧","👨‍👩‍👧","👨‍👩‍👧","👨‍👩‍👧‍👦","👨‍👨‍👧","👩‍👩‍👧","👨‍👩‍👧‍👦","🧑‍🤝‍🧑","👪","👨‍👩‍👧‍👦"][i % 20],
-      time: `${a.duracao} min`, subtitle: "Rotina diária"
-    }))
-  }
-];
+  { id: 'saude',    name: 'Saúde',    emoji: '❤️',      gradient: 'linear-gradient(145deg,#e07a5f,#f4a5a0)',  gradientDark: 'linear-gradient(145deg,#c45d44,#e07a5f)', accentBg: '#fee2e2', accentColor: '#9f1239' },
+  { id: 'estudos',  name: 'Estudos',  emoji: '📚',      gradient: 'linear-gradient(145deg,#4a9e7a,#81b29a)',  gradientDark: 'linear-gradient(145deg,#2d7a59,#4a9e7a)', accentBg: '#dcfce7', accentColor: '#14532d' },
+  { id: 'fe',       name: 'Fé',       emoji: '🙏',      gradient: 'linear-gradient(145deg,#b08968,#d4a87a)',  gradientDark: 'linear-gradient(145deg,#8a6748,#b08968)', accentBg: '#fef3c7', accentColor: '#78350f' },
+  { id: 'casa',     name: 'Casa',     emoji: '🏠',      gradient: 'linear-gradient(145deg,#6d6875,#9c8fa8)',  gradientDark: 'linear-gradient(145deg,#4d4856,#6d6875)', accentBg: '#f3e8ff', accentColor: '#581c87' },
+  { id: 'lazer',    name: 'Lazer',    emoji: '🎨',      gradient: 'linear-gradient(145deg,#d4a017,#e9c46a)',  gradientDark: 'linear-gradient(145deg,#a87c10,#d4a017)', accentBg: '#fef9c3', accentColor: '#713f12' },
+  { id: 'trabalho', name: 'Trabalho', emoji: '💼',      gradient: 'linear-gradient(145deg,#2563a8,#3b82f6)',  gradientDark: 'linear-gradient(145deg,#1a4b8a,#2563a8)', accentBg: '#dbeafe', accentColor: '#1e3a8a' },
+  { id: 'amigos',   name: 'Amigos',   emoji: '👥',      gradient: 'linear-gradient(145deg,#d4620a,#f4844e)',  gradientDark: 'linear-gradient(145deg,#a84b08,#d4620a)', accentBg: '#ffedd5', accentColor: '#7c2d12' },
+  { id: 'familia',  name: 'Família',  emoji: '👨‍👩‍👧',   gradient: 'linear-gradient(145deg,#0f8a7a,#2a9d8f)',  gradientDark: 'linear-gradient(145deg,#0a6a5c,#0f8a7a)', accentBg: '#d1fae5', accentColor: '#064e3b' },
+].map(cat => ({
+  ...cat,
+  activities: todasAtividades
+    .filter(a => a.categoria === cat.name)
+    .map((a, i) => ({
+      id: a.id.toString(),
+      name: a.nome,
+      emoji: (EMOJIS[cat.name] ?? ['✨'])[i % (EMOJIS[cat.name]?.length ?? 1)],
+      time: `${a.duracao} min`,
+      subtitle: 'Rotina diária',
+    })),
+}));
+
+// ── Layout constants ───────────────────────────────────────
+const CARD_H = 140;
+const CARD_G = 10;
+const ITEM_H = CARD_H + CARD_G;
+const N_VIS  = 3.4; // slight peek at 4th card
+const VIEW_H = Math.round(N_VIS * CARD_H + (Math.floor(N_VIS) - 1) * CARD_G);
 
 interface DualCarouselProps {
   categories?: Category[];
-  onCategoryChange?: (category: Category) => void;
-  onActivitySelect?: (activity: Activity, category: Category) => void;
+  onCategoryChange?: (c: Category) => void;
+  onActivitySelect?: (a: Activity, c: Category) => void;
 }
 
 export function DualCarousel({
@@ -114,224 +72,392 @@ export function DualCarousel({
   onCategoryChange,
   onActivitySelect,
 }: DualCarouselProps) {
-  const [selectedCatIndex, setSelectedCatIndex] = useState(0);
-  const [selectedAct, setSelectedAct] = useState<Activity | null>(null);
+  const [catIdx, setCatIdx] = useState(0);
+  const [actIdx, setActIdx] = useState(0);
+  const [selAct, setSelAct] = useState<Activity | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const catRef = useRef<HTMLDivElement>(null);
   const actRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
 
-  const selectedCategory = categories[selectedCatIndex];
+  const selectedCat = categories[catIdx];
 
-  // Drag state
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollStart, setScrollStart] = useState(0);
-  const [dragTarget, setDragTarget] = useState<'cat' | 'act' | null>(null);
+  // ── sync actIdx from scroll ─────────────────────────────
+  const syncAct = useCallback(() => {
+    if (!actRef.current) return;
+    const idx = Math.round(actRef.current.scrollTop / ITEM_H);
+    setActIdx(Math.max(0, Math.min(idx, selectedCat.activities.length - 1)));
+  }, [selectedCat.activities.length]);
 
-  const startDrag = (e: React.MouseEvent, target: 'cat' | 'act') => {
-    const ref = target === 'cat' ? catRef : actRef;
-    if (!ref.current) return;
-    setIsDragging(true);
-    setDragTarget(target);
-    setStartX(e.pageX);
-    setScrollStart(ref.current.scrollLeft);
-  };
+  useEffect(() => {
+    const el = actRef.current;
+    if (!el) return;
+    const handler = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(syncAct);
+    };
+    el.addEventListener('scroll', handler, { passive: true });
+    return () => el.removeEventListener('scroll', handler);
+  }, [syncAct]);
 
-  const onDragMove = (e: React.MouseEvent) => {
-    if (!isDragging || !dragTarget) return;
-    const ref = dragTarget === 'cat' ? catRef : actRef;
-    if (!ref.current) return;
-    const delta = e.pageX - startX;
-    ref.current.scrollLeft = scrollStart - delta * 1.8;
-  };
+  useEffect(() => {
+    setActIdx(0);
+    if (actRef.current) actRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [catIdx]);
 
-  const endDrag = () => {
-    setIsDragging(false);
-    setDragTarget(null);
-  };
-
-  const goToCategory = (index: number) => {
+  // ── category select + scroll center ────────────────────
+  const selectCat = (i: number) => {
     if (isDragging) return;
-    setSelectedCatIndex(index);
-    onCategoryChange?.(categories[index]);
-
-    const container = catRef.current;
-    if (container) {
-      const children = Array.from(container.children) as HTMLElement[];
-      const target = children[index];
-      if (target) {
-        const containerWidth = container.offsetWidth;
-        const targetCenter = target.offsetLeft + target.offsetWidth / 2;
-        const scrollPos = targetCenter - containerWidth / 2;
-        container.scrollTo({ left: scrollPos, behavior: 'smooth' });
+    setCatIdx(i);
+    onCategoryChange?.(categories[i]);
+    const el = catRef.current;
+    if (el) {
+      const child = el.children[i] as HTMLElement | undefined;
+      if (child) {
+        const target = child.offsetLeft + child.offsetWidth / 2 - el.offsetWidth / 2;
+        el.scrollTo({ left: target, behavior: 'smooth' });
       }
     }
   };
 
-  const handleActivityClick = (activity: Activity) => {
-    if (isDragging) return;
-    setSelectedAct(activity);
-    onActivitySelect?.(activity, selectedCategory);
+  // ── drag on categories (horizontal) ────────────────────
+  const handleCatMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(false);
+    const startX    = e.pageX;
+    const startLeft = catRef.current?.scrollLeft ?? 0;
+    const move = (ev: MouseEvent) => {
+      const dx = ev.pageX - startX;
+      if (Math.abs(dx) > 6) setIsDragging(true);
+      if (catRef.current) catRef.current.scrollLeft = startLeft - dx * 1.6;
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+      setTimeout(() => setIsDragging(false), 100);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
   };
 
-  const getCatStyle = (index: number) => {
-    const dist = Math.abs(index - selectedCatIndex);
-    const isActive = index === selectedCatIndex;
-
-    if (isActive) {
-      return {
-        transform: 'perspective(1400px) translateZ(0) scale(1.06) rotateY(0deg)',
-        opacity: 1,
-        zIndex: 40,
-        transition: 'transform 420ms cubic-bezier(0.23, 1.0, 0.32, 1), opacity 300ms ease'
-      };
-    }
-
-    const rotate = index < selectedCatIndex ? -32 : 32;
-    const scale = Math.max(0.78, 1 - dist * 0.095);
-    const opacity = Math.max(0.55, 1 - dist * 0.22);
-
+  // ── 3D perspective for category cards (horizontal) ─────
+  const getCatStyle = (i: number): React.CSSProperties => {
+    const d = i - catIdx;
+    const a = Math.abs(d);
+    if (a === 0) return {
+      transform: 'rotateY(0deg) scale(1.05) translateZ(20px)',
+      opacity: 1,
+      zIndex: 50,
+      filter: 'brightness(1.05)',
+      transition: 'transform 450ms cubic-bezier(0.23,1,0.32,1), opacity 280ms ease, filter 280ms ease',
+    };
+    const ry = d < 0 ? -42 : 42;
+    const sc = Math.max(0.68, 1 - a * 0.14);
     return {
-      transform: `perspective(1400px) translateZ(-90px) scale(${scale}) rotateY(${rotate}deg)`,
-      opacity,
-      zIndex: 30 - dist,
-      transition: 'transform 520ms cubic-bezier(0.23, 1.0, 0.32, 1), opacity 400ms ease'
+      transform: `rotateY(${ry}deg) scale(${sc}) translateZ(0px)`,
+      opacity: Math.max(0.25, 1 - a * 0.35),
+      zIndex: 40 - a * 5,
+      filter: `brightness(${Math.max(0.6, 1 - a * 0.15)})`,
+      transition: 'transform 500ms cubic-bezier(0.23,1,0.32,1), opacity 360ms ease, filter 360ms ease',
     };
   };
 
-  const getActStyle = (index: number, total: number) => {
-    const center = Math.floor(total / 2);
-    const dist = Math.abs(index - center);
-    const isCenter = index === center;
-
-    if (isCenter) {
-      return {
-        transform: 'perspective(1200px) translateZ(10px) scale(1.04) rotateY(0deg)',
-        opacity: 1,
-        zIndex: 30,
-        transition: 'transform 380ms cubic-bezier(0.23, 1.0, 0.32, 1)'
-      };
-    }
-
-    const rotate = index < center ? -26 : 26;
-    const scale = Math.max(0.82, 1 - dist * 0.07);
-
-    return {
-      transform: `perspective(1200px) translateZ(-70px) scale(${scale}) rotateY(${rotate}deg)`,
-      opacity: Math.max(0.7, 1 - dist * 0.15),
-      zIndex: 20 - dist,
-      transition: 'transform 480ms cubic-bezier(0.23, 1.0, 0.32, 1)'
+  // ── 3D scale for activity cards (vertical snap) ─────────
+  const getActStyle = (i: number): React.CSSProperties => {
+    const d = i - actIdx;
+    if (d < 0) return { opacity: 0, pointerEvents: 'none', transform: 'scale(0.88)' };
+    if (d === 0) return {
+      transform: 'scale(1) translateX(0)',
+      opacity: 1,
+      boxShadow: '0 20px 50px rgba(0,0,0,0.30), 0 6px 18px rgba(0,0,0,0.15)',
+      transition: 'transform 380ms cubic-bezier(0.23,1,0.32,1), opacity 280ms ease, box-shadow 380ms ease',
     };
+    const sc = Math.max(0.78, 1 - d * 0.075);
+    const tx = d * 4; // slight indent for depth
+    return {
+      transform: `scale(${sc}) translateX(${tx}px)`,
+      opacity: Math.max(0.35, 1 - d * 0.25),
+      boxShadow: `0 ${4 + d * 2}px ${12 + d * 4}px rgba(0,0,0,0.10)`,
+      transition: 'transform 440ms cubic-bezier(0.23,1,0.32,1), opacity 340ms ease, box-shadow 440ms ease',
+    };
+  };
+
+  // ── activity gradient (per-item variation) ──────────────
+  const getActGradient = (cat: Category, i: number): string => {
+    // alternates between main and dark gradient for visual rhythm
+    return i % 2 === 0 ? cat.gradient : cat.gradientDark;
   };
 
   return (
-    <div className="w-full max-w-[1320px] mx-auto px-6 py-10 select-none">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        
-        {/* CATEGORIAS */}
+    <div className="w-full select-none" style={{ padding: '2rem 2rem 2.5rem' }}>
+      {/* ── GRID: 40% categories / 60% activities ── */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '2fr 3fr',
+        gap: '2rem',
+        alignItems: 'start',
+      }}>
+
+        {/* ── CATEGORIES COLUMN ── */}
         <div>
-          <div className="mb-3 px-1 flex items-end justify-between">
+          {/* header */}
+          <div style={{ marginBottom: '1rem', padding: '0 0.25rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
             <div>
-              <div className="text-[15px] font-semibold tracking-[-0.3px]">Categorias</div>
-              <div className="text-[12px] text-[#8b7a65]">Arraste horizontalmente</div>
+              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8b7a65', marginBottom: 4 }}>
+                Categorias
+              </div>
+              <div style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-1px', color: '#1f1810', lineHeight: 1.1 }}>
+                {selectedCat.name}
+              </div>
             </div>
-            <div className="text-xs px-3.5 py-1 rounded-full bg-[#f0e9d9] text-[#8b7a65]">
-              {selectedCategory.name}
+            <div style={{ fontSize: 11, padding: '5px 12px', borderRadius: 999, background: '#f0e9d9', color: '#8b7a65', fontWeight: 600, flexShrink: 0 }}>
+              {selectedCat.activities.length} ativ.
             </div>
           </div>
 
+          {/* 3D cover-flow horizontal */}
           <div
             ref={catRef}
-            className="flex gap-5 overflow-x-auto pb-9 pt-5 px-2 snap-x snap-mandatory cursor-grab active:cursor-grabbing"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', perspective: '1600px' }}
-            onMouseDown={(e) => startDrag(e, 'cat')}
-            onMouseMove={onDragMove}
-            onMouseUp={endDrag}
-            onMouseLeave={endDrag}
+            onMouseDown={handleCatMouseDown}
+            style={{
+              display: 'flex',
+              gap: 16,
+              overflowX: 'auto',
+              paddingBottom: 24,
+              paddingTop: 20,
+              paddingLeft: 20,
+              paddingRight: 20,
+              scrollbarWidth: 'none',
+              scrollSnapType: 'x mandatory',
+              perspective: '1200px',
+              perspectiveOrigin: 'center 60%',
+              cursor: 'grab',
+            }}
           >
-            {categories.map((cat, index) => (
+            {categories.map((cat, i) => (
               <div
                 key={cat.id}
-                onClick={() => goToCategory(index)}
-                className="flex-shrink-0 snap-center cursor-pointer"
-                style={{ width: '245px', height: '318px', ...getCatStyle(index) }}
+                onClick={() => selectCat(i)}
+                style={{
+                  flexShrink: 0,
+                  width: 160,
+                  height: 220,
+                  scrollSnapAlign: 'center',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  ...getCatStyle(i),
+                }}
               >
-                <div className="relative w-full h-full rounded-[26px] overflow-hidden shadow-2xl border border-white/50" style={{ background: cat.gradient }}>
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/10" />
-                  <div className="relative h-full flex flex-col items-center justify-center p-9 text-white">
-                    <div className="text-[76px] mb-6 drop-shadow-2xl">{cat.emoji}</div>
-                    <div className="text-[34px] font-semibold tracking-[-1.8px] mb-3">{cat.name}</div>
-                    <div className="px-6 py-1.5 rounded-full bg-white/20 text-sm tracking-wider font-medium">
-                      {cat.activities.length} atividades
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 24,
+                  overflow: 'hidden',
+                  position: 'relative',
+                  background: cat.gradient,
+                  boxShadow: i === catIdx
+                    ? '0 24px 60px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.20)'
+                    : '0 8px 24px rgba(0,0,0,0.20)',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                }}>
+                  {/* gloss overlay */}
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    background: 'linear-gradient(160deg, rgba(255,255,255,0.28) 0%, transparent 55%, rgba(0,0,0,0.18) 100%)',
+                  }} />
+                  {/* content */}
+                  <div style={{
+                    position: 'relative', height: '100%',
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', justifyContent: 'center',
+                    padding: '1.5rem 1rem',
+                    color: 'white',
+                    gap: 8,
+                  }}>
+                    <div style={{ fontSize: 64, lineHeight: 1, filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.30))' }}>
+                      {cat.emoji}
+                    </div>
+                    <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: -0.8, textShadow: '0 1px 3px rgba(0,0,0,0.35)', marginTop: 4 }}>
+                      {cat.name}
+                    </div>
+                    <div style={{
+                      marginTop: 4, padding: '4px 14px', borderRadius: 999,
+                      background: 'rgba(255,255,255,0.22)', fontSize: 11,
+                      fontWeight: 600, letterSpacing: 0.5,
+                    }}>
+                      {cat.activities.length} ativ.
                     </div>
                   </div>
-                  {index === selectedCatIndex && (
-                    <div className="absolute inset-0 rounded-[26px] ring-1 ring-white/70 ring-offset-[6px] ring-offset-[#f8f5f0]" />
+                  {/* active ring */}
+                  {i === catIdx && (
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      borderRadius: 24, pointerEvents: 'none',
+                      boxShadow: 'inset 0 0 0 2.5px rgba(255,255,255,0.8)',
+                    }} />
                   )}
                 </div>
               </div>
             ))}
           </div>
+
+          {/* dots */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: -8 }}>
+            {categories.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => selectCat(i)}
+                style={{
+                  borderRadius: 999, border: 'none', cursor: 'pointer', padding: 0,
+                  width: i === catIdx ? 20 : 6, height: 6,
+                  background: i === catIdx ? '#1f1810' : '#d4c9b3',
+                  transition: 'all 300ms ease',
+                }}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* ATIVIDADES - agora com todas as 40+ */}
+        {/* ── ACTIVITIES COLUMN ── */}
         <div>
-          <div className="mb-3 px-1 flex items-end justify-between">
+          {/* header */}
+          <div style={{ marginBottom: '1rem', padding: '0 0.25rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
             <div>
-              <div className="text-[15px] font-semibold tracking-[-0.3px]">{selectedCategory.name}</div>
-              <div className="text-[12px] text-[#8b7a65]">Arraste ou clique para escolher</div>
+              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8b7a65', marginBottom: 4 }}>
+                Atividades
+              </div>
+              <div style={{
+                fontSize: 20, fontWeight: 700, letterSpacing: '-0.6px', lineHeight: 1.2,
+                color: selectedCat.accentColor, maxWidth: 280, overflow: 'hidden',
+                display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical',
+              }}>
+                {selectedCat.activities[actIdx]?.name ?? '—'}
+              </div>
             </div>
-            <div className="text-xs px-3.5 py-1 rounded-full bg-[#f0e9d9] text-[#8b7a65]">
-              {selectedCategory.activities.length} opções
+            <div style={{ fontSize: 11, padding: '5px 12px', borderRadius: 999, background: '#f0e9d9', color: '#8b7a65', fontWeight: 600, flexShrink: 0 }}>
+              {actIdx + 1} / {selectedCat.activities.length}
             </div>
           </div>
 
-          <div
-            ref={actRef}
-            className="flex gap-4 overflow-x-auto pb-9 pt-5 px-2 snap-x snap-mandatory cursor-grab active:cursor-grabbing"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', perspective: '1300px' }}
-            onMouseDown={(e) => startDrag(e, 'act')}
-            onMouseMove={onDragMove}
-            onMouseUp={endDrag}
-            onMouseLeave={endDrag}
-          >
-            {selectedCategory.activities.map((act, index) => (
-              <div
-                key={act.id}
-                onClick={() => handleActivityClick(act)}
-                className="flex-shrink-0 snap-center cursor-pointer"
-                style={{ width: '198px', height: '242px', ...getActStyle(index, selectedCategory.activities.length) }}
-              >
-                <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-xl border border-white/30 bg-[#1f1810]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/10 to-transparent" />
-                  <div className="relative h-full flex flex-col items-center justify-center p-7 text-white">
-                    <div className="text-[64px] mb-5 drop-shadow-xl">{act.emoji}</div>
-                    <div className="text-[20px] font-semibold tracking-[-0.5px] text-center leading-tight mb-1.5 px-2">
-                      {act.name}
+          {/* scroll window */}
+          <div style={{ height: VIEW_H, overflow: 'hidden', position: 'relative' }}>
+            <div
+              ref={actRef}
+              style={{
+                height: '100%',
+                overflowY: 'auto',
+                scrollbarWidth: 'none',
+                scrollSnapType: 'y mandatory',
+                paddingBottom: ITEM_H * (Math.floor(N_VIS) - 1),
+              }}
+            >
+              {selectedCat.activities.map((act, i) => (
+                <div
+                  key={act.id}
+                  onClick={() => { if (!isDragging) { setSelAct(act); onActivitySelect?.(act, selectedCat); } }}
+                  style={{
+                    height: CARD_H,
+                    marginBottom: CARD_G,
+                    scrollSnapAlign: 'start',
+                    borderRadius: 24,
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    background: getActGradient(selectedCat, i),
+                    position: 'relative',
+                    ...getActStyle(i),
+                  }}
+                >
+                  {/* dark-to-transparent overlay */}
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    background: 'linear-gradient(100deg, rgba(0,0,0,0.35) 0%, transparent 60%)',
+                  }} />
+                  {/* content */}
+                  <div style={{
+                    position: 'relative', height: '100%',
+                    display: 'flex', alignItems: 'center', gap: 16, padding: '0 24px',
+                  }}>
+                    <div style={{ fontSize: 44, lineHeight: 1, filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.25))', flexShrink: 0 }}>
+                      {act.emoji}
                     </div>
-                    <div className="text-xs text-white/55 mb-4 tracking-wide">{act.subtitle}</div>
-                    <div 
-                      className="px-4 py-0.5 rounded-full text-xs font-medium tracking-wider"
-                      style={{ background: selectedCategory.dotBg, color: selectedCategory.dotColor }}
-                    >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{
+                        fontWeight: 700, fontSize: 18, letterSpacing: -0.4, lineHeight: 1.2,
+                        color: 'white', textShadow: '0 1px 4px rgba(0,0,0,0.25)',
+                      }}>
+                        {act.name}
+                      </div>
+                      <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, marginTop: 4 }}>
+                        {act.subtitle}
+                      </div>
+                    </div>
+                    <div style={{
+                      flexShrink: 0, padding: '6px 14px', borderRadius: 999,
+                      background: selectedCat.accentBg, color: selectedCat.accentColor,
+                      fontSize: 12, fontWeight: 700, letterSpacing: 0.5,
+                    }}>
                       {act.time}
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* fade edges */}
+            <div style={{
+              pointerEvents: 'none', position: 'absolute', top: 0, left: 0, right: 0,
+              height: CARD_H * 0.6,
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.92), transparent)',
+            }} />
+            <div style={{
+              pointerEvents: 'none', position: 'absolute', bottom: 0, left: 0, right: 0,
+              height: CARD_H * 0.7,
+              background: 'linear-gradient(to top, rgba(255,255,255,0.95), transparent)',
+            }} />
+          </div>
+
+          {/* progress bar */}
+          <div style={{ marginTop: 16, height: 3, background: '#e8dcc6', borderRadius: 999, overflow: 'hidden' }}>
+            <div style={{
+              height: '100%', borderRadius: 999,
+              width: `${((actIdx + 1) / selectedCat.activities.length) * 100}%`,
+              background: selectedCat.gradient,
+              transition: 'width 300ms ease',
+            }} />
           </div>
         </div>
       </div>
 
-      {/* Modal */}
-      {selectedAct && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-xl z-50 flex items-center justify-center p-6" onClick={() => setSelectedAct(null)}>
-          <div className="bg-white rounded-3xl p-12 max-w-md w-full text-center shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="text-[86px] mb-7">{selectedAct.emoji}</div>
-            <div className="text-[42px] font-semibold tracking-[-1.5px] mb-3 text-[#1f1810]">{selectedAct.name}</div>
-            <div className="text-[#8b7a65] text-xl mb-9">{selectedAct.time}</div>
-            <button onClick={() => setSelectedAct(null)} className="px-14 py-4 bg-[#1f1810] hover:bg-black active:bg-[#111] transition text-white rounded-2xl text-sm font-medium tracking-[0.5px]">
+      {/* ── Activity Modal ── */}
+      {selAct && (
+        <div
+          onClick={() => setSelAct(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.75)',
+            backdropFilter: 'blur(16px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: 'white', borderRadius: 28, padding: '3rem 2.5rem',
+              maxWidth: 360, width: '100%', textAlign: 'center',
+              boxShadow: '0 32px 80px rgba(0,0,0,0.35)',
+            }}
+          >
+            <div style={{ fontSize: 72, lineHeight: 1, marginBottom: 16 }}>{selAct.emoji}</div>
+            <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: -1, color: '#1f1810', marginBottom: 6 }}>{selAct.name}</div>
+            <div style={{ color: '#8b7a65', fontSize: 16, marginBottom: 28 }}>{selAct.time}</div>
+            <button
+              onClick={() => setSelAct(null)}
+              style={{
+                padding: '12px 40px', borderRadius: 16, border: 'none', cursor: 'pointer',
+                background: '#1f1810', color: 'white', fontSize: 13, fontWeight: 700,
+                letterSpacing: 2,
+              }}
+            >
               FECHAR
             </button>
           </div>
