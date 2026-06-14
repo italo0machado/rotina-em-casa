@@ -1,4 +1,4 @@
-// Atualizado: 14/06 18:00
+// Atualizado: 14/06 20:30
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { atividades as todasAtividades } from '../data/atividades';
 
@@ -55,38 +55,44 @@ const CATEGORIAS: Category[] = [
 }));
 
 // ── Layout constants ───────────────────────────────────────
-const CARD_H = 140;
-const CARD_G = 10;
+const CARD_H = 120;
+const CARD_G = 8;
 const ITEM_H = CARD_H + CARD_G;
-const N_VIS  = 3.4; // slight peek at 4th card
+const N_VIS  = 2.8; // mostra ~2.8 cards com centralização
 const VIEW_H = Math.round(N_VIS * CARD_H + (Math.floor(N_VIS) - 1) * CARD_G);
 
 interface DualCarouselProps {
   categories?: Category[];
   onCategoryChange?: (c: Category) => void;
   onActivitySelect?: (a: Activity, c: Category) => void;
+  isMobile?: boolean;
 }
 
 export function DualCarousel({
   categories = CATEGORIAS,
   onCategoryChange,
   onActivitySelect,
+  isMobile = false,
 }: DualCarouselProps) {
   const [catIdx, setCatIdx] = useState(0);
   const [actIdx, setActIdx] = useState(0);
   const [selAct, setSelAct] = useState<Activity | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [wheelActive, setWheelActive] = useState(false);
 
   const catRef = useRef<HTMLDivElement>(null);
   const actRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
+  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const selectedCat = categories[catIdx];
 
-  // ── sync actIdx from scroll ─────────────────────────────
+  // ── sync actIdx from scroll — centraliza no meio da viewport ─────────────────────────────
   const syncAct = useCallback(() => {
     if (!actRef.current) return;
-    const idx = Math.round(actRef.current.scrollTop / ITEM_H);
+    // Calcula qual card está no centro da viewport
+    const viewCenter = actRef.current.scrollTop + VIEW_H / 2;
+    const idx = Math.round(viewCenter / ITEM_H) - Math.floor(N_VIS / 2);
     setActIdx(Math.max(0, Math.min(idx, selectedCat.activities.length - 1)));
   }, [selectedCat.activities.length]);
 
@@ -101,9 +107,35 @@ export function DualCarousel({
     return () => el.removeEventListener('scroll', handler);
   }, [syncAct]);
 
+  // ── wheel scroll for categories (desktop only) ─────────────────────
+  useEffect(() => {
+    if (isMobile) return;
+    
+    const handleWheel = (e: WheelEvent) => {
+      if (!catRef.current) return;
+      e.preventDefault();
+      setWheelActive(true);
+      
+      const direction = e.deltaY > 0 ? 1 : -1;
+      const newIdx = Math.max(0, Math.min(catIdx + direction, categories.length - 1));
+      if (newIdx !== catIdx) {
+        selectCat(newIdx);
+      }
+      
+      if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
+      wheelTimeoutRef.current = setTimeout(() => setWheelActive(false), 500);
+    };
+    
+    catRef.current?.addEventListener('wheel', handleWheel, { passive: false });
+    return () => catRef.current?.removeEventListener('wheel', handleWheel);
+  }, [catIdx, categories.length, isMobile]);
+
   useEffect(() => {
     setActIdx(0);
-    if (actRef.current) actRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    if (actRef.current) {
+      // Scroll para centralizar o primeiro item
+      actRef.current.scrollTo({ top: -ITEM_H * Math.floor(N_VIS / 2), behavior: 'smooth' });
+    }
   }, [catIdx]);
 
   // ── category select + scroll center ────────────────────
@@ -162,51 +194,54 @@ export function DualCarousel({
     };
   };
 
-  // ── 3D scale for activity cards (vertical snap) ─────────
+  // ── 3D scale for activity cards (vertical snap) — centraliza no meio ─────────
   const getActStyle = (i: number): React.CSSProperties => {
     const d = i - actIdx;
-    if (d < 0) return { opacity: 0, pointerEvents: 'none', transform: 'scale(0.88)' };
+    const absD = Math.abs(d);
+    
+    if (absD > 3) return { opacity: 0, pointerEvents: 'none', transform: 'scale(0.85)' };
+    
     if (d === 0) return {
       transform: 'scale(1) translateX(0)',
       opacity: 1,
       boxShadow: '0 20px 50px rgba(0,0,0,0.30), 0 6px 18px rgba(0,0,0,0.15)',
       transition: 'transform 380ms cubic-bezier(0.23,1,0.32,1), opacity 280ms ease, box-shadow 380ms ease',
     };
-    const sc = Math.max(0.78, 1 - d * 0.075);
-    const tx = d * 4; // slight indent for depth
+    
+    const sc = Math.max(0.78, 1 - absD * 0.075);
+    const tx = d * 4;
     return {
       transform: `scale(${sc}) translateX(${tx}px)`,
-      opacity: Math.max(0.35, 1 - d * 0.25),
-      boxShadow: `0 ${4 + d * 2}px ${12 + d * 4}px rgba(0,0,0,0.10)`,
+      opacity: Math.max(0.35, 1 - absD * 0.25),
+      boxShadow: `0 ${4 + absD * 2}px ${12 + absD * 4}px rgba(0,0,0,0.10)`,
       transition: 'transform 440ms cubic-bezier(0.23,1,0.32,1), opacity 340ms ease, box-shadow 440ms ease',
     };
   };
 
   // ── activity gradient (per-item variation) ──────────────
   const getActGradient = (cat: Category, i: number): string => {
-    // alternates between main and dark gradient for visual rhythm
     return i % 2 === 0 ? cat.gradient : cat.gradientDark;
   };
 
   return (
-    <div className="w-full select-none" style={{ padding: '2rem 2rem 2.5rem' }}>
-      {/* ── GRID: 40% categories / 60% activities ── */}
+    <div className="w-full select-none" style={{ padding: isMobile ? '1.5rem 1rem 2rem' : '2rem 2rem 2.5rem' }}>
+      {/* ── RESPONSIVE: stack on mobile, grid on desktop ── */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '2fr 3fr',
-        gap: '2rem',
+        gridTemplateColumns: isMobile ? '1fr' : '2fr 3fr',
+        gap: isMobile ? '1.5rem' : '2rem',
         alignItems: 'start',
       }}>
 
         {/* ── CATEGORIES COLUMN ── */}
         <div>
           {/* header */}
-          <div style={{ marginBottom: '1rem', padding: '0 0.25rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-            <div>
+          <div style={{ marginBottom: '1rem', padding: '0 0.25rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8b7a65', marginBottom: 4 }}>
                 Categorias
               </div>
-              <div style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-1px', color: '#1f1810', lineHeight: 1.1 }}>
+              <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 700, letterSpacing: '-1px', color: '#1f1810', lineHeight: 1.1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {selectedCat.name}
               </div>
             </div>
@@ -215,23 +250,26 @@ export function DualCarousel({
             </div>
           </div>
 
-          {/* 3D cover-flow horizontal */}
+          {/* 3D cover-flow horizontal — scrollável no mobile ─────────────────────────────────*/}
           <div
             ref={catRef}
             onMouseDown={handleCatMouseDown}
             style={{
               display: 'flex',
-              gap: 16,
+              gap: 12,
               overflowX: 'auto',
-              paddingBottom: 24,
-              paddingTop: 20,
-              paddingLeft: 20,
-              paddingRight: 20,
+              overflowY: 'hidden',
+              paddingBottom: 20,
+              paddingTop: 16,
+              paddingLeft: isMobile ? 8 : 20,
+              paddingRight: isMobile ? 8 : 20,
               scrollbarWidth: 'none',
               scrollSnapType: 'x mandatory',
               perspective: '1200px',
               perspectiveOrigin: 'center 60%',
-              cursor: 'grab',
+              cursor: isMobile ? 'grab' : wheelActive ? 'default' : 'grab',
+              WebkitOverflowScrolling: 'touch',
+              scrollBehavior: 'smooth',
             }}
           >
             {categories.map((cat, i) => (
@@ -240,8 +278,8 @@ export function DualCarousel({
                 onClick={() => selectCat(i)}
                 style={{
                   flexShrink: 0,
-                  width: 160,
-                  height: 220,
+                  width: isMobile ? 140 : 160,
+                  height: isMobile ? 200 : 220,
                   scrollSnapAlign: 'center',
                   cursor: 'pointer',
                   position: 'relative',
@@ -272,17 +310,17 @@ export function DualCarousel({
                     alignItems: 'center', justifyContent: 'center',
                     padding: '1.5rem 1rem',
                     color: 'white',
-                    gap: 8,
+                    gap: 6,
                   }}>
-                    <div style={{ fontSize: 64, lineHeight: 1, filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.30))' }}>
+                    <div style={{ fontSize: isMobile ? 48 : 64, lineHeight: 1, filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.30))' }}>
                       {cat.emoji}
                     </div>
-                    <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: -0.8, textShadow: '0 1px 3px rgba(0,0,0,0.35)', marginTop: 4 }}>
+                    <div style={{ fontSize: isMobile ? 18 : 22, fontWeight: 700, letterSpacing: -0.8, textShadow: '0 1px 3px rgba(0,0,0,0.35)' }}>
                       {cat.name}
                     </div>
                     <div style={{
-                      marginTop: 4, padding: '4px 14px', borderRadius: 999,
-                      background: 'rgba(255,255,255,0.22)', fontSize: 11,
+                      padding: '4px 12px', borderRadius: 999,
+                      background: 'rgba(255,255,255,0.22)', fontSize: 10,
                       fontWeight: 600, letterSpacing: 0.5,
                     }}>
                       {cat.activities.length} ativ.
@@ -301,45 +339,47 @@ export function DualCarousel({
             ))}
           </div>
 
-          {/* dots */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: -8 }}>
-            {categories.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => selectCat(i)}
-                style={{
-                  borderRadius: 999, border: 'none', cursor: 'pointer', padding: 0,
-                  width: i === catIdx ? 20 : 6, height: 6,
-                  background: i === catIdx ? '#1f1810' : '#d4c9b3',
-                  transition: 'all 300ms ease',
-                }}
-              />
-            ))}
-          </div>
+          {/* dots — escondidos no mobile */}
+          {!isMobile && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: -8 }}>
+              {categories.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => selectCat(i)}
+                  style={{
+                    borderRadius: 999, border: 'none', cursor: 'pointer', padding: 0,
+                    width: i === catIdx ? 20 : 6, height: 6,
+                    background: i === catIdx ? '#1f1810' : '#d4c9b3',
+                    transition: 'all 300ms ease',
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* ── ACTIVITIES COLUMN ── */}
         <div>
           {/* header */}
-          <div style={{ marginBottom: '1rem', padding: '0 0.25rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-            <div>
+          <div style={{ marginBottom: '1rem', padding: '0 0.25rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#8b7a65', marginBottom: 4 }}>
                 Atividades
               </div>
               <div style={{
-                fontSize: 20, fontWeight: 700, letterSpacing: '-0.6px', lineHeight: 1.2,
-                color: selectedCat.accentColor, maxWidth: 280, overflow: 'hidden',
+                fontSize: isMobile ? 16 : 20, fontWeight: 700, letterSpacing: '-0.6px', lineHeight: 1.2,
+                color: selectedCat.accentColor, overflow: 'hidden',
                 display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical',
               }}>
                 {selectedCat.activities[actIdx]?.name ?? '—'}
               </div>
             </div>
-            <div style={{ fontSize: 11, padding: '5px 12px', borderRadius: 999, background: '#f0e9d9', color: '#8b7a65', fontWeight: 600, flexShrink: 0 }}>
+            <div style={{ fontSize: 11, padding: '5px 12px', borderRadius: 999, background: '#f0e9d9', color: '#8b7a65', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}>
               {actIdx + 1} / {selectedCat.activities.length}
             </div>
           </div>
 
-          {/* scroll window */}
+          {/* scroll window — com padding para centralizar o item */}
           <div style={{ height: VIEW_H, overflow: 'hidden', position: 'relative' }}>
             <div
               ref={actRef}
@@ -348,7 +388,9 @@ export function DualCarousel({
                 overflowY: 'auto',
                 scrollbarWidth: 'none',
                 scrollSnapType: 'y mandatory',
-                paddingBottom: ITEM_H * (Math.floor(N_VIS) - 1),
+                paddingTop: ITEM_H * Math.floor(N_VIS / 2),
+                paddingBottom: ITEM_H * Math.floor(N_VIS / 2),
+                WebkitOverflowScrolling: 'touch',
               }}
             >
               {selectedCat.activities.map((act, i) => (
@@ -358,8 +400,8 @@ export function DualCarousel({
                   style={{
                     height: CARD_H,
                     marginBottom: CARD_G,
-                    scrollSnapAlign: 'start',
-                    borderRadius: 24,
+                    scrollSnapAlign: 'center',
+                    borderRadius: 20,
                     overflow: 'hidden',
                     cursor: 'pointer',
                     background: getActGradient(selectedCat, i),
@@ -375,26 +417,26 @@ export function DualCarousel({
                   {/* content */}
                   <div style={{
                     position: 'relative', height: '100%',
-                    display: 'flex', alignItems: 'center', gap: 16, padding: '0 24px',
+                    display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 16, padding: isMobile ? '0 16px' : '0 24px',
                   }}>
-                    <div style={{ fontSize: 44, lineHeight: 1, filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.25))', flexShrink: 0 }}>
+                    <div style={{ fontSize: isMobile ? 36 : 44, lineHeight: 1, filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.25))', flexShrink: 0 }}>
                       {act.emoji}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{
-                        fontWeight: 700, fontSize: 18, letterSpacing: -0.4, lineHeight: 1.2,
+                        fontWeight: 700, fontSize: isMobile ? 16 : 18, letterSpacing: -0.4, lineHeight: 1.2,
                         color: 'white', textShadow: '0 1px 4px rgba(0,0,0,0.25)',
                       }}>
                         {act.name}
                       </div>
-                      <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, marginTop: 4 }}>
+                      <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, marginTop: 2 }}>
                         {act.subtitle}
                       </div>
                     </div>
                     <div style={{
-                      flexShrink: 0, padding: '6px 14px', borderRadius: 999,
+                      flexShrink: 0, padding: '6px 12px', borderRadius: 999,
                       background: selectedCat.accentBg, color: selectedCat.accentColor,
-                      fontSize: 12, fontWeight: 700, letterSpacing: 0.5,
+                      fontSize: 11, fontWeight: 700, letterSpacing: 0.5, whiteSpace: 'nowrap',
                     }}>
                       {act.time}
                     </div>
@@ -403,15 +445,15 @@ export function DualCarousel({
               ))}
             </div>
 
-            {/* fade edges */}
+            {/* fade edges — ajustadas para centralização */}
             <div style={{
               pointerEvents: 'none', position: 'absolute', top: 0, left: 0, right: 0,
-              height: CARD_H * 0.6,
-              background: 'linear-gradient(to bottom, rgba(255,255,255,0.92), transparent)',
+              height: CARD_H * 0.8,
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.95), transparent)',
             }} />
             <div style={{
               pointerEvents: 'none', position: 'absolute', bottom: 0, left: 0, right: 0,
-              height: CARD_H * 0.7,
+              height: CARD_H * 0.8,
               background: 'linear-gradient(to top, rgba(255,255,255,0.95), transparent)',
             }} />
           </div>
@@ -442,13 +484,13 @@ export function DualCarousel({
           <div
             onClick={e => e.stopPropagation()}
             style={{
-              background: 'white', borderRadius: 28, padding: '3rem 2.5rem',
+              background: 'white', borderRadius: 28, padding: isMobile ? '2rem 1.5rem' : '3rem 2.5rem',
               maxWidth: 360, width: '100%', textAlign: 'center',
               boxShadow: '0 32px 80px rgba(0,0,0,0.35)',
             }}
           >
-            <div style={{ fontSize: 72, lineHeight: 1, marginBottom: 16 }}>{selAct.emoji}</div>
-            <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: -1, color: '#1f1810', marginBottom: 6 }}>{selAct.name}</div>
+            <div style={{ fontSize: isMobile ? 56 : 72, lineHeight: 1, marginBottom: 16 }}>{selAct.emoji}</div>
+            <div style={{ fontSize: isMobile ? 24 : 28, fontWeight: 700, letterSpacing: -1, color: '#1f1810', marginBottom: 6 }}>{selAct.name}</div>
             <div style={{ color: '#8b7a65', fontSize: 16, marginBottom: 28 }}>{selAct.time}</div>
             <button
               onClick={() => setSelAct(null)}
