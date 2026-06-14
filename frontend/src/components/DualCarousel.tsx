@@ -32,7 +32,7 @@ const EMOJIS: Record<string, string[]> = {
   'Família':  ['👨‍👩‍👧','👨‍👩‍👧‍👦','👪','🧑‍🤝‍🧑','🤱','👶','🧒','👧','🏡','🍽️','🎂','🛀','🧸','🎠','🏞️','🌅','📷','💝','🫶','🤗'],
 };
 
-const CATEGORIAS: Category[] = [
+const CATEGORIAS = [
   { id: 'saude',    name: 'Saúde',    emoji: '❤️',      gradient: 'linear-gradient(145deg,#e07a5f,#f4a5a0)',  gradientDark: 'linear-gradient(145deg,#c45d44,#e07a5f)', accentBg: '#fee2e2', accentColor: '#9f1239' },
   { id: 'estudos',  name: 'Estudos',  emoji: '📚',      gradient: 'linear-gradient(145deg,#4a9e7a,#81b29a)',  gradientDark: 'linear-gradient(145deg,#2d7a59,#4a9e7a)', accentBg: '#dcfce7', accentColor: '#14532d' },
   { id: 'fe',       name: 'Fé',       emoji: '🙏',      gradient: 'linear-gradient(145deg,#b08968,#d4a87a)',  gradientDark: 'linear-gradient(145deg,#8a6748,#b08968)', accentBg: '#fef3c7', accentColor: '#78350f' },
@@ -41,9 +41,10 @@ const CATEGORIAS: Category[] = [
   { id: 'trabalho', name: 'Trabalho', emoji: '💼',      gradient: 'linear-gradient(145deg,#2563a8,#3b82f6)',  gradientDark: 'linear-gradient(145deg,#1a4b8a,#2563a8)', accentBg: '#dbeafe', accentColor: '#1e3a8a' },
   { id: 'amigos',   name: 'Amigos',   emoji: '👥',      gradient: 'linear-gradient(145deg,#d4620a,#f4844e)',  gradientDark: 'linear-gradient(145deg,#a84b08,#d4620a)', accentBg: '#ffedd5', accentColor: '#7c2d12' },
   { id: 'familia',  name: 'Família',  emoji: '👨‍👩‍👧',   gradient: 'linear-gradient(145deg,#0f8a7a,#2a9d8f)',  gradientDark: 'linear-gradient(145deg,#0a6a5c,#0f8a7a)', accentBg: '#d1fae5', accentColor: '#064e3b' },
-].map(cat => ({\n  ...cat,
+].map((cat) => ({
+  ...cat,
   activities: todasAtividades
-    .filter(a => a.categoria === cat.name)
+    .filter((a) => a.categoria === cat.name)
     .map((a, i) => ({
       id: a.id.toString(),
       name: a.nome,
@@ -51,7 +52,9 @@ const CATEGORIAS: Category[] = [
       time: `${a.duracao} min`,
       subtitle: 'Rotina diária',
     })),
-}));
+})) as Category[];
+
+export const EXAMPLE_CATEGORIES = CATEGORIAS;
 
 // ── Layout constants ───────────────────────────────────────
 const CARD_H = 120;
@@ -109,22 +112,22 @@ export function DualCarousel({
   // ── wheel scroll for categories (desktop only) ─────────────────────
   useEffect(() => {
     if (isMobile) return;
-    
+
     const handleWheel = (e: WheelEvent) => {
       if (!catRef.current) return;
       e.preventDefault();
       setWheelActive(true);
-      
+
       const direction = e.deltaY > 0 ? 1 : -1;
       const newIdx = Math.max(0, Math.min(catIdx + direction, categories.length - 1));
       if (newIdx !== catIdx) {
         selectCat(newIdx);
       }
-      
+
       if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
       wheelTimeoutRef.current = setTimeout(() => setWheelActive(false), 500);
     };
-    
+
     catRef.current?.addEventListener('wheel', handleWheel, { passive: false });
     return () => catRef.current?.removeEventListener('wheel', handleWheel);
   }, [catIdx, categories.length, isMobile]);
@@ -197,16 +200,16 @@ export function DualCarousel({
   const getActStyle = (i: number): React.CSSProperties => {
     const d = i - actIdx;
     const absD = Math.abs(d);
-    
+
     if (absD > 3) return { opacity: 0, pointerEvents: 'none', transform: 'scale(0.85)' };
-    
+
     if (d === 0) return {
       transform: 'scale(1) translateX(0)',
       opacity: 1,
       boxShadow: '0 20px 50px rgba(0,0,0,0.30), 0 6px 18px rgba(0,0,0,0.15)',
       transition: 'transform 380ms cubic-bezier(0.23,1,0.32,1), opacity 280ms ease, box-shadow 380ms ease',
     };
-    
+
     const sc = Math.max(0.78, 1 - absD * 0.075);
     const tx = d * 4;
     return {
