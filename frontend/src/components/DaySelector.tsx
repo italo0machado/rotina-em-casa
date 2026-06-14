@@ -1,5 +1,5 @@
 // Atualizado: 14/06 14:32
-import { useState } from 'react';
+// Atualizado: 14/06 15:55
 
 export interface DaySelection {
   seg: boolean;
@@ -34,7 +34,7 @@ export default function DaySelector({ selected, onChange }: DaySelectorProps) {
     });
   };
 
-  const selectWeekdays = () => {
+  const selectWeekdaysOnly = () => {
     onChange({
       seg: true,
       ter: true,

@@ -1,6 +1,7 @@
 // Atualizado: 14/06 15:05
 import { useState } from 'react';
-import ScheduleGrid, { ScheduleItem } from './ScheduleGrid';
+import ScheduleGrid from './ScheduleGrid';
+import type { ScheduleItem } from './ScheduleGrid';
 
 interface ScheduleEditorProps {
   items: ScheduleItem[];
